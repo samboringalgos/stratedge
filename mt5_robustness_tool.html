@@ -2104,7 +2104,14 @@ function renderTickCharts() {
             bodyFont:  { family: 'Montserrat', size: 11 },
             titleColor: '#8a8478', bodyColor: '#0f0e0b',
             callbacks: {
-              label: item => `${item.dataset.label}: ${fmt$(item.raw)}`
+              label: item => {
+                // Tooltip always shows real balance, not the shifted display value
+                if (item.dataset.label === 'OOS') {
+                  const realVal = oosValues[item.dataIndex - isLabels.length];
+                  return `OOS: ${realVal !== undefined ? fmt$(realVal) : '—'}`;
+                }
+                return `IS: ${fmt$(item.raw)}`;
+              }
             }
           }
         },
