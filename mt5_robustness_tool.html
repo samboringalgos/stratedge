@@ -1964,11 +1964,9 @@ function renderTickCharts() {
       ${outlierHtml}`;
     container.appendChild(wrapper);
  
-    // Build combined % return chart so IS and OOS are on the same scale.
-    // Both curves start at 0% return from their respective deposits.
-    // This removes the account-size distortion: OOS moves are shown at
-    // their true magnitude relative to the starting deposit, not dwarfed
-    // by the IS account growth.
+    // Plot IS and OOS as two separate % return series, both starting at 0%.
+    // This keeps each curve's shape visible at full scale — no offsetting that
+    // compresses OOS into a flat line when IS made much larger gains.
     const isEq  = p.is.equity;
     const oosEq = p.oos.equity;
     if (isEq.length === 0 && oosEq.length === 0) return;
@@ -1977,27 +1975,31 @@ function renderTickCharts() {
       const step = Math.max(1, Math.floor(arr.length / max));
       return arr.filter((_, i) => i % step === 0);
     };
-    const isSampled  = sample(isEq,  300);
-    const oosSampled = sample(oosEq, 300);
+    const isSampled  = sample(isEq,  400);
+    const oosSampled = sample(oosEq, 400);
  
-    // Convert balance → % return from starting deposit
     const isDeposit  = p.is.deposit  || 100000;
     const oosDeposit = p.oos.deposit || 100000;
-    const toReturnPct = (balance, deposit) => ((balance - deposit) / deposit) * 100;
+    const toPct = (balance, deposit) => ((balance - deposit) / deposit) * 100;
  
-    // IS % return series (starts at 0%)
-    const isLabels  = isSampled.map(d => d.t.substring(0, 10));
-    const isValues  = isSampled.map(d => toReturnPct(d.b, isDeposit));
+    // IS dataset: % return, x-axis = IS timestamps
+    const isLabels = isSampled.map(d => d.t.substring(0, 10));
+    const isValues = isSampled.map(d => toPct(d.b, isDeposit));
  
-    // OOS % return series — offset so it continues from where IS ended
-    const isEndPct  = isValues.length > 0 ? isValues[isValues.length - 1] : 0;
+    // OOS dataset: % return, x-axis = OOS timestamps
     const oosLabels = oosSampled.map(d => d.t.substring(0, 10));
-    const oosValues = oosSampled.map(d => isEndPct + toReturnPct(d.b, oosDeposit));
+    const oosValues = oosSampled.map(d => toPct(d.b, oosDeposit));
  
+    // Combined x-axis: IS labels then OOS labels (split marked by dashed line)
+    // Each dataset only has values for its own period, null for the other
     const allLabels = [...isLabels, ...oosLabels];
-    const allValues = [...isValues, ...oosValues];
     const splitIdx  = isLabels.length;
     const splitLabel = oosLabels.length > 0 ? oosLabels[0] : '';
+ 
+    // IS values: real for IS period, null for OOS period
+    const isDataFull  = [...isValues,  ...Array(oosLabels.length).fill(null)];
+    // OOS values: null for IS period, real for OOS period
+    const oosDataFull = [...Array(isLabels.length).fill(null), ...oosValues];
  
     const ctx = document.getElementById(`chart-combo-${p._id}`).getContext('2d');
  
@@ -2038,31 +2040,47 @@ function renderTickCharts() {
       plugins: [bgPlugin],
       data: {
         labels: allLabels,
-        datasets: [{
-          data: allValues,
-          borderColor: 'rgba(42,95,180,0.75)',
-          backgroundColor: 'transparent',
-          borderWidth: 1.5,
-          pointRadius: 0,
-          tension: 0.1,
-          spanGaps: true
-        }]
+        datasets: [
+          {
+            label: 'IS',
+            data: isDataFull,
+            borderColor: 'rgba(42,95,180,0.85)',
+            backgroundColor: 'transparent',
+            borderWidth: 1.5,
+            pointRadius: 0,
+            tension: 0.1,
+            spanGaps: false
+          },
+          {
+            label: 'OOS',
+            data: oosDataFull,
+            borderColor: 'rgba(42,122,74,0.85)',
+            backgroundColor: 'transparent',
+            borderWidth: 1.5,
+            pointRadius: 0,
+            tension: 0.1,
+            spanGaps: false
+          }
+        ]
       },
       options: {
         responsive: true,
         plugins: {
-          legend: { display: false },
+          legend: {
+            display: true,
+            labels: {
+              color: '#8a8478', font: { family: 'Montserrat', size: 10 },
+              boxWidth: 12, padding: 12
+            }
+          },
           tooltip: {
             backgroundColor: '#fff', borderColor: 'rgba(0,0,0,0.12)', borderWidth: 1,
             titleFont: { family: 'Montserrat', size: 10 },
             bodyFont:  { family: 'Montserrat', size: 11 },
             titleColor: '#8a8478', bodyColor: '#0f0e0b',
             callbacks: {
-              label: item => item.raw.toFixed(1) + '% return',
-              title: items => {
-                const idx = items[0].dataIndex;
-                return idx < splitIdx ? `IS — ${items[0].label}` : `OOS — ${items[0].label}`;
-              }
+              label: item => `${item.dataset.label}: ${item.raw !== null ? item.raw.toFixed(1) + '%' : '—'}`,
+              title: items => items[0].label
             }
           }
         },
@@ -2159,4 +2177,3 @@ function escHtml(s) {
  
 </body>
 </html>
- 
