@@ -1960,7 +1960,7 @@ function renderTickCharts() {
           Score&nbsp;${scoreStr} &nbsp;·&nbsp; Calmar ratio&nbsp;${c1Str} &nbsp;·&nbsp; IS:&nbsp;${escHtml(p.is.periodStr)} &nbsp;·&nbsp; OOS:&nbsp;${escHtml(p.oos.periodStr)}
         </div>
       </div>
-      <canvas id="chart-combo-${p._id}" height="180"></canvas>
+      <canvas id="chart-combo-${p._id}" height="240"></canvas>
       ${outlierHtml}`;
     container.appendChild(wrapper);
  
@@ -1972,12 +1972,17 @@ function renderTickCharts() {
     const oosEq = p.oos.equity;
     if (isEq.length === 0 && oosEq.length === 0) return;
  
+    // Sample IS and OOS to equal number of x-axis points so each period
+    // takes up half the chart width regardless of how many data points each has.
+    // This stops IS (6 years) from dominating the x-axis and squeezing OOS (1 year).
+    const TARGET_POINTS = 300; // each period gets this many points
     const sample = (arr, max) => {
+      if (arr.length === 0) return [];
       const step = Math.max(1, Math.floor(arr.length / max));
       return arr.filter((_, i) => i % step === 0);
     };
-    const isSampled  = sample(isEq,  400);
-    const oosSampled = sample(oosEq, 400);
+    const isSampled  = sample(isEq,  TARGET_POINTS);
+    const oosSampled = sample(oosEq, TARGET_POINTS);
  
     const isLabels  = isSampled.map(d => d.t.substring(0, 10));
     const isValues  = isSampled.map(d => d.b);
