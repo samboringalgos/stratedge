@@ -1984,22 +1984,30 @@ function renderTickCharts() {
     const oosLabels = oosSampled.map(d => d.t.substring(0, 10));
     const oosValues = oosSampled.map(d => d.b);
  
-    const allLabels = [...isLabels, ...oosLabels];
-    const splitIdx  = isLabels.length;
+    // OOS values shifted so green starts exactly where blue ended.
+    // The shift = IS final balance - OOS starting balance.
+    // Both datasets share one y-axis so the join is seamless.
+    // OOS still shows its true shape and amplitude — only the starting
+    // position is adjusted, not the scale of its moves.
+    const isEndVal  = isValues.length  > 0 ? isValues[isValues.length - 1] : (p.is.deposit || 100000);
+    const oosStartVal = oosValues.length > 0 ? oosValues[0] : (p.oos.deposit || 100000);
+    const oosShift  = isEndVal - oosStartVal;
+    const oosShifted = oosValues.map(v => v + oosShift);
+ 
+    const allLabels  = [...isLabels, ...oosLabels];
+    const splitIdx   = isLabels.length;
     const splitLabel = oosLabels.length > 0 ? oosLabels[0] : '';
  
-    // IS dataset: values for IS period, null for OOS period
-    const isDataFull  = [...isValues,  ...Array(oosLabels.length).fill(null)];
-    // OOS dataset: null for IS period, values for OOS period
-    const oosDataFull = [...Array(isLabels.length).fill(null), ...oosValues];
+    // IS: real values for IS period, null for OOS
+    const isDataFull  = [...isValues,   ...Array(oosLabels.length).fill(null)];
+    // OOS: null for IS period, shifted values for OOS
+    const oosDataFull = [...Array(isLabels.length).fill(null), ...oosShifted];
  
-    // Compute IS and OOS y-axis ranges independently so each fills the chart
-    const isMin  = Math.min(...isValues);
-    const isMax  = Math.max(...isValues);
-    const oosMin = Math.min(...oosValues);
-    const oosMax = Math.max(...oosValues);
-    const isPad  = (isMax  - isMin)  * 0.08 || 1000;
-    const oosPad = (oosMax - oosMin) * 0.08 || 1000;
+    // Single y-axis range covering both curves
+    const allVals = [...isValues, ...oosShifted];
+    const yMin = Math.min(...allVals);
+    const yMax = Math.max(...allVals);
+    const yPad = (yMax - yMin) * 0.08 || 5000;
  
     const fmt$ = v => '$' + v.toLocaleString('en', { maximumFractionDigits: 0 });
  
@@ -2051,8 +2059,7 @@ function renderTickCharts() {
             borderWidth: 1.5,
             pointRadius: 0,
             tension: 0.1,
-            spanGaps: false,
-            yAxisID: 'yIS'
+            spanGaps: false
           },
           {
             label: 'OOS',
@@ -2062,8 +2069,7 @@ function renderTickCharts() {
             borderWidth: 1.5,
             pointRadius: 0,
             tension: 0.1,
-            spanGaps: false,
-            yAxisID: 'yOOS'
+            spanGaps: false
           }
         ]
       },
@@ -2089,22 +2095,11 @@ function renderTickCharts() {
             grid: { color: 'rgba(0,0,0,0.04)' },
             ticks: { color: '#8a8478', font: { family: 'Montserrat', size: 9 }, maxTicksLimit: 8, maxRotation: 0 }
           },
-          yIS: {
-            type: 'linear',
-            position: 'left',
-            min: isMin  - isPad,
-            max: isMax  + isPad,
+          y: {
+            min: yMin - yPad,
+            max: yMax + yPad,
             grid: { color: 'rgba(0,0,0,0.06)' },
-            ticks: { color: 'rgba(42,95,180,0.7)', font: { family: 'Montserrat', size: 9 },
-              callback: v => '$' + (v/1000).toFixed(0) + 'k' }
-          },
-          yOOS: {
-            type: 'linear',
-            position: 'right',
-            min: oosMin - oosPad,
-            max: oosMax + oosPad,
-            grid: { drawOnChartArea: false },
-            ticks: { color: 'rgba(42,122,74,0.7)', font: { family: 'Montserrat', size: 9 },
+            ticks: { color: '#8a8478', font: { family: 'Montserrat', size: 10 },
               callback: v => '$' + (v/1000).toFixed(0) + 'k' }
           }
         }
@@ -2190,3 +2185,4 @@ function escHtml(s) {
  
 </body>
 </html>
+ 
