@@ -1129,13 +1129,13 @@ function renderRecommendationBanner(rank1, safePick, usedFallback, noNeighboursA
   const calmar  = rec._calmar;
   const consist = rec._consist;
   const paramStr = paramCols.map(p =>
-    `<span style="color:var(--accent2)">${escHtml(p.replace(/^Inp/,''))}</span>&nbsp;=&nbsp;<strong style="color:var(--text)">${escHtml(rec[p])}</strong>`
-  ).join('&nbsp;&nbsp;·&nbsp;&nbsp;');
+    `<span style="color:var(--accent2)">${escHtml(p.replace(/^Inp/,''))}</span> = <strong style="color:var(--text)">${escHtml(rec[p])}</strong>`
+  ).join(' &nbsp;·&nbsp; ');
   const cliffWarn = rec._cliff ? '<span style="color:var(--warn);margin-left:8px;">⚠ Cliff-edge on smooth param</span>' : '';
   const fallbackNote = usedFallback ? ' (Plateau-Safe Pick)' : '';
  
   html += `
-    <div style="background:#0a1f10;border:1px solid #1a4020;border-radius:10px;padding:16px 20px;margin-bottom:20px;">
+    <div style="background:#0a1f10;border:1px solid #1a4020;border-radius:10px;padding:16px 20px;margin-bottom:20px;overflow:hidden;">
       <div style="font-family:'Syne',sans-serif;font-size:12px;font-weight:700;color:var(--accent);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;">
         ⭐ IS Candidate for Validation${fallbackNote} — Pass ${escHtml(rec['Pass'])}
       </div>
@@ -1164,9 +1164,9 @@ function renderRecommendationBanner(rank1, safePick, usedFallback, noNeighboursA
           <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text3);margin-bottom:3px;">FINAL SCORE</div>
           <div style="font-family:'IBM Plex Mono',monospace;font-size:16px;color:var(--accent)">${rec._finalScore.toFixed(3)}</div>
         </div>
-        <div style="flex:1;min-width:200px;">
+        <div style="flex:1;min-width:200px;max-width:100%;overflow:hidden;">
           <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text3);margin-bottom:6px;">PARAMETERS</div>
-          <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;line-height:1.8;">${paramStr}${cliffWarn}</div>
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;line-height:1.8;white-space:normal;overflow-wrap:break-word;word-break:break-word;">${paramStr}${cliffWarn}</div>
         </div>
       </div>
     </div>`;
