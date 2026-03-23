@@ -459,16 +459,25 @@
 <!-- ═══════════════════════════════════════════════ -->
 <div class="panel active" id="tab0">
   <div class="section-title">IS Selection</div>
-  <div class="section-sub">Single-stage IS selection + forward test validation for MT5 optimisation exports. Upload your MT5 forward test XML to begin. Tab 1 selects the top 20 IS candidates. Tab 2 validates them against the validation year.</div>
+  <div class="section-sub">Upload two XML files from MT5's Strategy Tester: <strong style="color:var(--accent2)">Optimization Results</strong> (IS data, all passes) and <strong style="color:var(--accent2)">Forward Results</strong> (OOS data, top passes). Tab 1 selects the top 20 IS candidates. Tab 2 validates them against the forward test year.</div>
  
   <!-- Upload + IS dates -->
   <div style="display:flex;gap:16px;align-items:stretch;margin-bottom:24px;flex-wrap:wrap;">
-    <div class="upload-zone" id="dropzone1" style="flex:1;min-width:280px;margin-bottom:0;"
-      ondragover="dragOver(event,'dropzone1')" ondragleave="dragLeave('dropzone1')" ondrop="dropFile(event,'dropzone1','xml1')">
-      <input type="file" id="xml1" accept=".xml" onchange="loadXML(this,'plateau')">
-      <div class="upload-icon">📂</div>
-      <div class="upload-label" id="upload1-label">Drop MT5 forward test XML here or click to browse</div>
-      <div class="upload-hint">FORWARD TEST OPTIMISATION EXPORT · XML FORMAT</div>
+    <div style="display:flex;flex-direction:column;gap:12px;flex:1;min-width:280px;">
+      <div class="upload-zone" id="dropzone1" style="margin-bottom:0;"
+        ondragover="dragOver(event,'dropzone1')" ondragleave="dragLeave('dropzone1')" ondrop="dropFile(event,'dropzone1','xml1')">
+        <input type="file" id="xml1" accept=".xml" onchange="loadXML(this,'plateau')">
+        <div class="upload-icon">📊</div>
+        <div class="upload-label" id="upload1-label">① Drop Optimization Results XML here</div>
+        <div class="upload-hint">ALL PASSES · IS METRICS ONLY</div>
+      </div>
+      <div class="upload-zone" id="dropzone2" style="margin-bottom:0;"
+        ondragover="dragOver(event,'dropzone2')" ondragleave="dragLeave('dropzone2')" ondrop="dropFile(event,'dropzone2','xml2')">
+        <input type="file" id="xml2" accept=".xml" onchange="loadXML(this,'forward')">
+        <div class="upload-icon">🔍</div>
+        <div class="upload-label" id="upload2-label">② Drop Forward Results XML here</div>
+        <div class="upload-hint">TOP PASSES ONLY · INCLUDES OOS METRICS</div>
+      </div>
     </div>
     <div class="card" style="min-width:260px;display:flex;flex-direction:column;gap:12px;justify-content:center;">
       <div>
@@ -489,6 +498,7 @@
         </div>
         <div id="is-years-display" style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text3);margin-top:6px;">Enter IS dates or years above</div>
         <div id="deposit-display" style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text3);margin-top:4px;">Deposit: not yet loaded</div>
+        <div id="fwd-status-display" style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text3);margin-top:4px;">Forward Results: not loaded</div>
       </div>
     </div>
   </div>
@@ -578,7 +588,7 @@
   <div id="validation-empty" class="empty">
     <div class="empty-icon">🔍</div>
     <div class="empty-text">No data loaded</div>
-    <div class="empty-sub">Upload your MT5 forward test XML in Tab 1 to auto-populate this tab</div>
+    <div class="empty-sub">Upload both XML files in Tab 1 — Validation auto-populates once both are loaded</div>
   </div>
  
   <div id="validation-content" style="display:none;">
@@ -612,6 +622,7 @@ let plateauParamCols = [];
 let isYears = 6;
 let paramTypes = {};
 let top20Global = [];   // stored after IS selection, used by Validation tab
+let fwdData = null;        // parsed Forward_Results XML, keyed by Pass
  
 // ═══════════════════════════════════════════════════
 // TAB SWITCHING
@@ -707,8 +718,9 @@ function loadXML(input, target) {
   reader.onload = e => {
     const text = e.target.result;
     const parsed = parseXML(text);
-    if (!parsed) { alert('Could not parse XML file. Please make sure this is a valid MT5 forward test optimisation export.'); return; }
+    if (!parsed) { alert('Could not parse XML file. Please make sure this is a valid MT5 optimisation export.'); return; }
     if (target === 'plateau') { plateauData = parsed; onXMLLoaded(); }
+    if (target === 'forward') { onForwardXMLLoaded(parsed); }
   };
   reader.onerror = () => alert('Failed to read file. Please try again.');
   reader.readAsText(file);
@@ -768,7 +780,8 @@ function parseXML(text) {
 // ON XML LOADED
 // ═══════════════════════════════════════════════════
 function onXMLLoaded() {
-  const { headers, deposit } = plateauData;
+  const { headers } = plateauData;
+  const deposit = plateauData.deposit;
  
   // Identify IS metric columns and param columns
   // Forward test XML structure:
@@ -796,7 +809,7 @@ function onXMLLoaded() {
   // Show deposit
   const depDisp = document.getElementById('deposit-display');
   if (deposit !== null && !isNaN(deposit) && deposit > 0) {
-    depDisp.textContent = `Deposit: $${deposit.toLocaleString('en',{maximumFractionDigits:0})} (read from XML)`;
+    depDisp.textContent = `Deposit: $${deposit.toLocaleString('en',{maximumFractionDigits:0})} · ${plateauData.data.length.toLocaleString('en')} passes loaded`;
     depDisp.style.color = 'var(--accent2)';
   } else {
     depDisp.textContent = 'Deposit: not found in XML — check file';
@@ -823,7 +836,6 @@ function onXMLLoaded() {
   document.getElementById('weights-section').style.display = 'block';
  
   updateISYears();
-  detectOOSColumns();
   renderPlateau();
 }
  
@@ -1054,6 +1066,7 @@ function renderPlateau() {
   const top20  = ranked.slice(0, 20);
   top20.forEach((r, i) => { r._rank = i + 1; });
   top20Global  = top20;  // store for Validation tab
+  if (fwdData) renderValidation();
  
   // Stats cards
   document.getElementById('plateau-stats').innerHTML = `
@@ -1083,9 +1096,6 @@ function renderPlateau() {
   renderRecommendationBanner(rank1, safePick, usedFallback, noNeighboursAnywhere, paramCols);
   renderPlateauTable(top20, paramCols, safePick);
   renderPlateauChart();
- 
-  // Auto-populate Validation tab
-  renderValidation();
 }
  
 // ═══════════════════════════════════════════════════
@@ -1291,72 +1301,73 @@ function renderPlateauChart() {
 // ═══════════════════════════════════════════════════
 // TAB 2 — VALIDATION
 // ═══════════════════════════════════════════════════
-// OOS column names detected once after XML load
-let oosColNames = { profit: null, dd: null, trades: null };
+// ═══════════════════════════════════════════════════
+// FORWARD RESULTS XML HANDLER
+// ═══════════════════════════════════════════════════
+function onForwardXMLLoaded(parsed) {
+  // Forward Results XML structure (from MT5):
+  // Pass, Forward Result, Back Result, Profit, Expected Payoff, Profit Factor,
+  // Recovery Factor, Sharpe Ratio, Custom, Equity DD%, Trades, [params...]
+  // Where Profit/DD%/Trades = FORWARD PERIOD (OOS) metrics
+  // Back Result = IS score, Forward Result = OOS score
  
-function detectOOSColumns() {
-  const headers = plateauData.headers;
-  const paramCols = new Set(plateauParamCols);
+  const headers = parsed.headers;
+  const data    = parsed.data;
  
-  // IS metric columns we already know about
-  const knownIS = new Set([
-    'Pass','Forward_Result','Back_Result','Result',
-    'Profit','Expected Payoff','Profit Factor','Recovery Factor',
-    'Sharpe Ratio','Custom','Equity DD %','Trades'
-  ]);
+  // Build a Map keyed by Pass number for fast lookup
+  const byPass = new Map();
+  data.forEach(row => {
+    const passKey = String(row['Pass']);
+    byPass.set(passKey, row);
+  });
  
-  // Remaining unknown columns after Trades — candidates for OOS metrics
-  const tradesIdx = headers.indexOf('Trades');
-  const candidates = tradesIdx >= 0 ? headers.slice(tradesIdx + 1).filter(h => !paramCols.has(h)) : [];
+  fwdData = byPass;
  
-  // Try named matches first
-  const tryFind = (...names) => {
-    for (const name of names) {
-      const h = headers.find(h => h.toLowerCase() === name.toLowerCase());
-      if (h !== undefined) return h;
-    }
-    return null;
-  };
+  // Update status display
+  const fwdDisp = document.getElementById('fwd-status-display');
+  const hasForwardResult = headers.includes('Forward Result') || headers.includes('Forward_Result');
+  if (hasForwardResult) {
+    fwdDisp.textContent = `Forward Results: ${data.length} passes loaded ✓`;
+    fwdDisp.style.color = 'var(--accent2)';
+  } else {
+    fwdDisp.textContent = `Forward Results: ${data.length} rows loaded — check this is the correct file`;
+    fwdDisp.style.color = 'var(--warn)';
+  }
  
-  oosColNames.profit = tryFind('Fwd_Profit','Forward_Profit','Fwd Profit','OOS_Profit','OOS Profit');
-  oosColNames.dd     = tryFind('Fwd_DD','Forward_DD','Fwd DD','OOS_DD','OOS DD','Fwd_Equity_DD','Fwd Equity DD %');
-  oosColNames.trades = tryFind('Fwd_Trades','Forward_Trades','Fwd Trades','OOS_Trades','OOS Trades');
+  document.getElementById('upload2-label').textContent =
+    `② Forward_Results.xml (${data.length} passes)`;
  
-  // If not found by name, try positional: first 3 unrecognised columns after params
-  if (!oosColNames.profit && candidates.length >= 1) oosColNames.profit = candidates[0];
-  if (!oosColNames.dd     && candidates.length >= 2) oosColNames.dd     = candidates[1];
-  if (!oosColNames.trades && candidates.length >= 3) oosColNames.trades = candidates[2];
- 
-  // Warn user about detection result
-  const dispEl = document.getElementById('deposit-display');
-  const profitFound  = oosColNames.profit  ? `Profit="${oosColNames.profit}"` : 'Profit=NOT FOUND';
-  const ddFound      = oosColNames.dd      ? `DD="${oosColNames.dd}"` : 'DD=NOT FOUND';
-  const tradesFound  = oosColNames.trades  ? `Trades="${oosColNames.trades}"` : 'Trades=NOT FOUND';
-  const allFound = oosColNames.profit && oosColNames.dd && oosColNames.trades;
- 
-  const depDisp = document.getElementById('deposit-display');
-  const deposit = plateauData.deposit;
-  let depText = deposit > 0 ? `Deposit: $${deposit.toLocaleString('en',{maximumFractionDigits:0})} · ` : 'Deposit: NOT FOUND · ';
-  depText += `OOS cols: ${profitFound}, ${ddFound}, ${tradesFound}`;
-  depDisp.textContent = depText;
-  depDisp.style.color = allFound && deposit > 0 ? 'var(--accent2)' : 'var(--warn)';
+  // If IS selection already done, re-render validation with this data
+  if (top20Global.length > 0) renderValidation();
 }
  
-function getForwardMetrics(row) {
-  const get = col => {
-    if (!col) return null;
-    const v = row[col];
+function getForwardMetrics(isRow) {
+  if (!fwdData) return { oosProfit: null, oosDD: null, oosTrades: null };
+  const fwdRow = fwdData.get(String(isRow['Pass']));
+  if (!fwdRow) return { oosProfit: null, oosDD: null, oosTrades: null };
+ 
+  // In the Forward Results XML, Profit/Equity DD%/Trades = OOS (forward period) metrics
+  const get = key => {
+    const v = fwdRow[key];
     return typeof v === 'number' ? v : null;
   };
+ 
   return {
-    oosProfit: get(oosColNames.profit),
-    oosDD:     get(oosColNames.dd),
-    oosTrades: get(oosColNames.trades)
+    oosProfit:  get('Profit'),
+    oosDD:      get('Equity DD %'),
+    oosTrades:  get('Trades'),
+    fwdResult:  get('Forward Result'),
+    backResult: get('Back Result')
   };
 }
  
 function renderValidation() {
   if (!plateauData || top20Global.length === 0) return;
+  if (!fwdData) {
+    document.getElementById('validation-empty').style.display = 'block';
+    document.getElementById('validation-content').style.display = 'none';
+    return;
+  }
  
   document.getElementById('validation-empty').style.display = 'none';
   document.getElementById('validation-content').style.display = 'block';
@@ -1393,7 +1404,7 @@ function renderValidation() {
     if (oosProfit !== null && (bestOOSProfit === null || oosProfit > bestOOSProfit)) bestOOSProfit = oosProfit;
     if (ddRatio !== null && (bestDDRatio === null || ddRatio < bestDDRatio)) bestDDRatio = ddRatio;
  
-    return { row, oosProfit, oosDD, oosTrades, ddRatio, c1, c2, c3, outlier, status };
+    return { row, oosProfit, oosDD, oosTrades, ddRatio, fwdResult: fwd.fwdResult || null, c1, c2, c3, outlier, status };
   });
  
   // Stats cards
@@ -1409,7 +1420,7 @@ function renderValidation() {
   let html = '<thead><tr>';
   const valHdrs = ['IS RANK','PASS','IS CALMAR','IS DD%','IS TRADES',
     ...paramCols.map(p => escHtml(p.replace(/^Inp/,'').toUpperCase())),
-    'OOS PROFIT','OOS DD%','OOS TRADES','DD RATIO','STATUS'];
+    'OOS PROFIT','OOS DD%','OOS TRADES','DD RATIO','FWD SCORE','STATUS'];
   valHdrs.forEach(h => { html += `<th>${h}</th>`; });
   html += '</tr></thead><tbody>';
  
@@ -1442,8 +1453,14 @@ function renderValidation() {
     html += `<td style="color:${c3?'var(--pass)':'var(--fail)'}">${oosTrades!==null?oosTrades:'—'}</td>`;
     html += `<td style="color:${ddRatio===null?'var(--text3)':ddRatio<=1.0?'var(--pass)':ddRatio<=1.5?'var(--warn)':'var(--fail)'}">${ddRatio!==null?ddRatio.toFixed(2):'—'}</td>`;
  
+    const fwdScore = res.fwdResult;
+    html += `<td style="color:${fwdScore===null?'var(--text3)':fwdScore>=50?'var(--pass)':fwdScore>=20?'var(--warn)':'var(--fail)'}">${fwdScore!==null?fwdScore.toFixed(1):'—'}</td>`;
+ 
+    const notInFwd = res.oosProfit === null && res.oosDD === null && res.oosTrades === null;
     const statusCol = status==='PASS'?'var(--pass)':status==='CAUTION'?'var(--warn)':'var(--fail)';
-    const statusNote = res.outlier && status==='CAUTION' ? '<span style="font-size:10px;color:var(--text3);margin-left:4px;">(outlier)</span>' : '';
+    const statusNote = notInFwd
+      ? '<span style="font-size:10px;color:var(--text3);margin-left:4px;">(not in fwd file)</span>'
+      : res.outlier && status==='CAUTION' ? '<span style="font-size:10px;color:var(--text3);margin-left:4px;">(outlier)</span>' : '';
     html += `<td><span style="color:${statusCol};font-weight:700">${status}</span>${statusNote}</td>`;
     html += '</tr>';
   });
