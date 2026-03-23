@@ -1111,19 +1111,27 @@ function renderRecommendationBanner(rank1, safePick, usedFallback, noNeighboursA
  
   let html = '';
  
-  if (noNeighboursAnywhere) {
-    html += `<div class="plateau-result spike" style="margin-bottom:12px;">
-      ⚠ <strong>Warning:</strong> No set in the top 20 has 3+ neighbours. Plateau robustness cannot be confirmed. Rank 1 used — proceed with caution.
-    </div>`;
-  }
+  // Check if all params are categorical — plateau/neighbour concepts don't apply
+  const allCategorical = paramCols.length > 0 && paramCols.every(p => !paramTypes[p] || paramTypes[p] === 'cat');
  
-  if (usedFallback && rank1) {
-    const r1params = paramCols.map(p => `${escHtml(p.replace(/^Inp/,''))}=${escHtml(rank1[p])}`).join(', ');
+  if (allCategorical) {
     html += `<div class="plateau-result mixed" style="margin-bottom:12px;">
-      ⚠ <strong>Plateau Safety Rule triggered:</strong> Rank 1 (Pass ${escHtml(rank1['Pass'])}) has ${rank1._neighbours} neighbour(s) — isolated peak.
-      Falling back to Pass ${escHtml(safePick['Pass'])} (Rank ${safePick._rank}, ${safePick._neighbours} neighbours).
-      Raw Rank 1 params: [${r1params}]
+      ℹ <strong>All parameters are Categorical.</strong> Plateau safety rule and neighbour counts are not meaningful for categorical switches — adjacent values represent different behaviours, not a continuous surface. Rank 1 is used directly.
     </div>`;
+  } else {
+    if (noNeighboursAnywhere) {
+      html += `<div class="plateau-result spike" style="margin-bottom:12px;">
+        ⚠ <strong>Warning:</strong> No set in the top 20 has 3+ neighbours. Plateau robustness cannot be confirmed. Rank 1 used — proceed with caution.
+      </div>`;
+    }
+    if (usedFallback && rank1) {
+      const r1params = paramCols.map(p => `${escHtml(p.replace(/^Inp/,''))}=${escHtml(rank1[p])}`).join(', ');
+      html += `<div class="plateau-result mixed" style="margin-bottom:12px;">
+        ⚠ <strong>Plateau Safety Rule triggered:</strong> Rank 1 (Pass ${escHtml(rank1['Pass'])}) has ${rank1._neighbours} neighbour(s) — isolated peak.
+        Falling back to Pass ${escHtml(safePick['Pass'])} (Rank ${safePick._rank}, ${safePick._neighbours} neighbours).
+        Raw Rank 1 params: [${r1params}]
+      </div>`;
+    }
   }
  
   const calmar  = rec._calmar;
@@ -1132,7 +1140,7 @@ function renderRecommendationBanner(rank1, safePick, usedFallback, noNeighboursA
     `<span style="color:var(--accent2)">${escHtml(p.replace(/^Inp/,''))}</span> = <strong style="color:var(--text)">${escHtml(rec[p])}</strong>`
   ).join(' &nbsp;·&nbsp; ');
   const cliffWarn = rec._cliff ? '<span style="color:var(--warn);margin-left:8px;">⚠ Cliff-edge on smooth param</span>' : '';
-  const fallbackNote = usedFallback ? ' (Plateau-Safe Pick)' : '';
+  const fallbackNote = (!allCategorical && usedFallback) ? ' (Plateau-Safe Pick)' : '';
  
   html += `
     <div style="background:#0a1f10;border:1px solid #1a4020;border-radius:10px;padding:16px 20px;margin-bottom:20px;overflow:hidden;">
@@ -1280,7 +1288,12 @@ function renderPlateauChart() {
   });
  
   // Visual plateau verdict
-  if (labels.length >= 3 && values.length >= 3) {
+  // Suppress if the selected parameter is categorical — plateau/spike concepts don't apply
+  const paramIsCat = !paramTypes[param] || paramTypes[param] === 'cat';
+  if (paramIsCat) {
+    document.getElementById('plateau-verdict').innerHTML =
+      `<div class="plateau-result mixed" style="margin-top:0;">ℹ ${escHtml(param.replace(/^Inp/,''))} is set to CATEGORICAL — plateau analysis does not apply. Adjacent values represent different behaviours, not a continuous surface.</div>`;
+  } else if (labels.length >= 3 && values.length >= 3) {
     const range = Math.abs(best - (isDD ? Math.max(...values) : Math.min(...values)));
     if (range > 0) {
       const goodCount = values.filter(v => isDD ? v <= best+range*0.20 : v >= best-range*0.20).length;
