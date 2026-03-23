@@ -2161,6 +2161,93 @@ function renderTickCharts() {
 }
  
  
+// ── BULK UPLOAD ───────────────────────────────────────────────
+// Pairs files by stripping _IS / _OOS suffix and matching the rest
+function tickBulkDrop(e) {
+  e.preventDefault();
+  dragLeave('tick-dropzone-bulk');
+  tickBulkProcess(Array.from(e.dataTransfer.files));
+}
+ 
+function tickBulkSelected(input) {
+  tickBulkProcess(Array.from(input.files));
+  input.value = '';
+}
+ 
+function tickBulkProcess(files) {
+  const statusEl = document.getElementById('tick-add-status');
+  const xlsx = files.filter(f => f.name.toLowerCase().endsWith('.xlsx'));
+  if (xlsx.length === 0) {
+    statusEl.textContent = '⚠ No XLSX files found.';
+    statusEl.style.color = 'var(--warn)';
+    return;
+  }
+ 
+  const isFiles = {}, oosFiles = {}, unmatched = [];
+  xlsx.forEach(f => {
+    const name = f.name.replace(/\.xlsx$/i, '');
+    const isM  = name.match(/^(.+?)_IS$/i);
+    const oosM = name.match(/^(.+?)_OOS$/i);
+    if (isM)       isFiles[isM[1].toLowerCase()]   = f;
+    else if (oosM) oosFiles[oosM[1].toLowerCase()] = f;
+    else           unmatched.push(f.name);
+  });
+ 
+  const pairs = [];
+  Object.keys(isFiles).forEach(key => {
+    if (oosFiles[key]) pairs.push({ isFile: isFiles[key], oosFile: oosFiles[key] });
+    else unmatched.push(isFiles[key].name + ' (no OOS match)');
+  });
+  Object.keys(oosFiles).forEach(key => {
+    if (!isFiles[key]) unmatched.push(oosFiles[key].name + ' (no IS match)');
+  });
+ 
+  if (pairs.length === 0) {
+    statusEl.textContent = '⚠ No matching pairs found. Filenames must end with _IS.xlsx and _OOS.xlsx.';
+    statusEl.style.color = 'var(--warn)';
+    return;
+  }
+ 
+  statusEl.textContent = `Parsing ${pairs.length} pair${pairs.length > 1 ? 's' : ''}…`;
+  statusEl.style.color = 'var(--muted)';
+ 
+  let completed = 0;
+  const results = new Array(pairs.length);
+ 
+  pairs.forEach((pair, i) => {
+    try {
+      parseTickXLSX(pair.isFile, isP => {
+        try {
+          parseTickXLSX(pair.oosFile, oosP => {
+            try {
+              results[i] = { isP, oosP, label: pair.isFile.name.replace(/\.xlsx$/i, '') };
+            } catch(e) { results[i] = null; }
+            completed++;
+            statusEl.textContent = `Parsing… ${completed}/${pairs.length} pairs done`;
+            if (completed === pairs.length) {
+              results.filter(Boolean).forEach(r => {
+                tickPasses.push({ is: r.isP, oos: r.oosP, label: r.label, _id: Date.now() + Math.random() });
+              });
+              const warnStr = unmatched.length > 0 ? ` · ${unmatched.length} unmatched: ${unmatched.join(', ')}` : '';
+              statusEl.textContent = `✓ ${results.filter(Boolean).length} pass${results.filter(Boolean).length > 1 ? 'es' : ''} added.${warnStr}`;
+              statusEl.style.color = unmatched.length > 0 ? 'var(--warn)' : 'var(--pass)';
+              renderTickTab();
+            }
+          });
+        } catch(e) {
+          completed++;
+          statusEl.textContent = `Error parsing OOS file: ${e.message}`;
+          statusEl.style.color = 'var(--fail)';
+        }
+      });
+    } catch(e) {
+      completed++;
+      statusEl.textContent = `Error parsing IS file: ${e.message}`;
+      statusEl.style.color = 'var(--fail)';
+    }
+  });
+}
+ 
 // ═══════════════════════════════════════════════════
 // HELPERS
 // ═══════════════════════════════════════════════════
@@ -2174,36 +2261,52 @@ function escHtml(s) {
 <!-- ═══════════════════════════════════════════════ -->
 <div class="panel" id="tab2">
   <div class="section-title">Tick Data Comparison</div>
-  <div class="section-sub">Upload one IS and one OOS Strategy Tester Report (XLSX) per pass. Both files must use Every Tick based on real ticks. Add as many passes as needed — the table updates live with each addition. All scoring is based on IS vs OOS consistency, not IS performance alone. Visually inspect the equity curve overlays before making your final selection.</div>
+  <div class="section-sub">Drop all your IS and OOS XLSX files at once — the tool pairs them automatically by filename (e.g. <em>Pass_48_IS.xlsx</em> pairs with <em>Pass_48_OOS.xlsx</em>). Or add one pass at a time using the single-file zone below. All scoring is based on IS vs OOS consistency. Visually inspect the equity curves before making your final selection.</div>
  
   <!-- Upload panel -->
   <div class="card mb24">
-    <div class="chart-label" style="margin-bottom:14px;">Add Pass</div>
-    <div style="display:flex;gap:16px;align-items:flex-end;flex-wrap:wrap;">
-      <div style="flex:1;min-width:220px;">
-        <label class="ctrl-label">IS REPORT (REAL TICKS)</label>
-        <div class="upload-zone" id="tick-dropzone-is" style="padding:20px;"
-          ondragover="dragOver(event,'tick-dropzone-is')" ondragleave="dragLeave('tick-dropzone-is')"
-          ondrop="tickDrop(event,'is')">
-          <input type="file" id="tick-is-file" accept=".xlsx" onchange="tickFileSelected(this,'is')">
-          <div class="upload-label" id="tick-is-label" style="font-size:13px;">IS Report</div>
-          <div class="upload-hint">XLSX · IS PERIOD</div>
-        </div>
-      </div>
-      <div style="flex:1;min-width:220px;">
-        <label class="ctrl-label">OOS REPORT (REAL TICKS)</label>
-        <div class="upload-zone" id="tick-dropzone-oos" style="padding:20px;"
-          ondragover="dragOver(event,'tick-dropzone-oos')" ondragleave="dragLeave('tick-dropzone-oos')"
-          ondrop="tickDrop(event,'oos')">
-          <input type="file" id="tick-oos-file" accept=".xlsx" onchange="tickFileSelected(this,'oos')">
-          <div class="upload-label" id="tick-oos-label" style="font-size:13px;">OOS Report</div>
-          <div class="upload-hint">XLSX · OOS PERIOD</div>
-        </div>
-      </div>
-      <div>
-        <button class="btn btn-primary" onclick="addTickPass()" style="height:44px;">+ Add Pass</button>
-      </div>
+    <div class="chart-label" style="margin-bottom:12px;">Add Passes</div>
+ 
+    <!-- Bulk drop zone -->
+    <div class="upload-zone" id="tick-dropzone-bulk" style="margin-bottom:16px;"
+      ondragover="dragOver(event,'tick-dropzone-bulk')" ondragleave="dragLeave('tick-dropzone-bulk')"
+      ondrop="tickBulkDrop(event)">
+      <input type="file" id="tick-bulk-file" accept=".xlsx" multiple onchange="tickBulkSelected(this)">
+      <div class="upload-icon">📂</div>
+      <div class="upload-label">Drop all IS + OOS files here at once</div>
+      <div class="upload-hint">SELECT MULTIPLE FILES · AUTO-PAIRED BY FILENAME · _IS / _OOS</div>
     </div>
+ 
+    <!-- Single pass zone (collapsible) -->
+    <details style="margin-bottom:4px;">
+      <summary style="font-family:'Montserrat',sans-serif;font-size:11px;font-weight:600;color:var(--muted);letter-spacing:0.08em;cursor:pointer;text-transform:uppercase;margin-bottom:10px;">Or add one pass at a time</summary>
+      <div style="display:flex;gap:16px;align-items:flex-end;flex-wrap:wrap;margin-top:12px;">
+        <div style="flex:1;min-width:200px;">
+          <label class="ctrl-label">IS Report</label>
+          <div class="upload-zone" id="tick-dropzone-is" style="padding:16px;"
+            ondragover="dragOver(event,'tick-dropzone-is')" ondragleave="dragLeave('tick-dropzone-is')"
+            ondrop="tickDrop(event,'is')">
+            <input type="file" id="tick-is-file" accept=".xlsx" onchange="tickFileSelected(this,'is')">
+            <div class="upload-label" id="tick-is-label" style="font-size:12px;">IS Report</div>
+            <div class="upload-hint">XLSX · IS PERIOD</div>
+          </div>
+        </div>
+        <div style="flex:1;min-width:200px;">
+          <label class="ctrl-label">OOS Report</label>
+          <div class="upload-zone" id="tick-dropzone-oos" style="padding:16px;"
+            ondragover="dragOver(event,'tick-dropzone-oos')" ondragleave="dragLeave('tick-dropzone-oos')"
+            ondrop="tickDrop(event,'oos')">
+            <input type="file" id="tick-oos-file" accept=".xlsx" onchange="tickFileSelected(this,'oos')">
+            <div class="upload-label" id="tick-oos-label" style="font-size:12px;">OOS Report</div>
+            <div class="upload-hint">XLSX · OOS PERIOD</div>
+          </div>
+        </div>
+        <div>
+          <button class="btn btn-primary" onclick="addTickPass()" style="height:40px;">+ Add Pass</button>
+        </div>
+      </div>
+    </details>
+ 
     <div id="tick-add-status" style="font-family:'Montserrat',sans-serif;font-size:11px;color:var(--text3);margin-top:8px;"></div>
   </div>
  
