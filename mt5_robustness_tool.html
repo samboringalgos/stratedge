@@ -2015,6 +2015,8 @@ function renderTickCharts() {
     // Anchor: oosStart at isFrac from bottom of OOS axis.
     // The axis range must be large enough to fit ALL OOS data on both sides.
     // We derive the required total range from both directions and take the larger.
+    const oosMin   = oosValues.length > 0 ? Math.min(...oosValues) : oosStartVal;
+    const oosMax   = oosValues.length > 0 ? Math.max(...oosValues) : oosStartVal;
     const oosAbove = (oosMax - oosStartVal) * 1.10; // data above start + 10% pad
     const oosBelow = (oosStartVal - oosMin)  * 1.10; // data below start + 10% pad
     const rangeFromAbove = isFrac     > 0.999 ? oosAbove * 20 : oosAbove / (1 - isFrac);
@@ -2201,28 +2203,4 @@ function escHtml(s) {
   <div id="tick-empty" class="empty">
     <div class="empty-icon">📋</div>
     <div class="empty-text">No passes uploaded yet</div>
-    <div class="empty-sub">Upload an IS and OOS XLSX report above, then click Add Pass</div>
-  </div>
- 
-  <!-- Results -->
-  <div id="tick-content" style="display:none;">
-    <!-- Summary cards -->
-    <div class="grid-4 mb24" id="tick-summary-cards"></div>
- 
-    <!-- Comparison table -->
-    <div class="tbl-wrap mb24">
-      <div class="tbl-header">
-        <div class="tbl-title">Pass Comparison</div>
-        <div style="font-family:'Montserrat',sans-serif;font-size:11px;color:var(--text3);">Ranked by Final Score · 🥇🥈🥉 = Top 3</div>
-      </div>
-      <div class="tbl-scroll"><table id="tick-table"></table></div>
-    </div>
- 
-    <!-- Equity curve charts -->
-    <div id="tick-charts"></div>
-  </div>
-</div>
- 
- 
-</body>
-</html>
+    <div class="empty-sub">Upload an IS and OOS XLSX report above, then click Add Pass</div
