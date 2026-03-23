@@ -535,6 +535,7 @@
   <!-- Results content -->
   <div id="plateau-content" style="display:none;margin-top:0;">
     <div class="grid-4" id="plateau-stats"></div>
+    <div id="dedup-notice" style="display:none;font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--warn);background:#1a140a;border:1px solid #3a2a0a;border-radius:8px;padding:10px 16px;margin-bottom:20px;"></div>
  
     <!-- Surface chart -->
     <div class="chart-wrap">
@@ -565,7 +566,7 @@
     <div class="tbl-wrap" style="margin-top:20px;">
       <div class="tbl-header">
         <div class="tbl-title">Top 20 IS Candidates</div>
-        <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text3);">Ranked by Final Score &nbsp;·&nbsp; <span style="color:var(--warn);">⚠ = isolated peak (&lt;3 neighbours)</span> &nbsp;·&nbsp; <span style="color:var(--warn);">⚡ = cliff-edge smooth param</span></div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text3);">Ranked by Final Score &nbsp;·&nbsp; <span id="legend-isolated" style="color:var(--warn);">⚠ = isolated peak (&lt;3 neighbours)</span> &nbsp;·&nbsp; <span style="color:var(--warn);">⚡ = cliff-edge smooth param</span></div>
       </div>
       <div class="tbl-scroll"><table id="plateau-table"></table></div>
     </div>
@@ -824,13 +825,22 @@ function onXMLLoaded() {
   tagsEl.innerHTML = '';
   paramCols.forEach(p => {
     const label = p.replace(/^Inp/, '');
-    const tag = document.createElement('div');
-    tag.style.display = 'flex'; tag.style.alignItems = 'center'; tag.style.gap = '4px';
-    tag.innerHTML = `<span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--text2);">${escHtml(label)}</span>
-      <span class="param-tag ${paramTypes[p]}" id="ptag-${escHtml(p)}" onclick="toggleParamType(${JSON.stringify(p)})">
-        ${paramTypes[p] === 'cat' ? 'CATEGORICAL' : 'SMOOTH'}
-      </span>`;
-    tagsEl.appendChild(tag);
+    const wrapper = document.createElement('div');
+    wrapper.style.display = 'flex'; wrapper.style.alignItems = 'center'; wrapper.style.gap = '4px';
+ 
+    const nameSpan = document.createElement('span');
+    nameSpan.style.cssText = "font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--text2);";
+    nameSpan.textContent = label;
+ 
+    const tagSpan = document.createElement('span');
+    tagSpan.className = 'param-tag ' + paramTypes[p];
+    tagSpan.id = 'ptag-' + p;
+    tagSpan.textContent = paramTypes[p] === 'cat' ? 'CATEGORICAL' : 'SMOOTH';
+    tagSpan.addEventListener('click', () => toggleParamType(p));
+ 
+    wrapper.appendChild(nameSpan);
+    wrapper.appendChild(tagSpan);
+    tagsEl.appendChild(wrapper);
   });
   document.getElementById('param-types-section').style.display = paramCols.length > 0 ? 'block' : 'none';
   document.getElementById('weights-section').style.display = 'block';
@@ -846,6 +856,8 @@ function toggleParamType(p) {
     tag.className = 'param-tag ' + paramTypes[p];
     tag.textContent = paramTypes[p] === 'cat' ? 'CATEGORICAL' : 'SMOOTH';
   }
+  // Re-run immediately so scores, banner and verdicts reflect the change
+  rerunAnalysis();
 }
  
 function rerunAnalysis() {
@@ -878,6 +890,39 @@ function applyQualityFilter(data) {
     typeof r['Equity DD %'] === 'number' && r['Equity DD %'] < 25
   );
   return { filtered, total, minTrades };
+}
+ 
+// ═══════════════════════════════════════════════════
+// STEP 1b — DEDUPLICATION
+// Keep only the lowest Pass number when multiple passes produce identical results.
+// Two passes are duplicates if Net Profit matches within ±0.01, Equity DD% within
+// ±0.001, and Trades are an exact match. This removes inflated robustness caused
+// by irrelevant parameters (e.g. a filter setting that has no effect when its
+// governing switch is Off).
+// ═══════════════════════════════════════════════════
+function deduplicateFiltered(filtered) {
+  // Sort by Pass number ascending so lowest Pass wins when de-duping
+  const sorted = [...filtered].sort((a, b) => a['Pass'] - b['Pass']);
+ 
+  const seen = new Map(); // key -> representative row
+  const deduped = [];
+ 
+  sorted.forEach(r => {
+    // Round to tolerance bucket to create a stable key
+    const profitKey  = Math.round(r['Profit']        / 0.01) * 0.01;
+    const ddKey      = Math.round(r['Equity DD %']   / 0.001) * 0.001;
+    const tradesKey  = r['Trades'];
+    const key = `${profitKey}|${ddKey}|${tradesKey}`;
+ 
+    if (!seen.has(key)) {
+      seen.set(key, r);
+      deduped.push(r);
+    }
+    // else: discard — a lower Pass number already represents this result
+  });
+ 
+  const removed = filtered.length - deduped.length;
+  return { deduped, removed };
 }
  
 // ═══════════════════════════════════════════════════
@@ -1029,7 +1074,10 @@ function renderPlateau() {
   document.getElementById('plateau-content').style.display = 'block';
  
   // Step 1
-  const { filtered, total, minTrades } = applyQualityFilter(data);
+  const { filtered: filteredRaw, total, minTrades } = applyQualityFilter(data);
+ 
+  // Step 1b — Deduplication
+  const { deduped: filtered, removed: dedupRemoved } = deduplicateFiltered(filteredRaw);
  
   // Step 2 — Calmar
   filtered.forEach(r => { r._calmar = calcCalmar(r); });
@@ -1072,9 +1120,20 @@ function renderPlateau() {
   document.getElementById('plateau-stats').innerHTML = `
     <div class="card"><div class="card-title">Total Combinations</div><div class="card-value">${total.toLocaleString('en')}</div></div>
     <div class="card"><div class="card-title">Trade Floor (30 × IS yrs)</div><div class="card-value">${minTrades}</div></div>
-    <div class="card"><div class="card-title">Passed Quality Filter</div><div class="card-value ${filtered.length > 0 ? 'good' : 'bad'}">${filtered.length.toLocaleString('en')}</div></div>
+    <div class="card"><div class="card-title">Passed Quality Filter</div><div class="card-value ${filteredRaw.length > 0 ? 'good' : 'bad'}">${filteredRaw.length.toLocaleString('en')}</div></div>
     <div class="card"><div class="card-title">IS Window</div><div class="card-value">${isYears.toFixed(2)}yr</div></div>
   `;
+ 
+  // Dedup notice
+  const dedupEl = document.getElementById('dedup-notice');
+  if (dedupEl) {
+    if (dedupRemoved > 0) {
+      dedupEl.textContent = `${dedupRemoved.toLocaleString('en')} duplicate pass${dedupRemoved === 1 ? '' : 'es'} removed — ${filtered.length.toLocaleString('en')} unique strateg${filtered.length === 1 ? 'y' : 'ies'} remaining after deduplication.`;
+      dedupEl.style.display = 'block';
+    } else {
+      dedupEl.style.display = 'none';
+    }
+  }
  
   // Param select
   const paramSelect = document.getElementById('param-select');
@@ -1186,6 +1245,8 @@ function renderRecommendationBanner(rank1, safePick, usedFallback, noNeighboursA
 // TOP 20 IS TABLE
 // ═══════════════════════════════════════════════════
 function renderPlateauTable(top20, paramCols, safePick) {
+  const allCategorical = paramCols.length > 0 && paramCols.every(p => !paramTypes[p] || paramTypes[p] === 'cat');
+ 
   let html = '<thead><tr>';
   const hdrCols = ['RANK','PASS','CALMAR','DD%','TRADES','CONSISTENCY','NEIGHBOURS','FINAL SCORE',
     ...paramCols.map(p => escHtml(p.replace(/^Inp/,'').toUpperCase()))];
@@ -1193,8 +1254,8 @@ function renderPlateauTable(top20, paramCols, safePick) {
   html += '</tr></thead><tbody>';
  
   top20.forEach(row => {
-    const isPick    = safePick && row['Pass'] === safePick['Pass'];
-    const isIsolated = row._neighbours < 3;
+    const isPick     = safePick && row['Pass'] === safePick['Pass'];
+    const isIsolated = !allCategorical && row._neighbours < 3;
     const rowClass   = isPick ? 'highlighted' : (isIsolated ? 'isolated' : '');
     html += `<tr class="${rowClass}">`;
  
@@ -1213,7 +1274,9 @@ function renderPlateauTable(top20, paramCols, safePick) {
     const csCol = cs===null?'var(--text3)':cs>=0.7?'var(--pass)':cs>=0.5?'var(--warn)':'var(--fail)';
     html += `<td><span style="color:${csCol}">${cs!==null?(cs*100).toFixed(0)+'%':'—'}</span>${row._cliff?'<span class="peak-flag" title="Cliff-edge">⚡</span>':''}</td>`;
  
-    html += `<td><span style="color:${row._neighbours>=3?'var(--pass)':'var(--warn)'}">${row._neighbours}</span></td>`;
+    // Neighbours — neutral colour when all categorical (count not meaningful)
+    const neighbourCol = allCategorical ? 'var(--text3)' : row._neighbours>=3 ? 'var(--pass)' : 'var(--warn)';
+    html += `<td><span style="color:${neighbourCol}">${row._neighbours}</span></td>`;
     html += `<td><span style="color:var(--accent2)">${row._finalScore.toFixed(3)}</span></td>`;
  
     paramCols.forEach(p => {
@@ -1225,6 +1288,10 @@ function renderPlateauTable(top20, paramCols, safePick) {
  
   html += '</tbody>';
   document.getElementById('plateau-table').innerHTML = html;
+ 
+  // Hide isolated peak legend when all categorical
+  const legendEl = document.getElementById('legend-isolated');
+  if (legendEl) legendEl.style.display = allCategorical ? 'none' : 'inline';
 }
  
 // ═══════════════════════════════════════════════════
