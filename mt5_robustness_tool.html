@@ -1407,6 +1407,10 @@ function renderValidation() {
     return { row, oosProfit, oosDD, oosTrades, ddRatio, fwdResult: fwd.fwdResult || null, c1, c2, c3, outlier, status };
   });
  
+  // Sort: PASS first, CAUTION second, FAIL last
+  const statusOrder = { 'PASS': 0, 'CAUTION': 1, 'FAIL': 2 };
+  results.sort((a, b) => statusOrder[a.status] - statusOrder[b.status]);
+ 
   // Stats cards
   const fmtProfit = v => v === null ? '—' : (v < 0 ? '-$'+Math.abs(v).toLocaleString('en',{maximumFractionDigits:0}) : '$'+v.toLocaleString('en',{maximumFractionDigits:0}));
   document.getElementById('validation-stats').innerHTML = `
