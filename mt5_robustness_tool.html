@@ -6,7 +6,7 @@
 <title>StratEdge — IS Selection & Validation</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500&display=swap');
-
+ 
   :root {
     --bg: #0a0c0f;
     --surface: #111318;
@@ -23,9 +23,9 @@
     --pass: #4af0b8;
     --fail: #f04a4a;
   }
-
+ 
   * { box-sizing: border-box; margin: 0; padding: 0; }
-
+ 
   body {
     background: var(--bg);
     color: var(--text);
@@ -33,7 +33,7 @@
     font-size: 14px;
     min-height: 100vh;
   }
-
+ 
   /* HEADER */
   header {
     padding: 20px 32px;
@@ -58,7 +58,7 @@
     margin-left: auto;
     letter-spacing: 0.5px;
   }
-
+ 
   /* TABS */
   .tabs {
     display: flex;
@@ -81,7 +81,7 @@
   }
   .tab:hover { color: var(--text2); }
   .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
-
+ 
   .tab-num {
     display: inline-flex;
     align-items: center;
@@ -95,11 +95,11 @@
     color: var(--text3);
   }
   .tab.active .tab-num { background: var(--accent); color: #000; }
-
+ 
   /* PANEL */
   .panel { display: none; padding: 32px; max-width: 1400px; }
   .panel.active { display: block; }
-
+ 
   /* SECTION HEADERS */
   .section-title {
     font-family: 'Syne', sans-serif;
@@ -113,7 +113,7 @@
     margin-bottom: 28px;
     line-height: 1.6;
   }
-
+ 
   /* UPLOAD ZONE */
   .upload-zone {
     border: 2px dashed var(--border2);
@@ -130,7 +130,7 @@
   .upload-icon { font-size: 32px; margin-bottom: 12px; }
   .upload-label { font-family: 'Syne', sans-serif; font-weight: 600; font-size: 15px; margin-bottom: 6px; }
   .upload-hint { color: var(--text3); font-size: 12px; font-family: 'IBM Plex Mono', monospace; }
-
+ 
   /* CARDS */
   .card {
     background: var(--surface);
@@ -156,10 +156,10 @@
   .card-value.good { color: var(--pass); }
   .card-value.bad { color: var(--fail); }
   .card-value.warn { color: var(--warn); }
-
+ 
   .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 24px; }
   .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-
+ 
   /* FORM LABELS */
   label.ctrl-label {
     font-family: 'IBM Plex Mono', monospace;
@@ -183,7 +183,7 @@
   select:focus, input:focus { border-color: var(--accent); }
   select { cursor: pointer; min-width: 180px; }
   input[type=number] { width: 90px; }
-
+ 
   /* CHART AREA */
   .chart-wrap {
     background: var(--surface);
@@ -200,7 +200,7 @@
     margin-bottom: 16px;
   }
   canvas { width: 100% !important; display: block; }
-
+ 
   /* TABLE */
   .tbl-wrap {
     background: var(--surface);
@@ -248,7 +248,7 @@
   tr:hover td { background: var(--surface2); }
   tr.highlighted td { background: #0f1a10 !important; }
   tr.highlighted td:first-child { border-left: 3px solid var(--accent); padding-left: 11px; }
-
+ 
   .badge {
     display: inline-flex;
     align-items: center;
@@ -262,7 +262,7 @@
   .badge-red { background: #2a0f0f; color: var(--fail); }
   .badge-yellow { background: #2a1f0f; color: var(--warn); }
   .badge-grey { background: var(--surface2); color: var(--text3); }
-
+ 
   /* CHECKLIST */
   .checklist { display: flex; flex-direction: column; gap: 10px; }
   .check-item {
@@ -305,7 +305,7 @@
     min-width: 120px;
     text-align: right;
   }
-
+ 
   /* SCORE RING */
   .score-ring-wrap {
     display: flex;
@@ -332,7 +332,7 @@
   .verdict.go { color: var(--pass); }
   .verdict.review { color: var(--warn); }
   .verdict.nogo { color: var(--fail); }
-
+ 
   /* EMPTY STATE */
   .empty {
     text-align: center;
@@ -342,7 +342,7 @@
   .empty-icon { font-size: 40px; margin-bottom: 14px; opacity: 0.4; }
   .empty-text { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 600; margin-bottom: 6px; color: var(--text2); }
   .empty-sub { font-size: 13px; }
-
+ 
   /* BTN */
   .btn {
     padding: 10px 20px;
@@ -361,7 +361,7 @@
   .btn-ghost:hover { border-color: var(--text2); color: var(--text); }
   .btn-danger { background: transparent; color: var(--danger); border: 1px solid var(--danger); }
   .btn-danger:hover { background: var(--danger); color: #fff; }
-
+ 
   /* PLATEAU ANALYSIS */
   .plateau-result {
     padding: 14px 18px;
@@ -374,22 +374,22 @@
   .plateau-result.plateau { background: #0a1f12; border-color: #1a4028; color: var(--pass); }
   .plateau-result.spike { background: #1f0a0a; border-color: #401a1a; color: var(--fail); }
   .plateau-result.mixed { background: #1f180a; border-color: #40300a; color: var(--warn); }
-
+ 
   /* WFO FORM */
   .form-row { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 16px; align-items: flex-end; }
   .form-group { display: flex; flex-direction: column; }
-
+ 
   /* SCROLLBAR */
   ::-webkit-scrollbar { width: 6px; height: 6px; }
   ::-webkit-scrollbar-track { background: var(--surface); }
   ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
   ::-webkit-scrollbar-thumb:hover { background: var(--text3); }
-
+ 
   .text3 { color: var(--text3); }
   .mb16 { margin-bottom: 16px; }
   .mb24 { margin-bottom: 24px; }
   .flex { display: flex; gap: 12px; align-items: center; }
-
+ 
   .info-box {
     background: #0a1218;
     border: 1px solid #1a2a38;
@@ -401,7 +401,7 @@
     margin-bottom: 20px;
   }
   .info-box strong { color: var(--accent2); }
-
+ 
   /* WFO Summary row */
   .wfo-summary-row {
     background: var(--surface2);
@@ -411,7 +411,7 @@
     font-weight: 500;
     color: var(--accent2);
   }
-
+ 
   /* PARAM TYPE TAGS */
   .param-tag {
     display: inline-flex; align-items: center;
@@ -424,18 +424,18 @@
   .param-tag.smooth { background: #1a0a28; color: #c04af0; border-color: #380a50; }
   .param-tag.cat:hover { background: #0f2040; }
   .param-tag.smooth:hover { background: #280f40; }
-
+ 
   /* WEIGHT SLIDERS */
   .weight-row { display: flex; gap: 16px; align-items: center; margin-bottom: 10px; flex-wrap: wrap; }
   .weight-label { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--text3); min-width: 140px; }
   .weight-val { font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--accent); min-width: 36px; text-align: right; }
   input[type=range] { -webkit-appearance: none; width: 140px; height: 4px; border-radius: 2px; background: var(--border2); outline: none; border: none; padding: 0; }
   input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 14px; height: 14px; border-radius: 50%; background: var(--accent); cursor: pointer; }
-
+ 
   /* CROSS-WINDOW TRACKER */
   .tracker-window-pick { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--accent2); }
   .tracker-fallback { color: var(--warn); }
-
+ 
   /* ISOLATED PEAK */
   tr.isolated td { opacity: 0.7; }
   tr.isolated td:first-child { border-left: 3px solid var(--warn); padding-left: 11px; }
@@ -443,24 +443,24 @@
 </style>
 </head>
 <body>
-
+ 
 <header>
   <div class="logo">StratEdge <span>/ IS Selection &amp; Validation</span></div>
   <div class="tagline">IS SELECTION · FORWARD TEST VALIDATION</div>
 </header>
-
+ 
 <div class="tabs">
   <div class="tab active" onclick="switchTab(0)"><span class="tab-num">1</span>IS Selection</div>
   <div class="tab" onclick="switchTab(1)"><span class="tab-num">2</span>Validation</div>
 </div>
-
+ 
 <!-- ═══════════════════════════════════════════════ -->
 <!-- TAB 1: IS SELECTION -->
 <!-- ═══════════════════════════════════════════════ -->
 <div class="panel active" id="tab0">
   <div class="section-title">IS Selection</div>
   <div class="section-sub">Single-stage IS selection + forward test validation for MT5 optimisation exports. Upload your MT5 forward test XML to begin. Tab 1 selects the top 20 IS candidates. Tab 2 validates them against the validation year.</div>
-
+ 
   <!-- Upload + IS dates -->
   <div style="display:flex;gap:16px;align-items:stretch;margin-bottom:24px;flex-wrap:wrap;">
     <div class="upload-zone" id="dropzone1" style="flex:1;min-width:280px;margin-bottom:0;"
@@ -492,14 +492,14 @@
       </div>
     </div>
   </div>
-
+ 
   <!-- Param classification -->
   <div id="param-types-section" style="display:none;" class="card mb24">
     <div class="chart-label" style="margin-bottom:10px;">Parameter Classification</div>
     <div class="info-box" style="margin-bottom:12px;"><strong>Required:</strong> Click each tag to toggle between <span style="color:#4a9ef0">CATEGORICAL</span> (switch/mode selector) and <span style="color:#c04af0">SMOOTH</span> (numeric — adjacent values are similar). If unsure, leave as Categorical.</div>
     <div id="param-type-tags" style="display:flex;gap:10px;flex-wrap:wrap;"></div>
   </div>
-
+ 
   <!-- Score weights -->
   <div id="weights-section" style="display:none;" class="card mb24">
     <div class="chart-label" style="margin-bottom:12px;">Final Score Weights <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text3);font-weight:400;margin-left:8px;">must sum to 1.0</span></div>
@@ -521,11 +521,11 @@
     <div id="weight-sum-warning" style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--warn);display:none;margin-top:6px;">⚠ Weights do not sum to 1.0 — normalised automatically.</div>
     <button class="btn btn-ghost" onclick="rerunAnalysis()" style="margin-top:12px;font-size:12px;">↻ Rerun with these weights</button>
   </div>
-
+ 
   <!-- Results content -->
   <div id="plateau-content" style="display:none;margin-top:0;">
     <div class="grid-4" id="plateau-stats"></div>
-
+ 
     <!-- Surface chart -->
     <div class="chart-wrap">
       <div class="flex mb16">
@@ -547,10 +547,10 @@
       </div>
       <canvas id="plateauChart" height="260"></canvas>
     </div>
-
+ 
     <div id="plateau-verdict"></div>
     <div id="plateau-recommendation"></div>
-
+ 
     <!-- Top 20 table -->
     <div class="tbl-wrap" style="margin-top:20px;">
       <div class="tbl-header">
@@ -560,30 +560,30 @@
       <div class="tbl-scroll"><table id="plateau-table"></table></div>
     </div>
   </div>
-
+ 
   <div id="plateau-empty" class="empty">
     <div class="empty-icon">📈</div>
     <div class="empty-text">No data loaded</div>
     <div class="empty-sub">Upload your MT5 forward test XML and enter the IS window dates to begin</div>
   </div>
 </div>
-
+ 
 <!-- ═══════════════════════════════════════════════ -->
 <!-- TAB 2: VALIDATION -->
 <!-- ═══════════════════════════════════════════════ -->
 <div class="panel" id="tab1">
   <div class="section-title">Validation</div>
   <div class="section-sub">Top 20 IS candidates validated against the validation year. Take PASS and CAUTION candidates into MT5 for tick data testing. Visually inspect equity curve similarity between IS and OOS before going live.</div>
-
+ 
   <div id="validation-empty" class="empty">
     <div class="empty-icon">🔍</div>
     <div class="empty-text">No data loaded</div>
     <div class="empty-sub">Upload your MT5 forward test XML in Tab 1 to auto-populate this tab</div>
   </div>
-
+ 
   <div id="validation-content" style="display:none;">
     <div class="grid-4 mb24" id="validation-stats"></div>
-
+ 
     <div class="tbl-wrap">
       <div class="tbl-header">
         <div class="tbl-title">Validation Results</div>
@@ -598,10 +598,10 @@
     <div id="validation-summary" style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--text2);padding:12px 4px;"></div>
   </div>
 </div>
-
+ 
 <!-- Chart.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
-
+ 
 <script>
 // ═══════════════════════════════════════════════════
 // GLOBALS
@@ -612,7 +612,7 @@ let plateauParamCols = [];
 let isYears = 6;
 let paramTypes = {};
 let top20Global = [];   // stored after IS selection, used by Validation tab
-
+ 
 // ═══════════════════════════════════════════════════
 // TAB SWITCHING
 // ═══════════════════════════════════════════════════
@@ -620,7 +620,7 @@ function switchTab(i) {
   document.querySelectorAll('.tab').forEach((t,j) => t.classList.toggle('active', i===j));
   document.querySelectorAll('.panel').forEach((p,j) => p.classList.toggle('active', i===j));
 }
-
+ 
 // ═══════════════════════════════════════════════════
 // DRAG & DROP
 // ═══════════════════════════════════════════════════
@@ -638,7 +638,7 @@ function dropFile(e, id, inputId) {
     inp.dispatchEvent(new Event("change"));
   }
 }
-
+ 
 // ═══════════════════════════════════════════════════
 // IS YEARS INPUT
 // ═══════════════════════════════════════════════════
@@ -647,12 +647,12 @@ function updateISYears() {
   const endRaw   = document.getElementById('is-end-date').value.trim();
   const directYr = parseFloat(document.getElementById('is-years-input').value);
   const disp     = document.getElementById('is-years-display');
-
+ 
   const fmt = s => s.replace(/\./g, '-');
   const d1 = new Date(fmt(startRaw));
   const d2 = new Date(fmt(endRaw));
   const datesValid = !isNaN(d1) && !isNaN(d2) && d2 > d1;
-
+ 
   if (!isNaN(directYr) && directYr > 0) {
     isYears = directYr;
     const floor = Math.round(30 * isYears);
@@ -672,7 +672,7 @@ function updateISYears() {
   disp.textContent = `IS: ${isYears.toFixed(2)} yr → Trade floor: ${floor} trades minimum (default)`;
   disp.style.color = 'var(--warn)';
 }
-
+ 
 // ═══════════════════════════════════════════════════
 // WEIGHT DISPLAY
 // ═══════════════════════════════════════════════════
@@ -686,7 +686,7 @@ function updateWeightDisplay() {
   const sum = wc + wp + wk;
   document.getElementById('weight-sum-warning').style.display = Math.abs(sum - 100) > 1 ? 'block' : 'none';
 }
-
+ 
 function getWeights() {
   const wc = parseInt(document.getElementById('w-calmar').value)  / 100;
   const wp = parseInt(document.getElementById('w-plateau').value) / 100;
@@ -695,7 +695,7 @@ function getWeights() {
   if (total === 0) return { calmar: 0.30, plateau: 0.40, consist: 0.30 };
   return { calmar: wc/total, plateau: wp/total, consist: wk/total };
 }
-
+ 
 // ═══════════════════════════════════════════════════
 // XML PARSER
 // ═══════════════════════════════════════════════════
@@ -713,17 +713,17 @@ function loadXML(input, target) {
   reader.onerror = () => alert('Failed to read file. Please try again.');
   reader.readAsText(file);
 }
-
+ 
 function parseXML(text) {
   const parser = new DOMParser();
   const doc = parser.parseFromString(text, 'text/xml');
   const rows = doc.querySelectorAll('Row');
   if (!rows.length) return null;
-
+ 
   // Read deposit from XML header
   const depositEl = doc.querySelector('Deposit');
   const deposit = depositEl ? parseFloat(depositEl.textContent) : null;
-
+ 
   // Try to parse dates from title
   let xmlYears = 6;
   const titleEl = doc.querySelector('Title');
@@ -735,7 +735,7 @@ function parseXML(text) {
       xmlYears = Math.max(0.1, (d2 - d1) / (365.25 * 24 * 3600 * 1000));
     }
   }
-
+ 
   // Find header row
   const headers = [];
   let headerRowIdx = 0;
@@ -748,7 +748,7 @@ function parseXML(text) {
     }
   }
   if (!headers.length) return null;
-
+ 
   // Parse all data rows
   const data = [];
   for (let i = headerRowIdx + 1; i < rows.length; i++) {
@@ -760,16 +760,16 @@ function parseXML(text) {
     });
     data.push(row);
   }
-
+ 
   return { headers, data, deposit, xmlYears };
 }
-
+ 
 // ═══════════════════════════════════════════════════
 // ON XML LOADED
 // ═══════════════════════════════════════════════════
 function onXMLLoaded() {
   const { headers, deposit } = plateauData;
-
+ 
   // Identify IS metric columns and param columns
   // Forward test XML structure:
   // Pass, Forward_Result, Back_Result, Profit, Expected Payoff, Profit Factor,
@@ -780,7 +780,7 @@ function onXMLLoaded() {
     'Profit','Expected Payoff','Profit Factor','Recovery Factor',
     'Sharpe Ratio','Custom','Equity DD %','Trades'
   ]);
-
+ 
   // Find Trades index — params start after it
   const tradesIdx = headers.indexOf('Trades');
   let paramCols;
@@ -792,7 +792,7 @@ function onXMLLoaded() {
     paramCols = headers.filter(h => !knownISCols.has(h));
   }
   plateauParamCols = paramCols;
-
+ 
   // Show deposit
   const depDisp = document.getElementById('deposit-display');
   if (deposit !== null && !isNaN(deposit) && deposit > 0) {
@@ -802,10 +802,10 @@ function onXMLLoaded() {
     depDisp.textContent = 'Deposit: not found in XML — check file';
     depDisp.style.color = 'var(--fail)';
   }
-
+ 
   // Init param types
   paramCols.forEach(p => { if (!paramTypes[p]) paramTypes[p] = 'cat'; });
-
+ 
   // Render param type tags
   const tagsEl = document.getElementById('param-type-tags');
   tagsEl.innerHTML = '';
@@ -821,12 +821,12 @@ function onXMLLoaded() {
   });
   document.getElementById('param-types-section').style.display = paramCols.length > 0 ? 'block' : 'none';
   document.getElementById('weights-section').style.display = 'block';
-
+ 
   updateISYears();
   detectOOSColumns();
   renderPlateau();
 }
-
+ 
 function toggleParamType(p) {
   paramTypes[p] = paramTypes[p] === 'cat' ? 'smooth' : 'cat';
   const tag = document.getElementById('ptag-' + p);
@@ -835,12 +835,12 @@ function toggleParamType(p) {
     tag.textContent = paramTypes[p] === 'cat' ? 'CATEGORICAL' : 'SMOOTH';
   }
 }
-
+ 
 function rerunAnalysis() {
   if (!plateauData) return;
   renderPlateau();
 }
-
+ 
 // ═══════════════════════════════════════════════════
 // CALMAR (uses global isYears, deposit from XML)
 // ═══════════════════════════════════════════════════
@@ -853,7 +853,7 @@ function calcCalmar(row) {
   if (!isFinite(annualReturn)) return null;
   return annualReturn / dd;
 }
-
+ 
 // ═══════════════════════════════════════════════════
 // STEP 1 — QUALITY FILTER (30 × isYears trade floor, DD < 25%)
 // ═══════════════════════════════════════════════════
@@ -867,63 +867,115 @@ function applyQualityFilter(data) {
   );
   return { filtered, total, minTrades };
 }
-
+ 
 // ═══════════════════════════════════════════════════
-// STEP 3 — CONSISTENCY SCORE
+// STEP 3 — CONSISTENCY SCORE  (pre-computed lookups)
 // ═══════════════════════════════════════════════════
-function calcConsistencyScore(row, allData, paramCols) {
+ 
+// Pre-build grouped lookup maps once per param across allData.
+// For each param p, build a map: (key of all OTHER params) -> { total, profitable }
+// Then per-row lookup is a single Map.get() instead of a full allData.filter().
+function buildConsistencyMaps(allData, paramCols) {
+  // maps[p] = Map< otherParamsKey -> { total, profitable } >
+  const maps = {};
+  // For smooth cliff-edge: neighbour row lookup
+  // smoothNeighbours[p] = Map< fullKey -> row >  (first row per key)
+  const smoothNeighbours = {};
+  // paramVals[p] = sorted numeric values for smooth ±1 step
+  const paramVals = {};
+ 
+  paramCols.forEach(p => {
+    maps[p] = new Map();
+    if (paramTypes[p] === 'smooth') {
+      smoothNeighbours[p] = new Map();
+      paramVals[p] = [...new Set(allData.map(r => r[p]).filter(v => typeof v === 'number'))].sort((a,b) => a-b);
+    }
+  });
+ 
+  allData.forEach(r => {
+    paramCols.forEach(p => {
+      // Key = all OTHER params joined
+      const otherKey = paramCols.filter(q => q !== p).map(q => r[q]).join('|');
+      let entry = maps[p].get(otherKey);
+      if (!entry) { entry = { total: 0, profitable: 0 }; maps[p].set(otherKey, entry); }
+      entry.total++;
+      if (typeof r['Profit'] === 'number' && r['Profit'] > 0) entry.profitable++;
+ 
+      // For smooth params, also index by full key for cliff-edge lookup
+      if (paramTypes[p] === 'smooth') {
+        const fullKey = paramCols.map(q => r[q]).join('|');
+        if (!smoothNeighbours[p].has(fullKey)) smoothNeighbours[p].set(fullKey, r);
+      }
+    });
+  });
+ 
+  return { maps, smoothNeighbours, paramVals };
+}
+ 
+function calcConsistencyScore(row, paramCols, consistMaps) {
   if (paramCols.length === 0) return { score: null, cliffFlag: false };
+  const { maps, smoothNeighbours, paramVals } = consistMaps;
   let totalFraction = 0;
   let cliffFlag = false;
-
+ 
   paramCols.forEach(p => {
-    const fixedVals = {};
-    paramCols.forEach(q => { if (q !== p) fixedVals[q] = row[q]; });
-
-    const variants = allData.filter(r => paramCols.every(q => q === p || r[q] === fixedVals[q]));
-    if (variants.length === 0) { totalFraction += 0; return; }
-
-    const profitableCount = variants.filter(r => typeof r['Profit'] === 'number' && r['Profit'] > 0).length;
-    totalFraction += profitableCount / variants.length;
-
-    // Cliff-edge for smooth params
-    if (paramTypes[p] === 'smooth') {
-      const paramVals = [...new Set(allData.map(r => r[p]).filter(v => typeof v === 'number'))].sort((a,b) => a-b);
-      const idx = paramVals.indexOf(row[p]);
+    // O(1) lookup instead of O(n) filter
+    const otherKey = paramCols.filter(q => q !== p).map(q => row[q]).join('|');
+    const entry = maps[p].get(otherKey);
+    if (!entry || entry.total === 0) { totalFraction += 0; return; }
+    totalFraction += entry.profitable / entry.total;
+ 
+    // Cliff-edge for smooth params — O(1) neighbour lookup
+    if (paramTypes[p] === 'smooth' && paramVals[p]) {
+      const idx = paramVals[p].indexOf(row[p]);
       const rowCalmar = calcCalmar(row);
       if (rowCalmar !== null && rowCalmar > 0) {
         [-1, 1].forEach(delta => {
-          const neighbVal = paramVals[idx + delta];
+          const neighbVal = paramVals[p][idx + delta];
           if (neighbVal === undefined) return;
-          const neighbRows = allData.filter(r => r[p] === neighbVal && paramCols.every(q => q === p || r[q] === fixedVals[q]));
-          if (neighbRows.length === 0) return; // not tested — not a cliff
-          const nc = calcCalmar(neighbRows[0]);
+          const neighbKey = paramCols.map(q => q === p ? neighbVal : row[q]).join('|');
+          const neighbRow = smoothNeighbours[p].get(neighbKey);
+          if (!neighbRow) return; // not tested — not a cliff
+          const nc = calcCalmar(neighbRow);
           if (nc !== null && nc < rowCalmar * 0.5) cliffFlag = true;
         });
       }
     }
   });
-
+ 
   return { score: totalFraction / paramCols.length, cliffFlag };
 }
-
+ 
 // ═══════════════════════════════════════════════════
-// STEP 4 — PLATEAU SCORE
+// STEP 4 — PLATEAU SCORE  (pre-computed lookups)
 // ═══════════════════════════════════════════════════
-function calcPlateauScore(row, filteredData, paramCols) {
-  if (paramCols.length === 0) return { neighbourCount: 0, plateauScore: null };
-
+ 
+// Pre-build everything needed for plateau scoring once, not per row.
+function buildPlateauMaps(filteredData, paramCols) {
   const keyOf = r => paramCols.map(p => r[p]).join('|');
   const filteredSet = new Set(filteredData.map(keyOf));
-  const calmarMap = {};
-  filteredData.forEach(r => { calmarMap[keyOf(r)] = calcCalmar(r); });
-
-  const neighbourCalmars = [];
+  const calmarMap = new Map();
+  filteredData.forEach(r => { calmarMap.set(keyOf(r), calcCalmar(r)); });
+ 
+  // Pre-sort param values from full dataset once per param
   const allDataFull = plateauData.data;
+  const paramValsMap = {};
   paramCols.forEach(p => {
     const allVals = [...new Set(allDataFull.map(r => r[p]).filter(v => v !== '' && v !== undefined))];
     const numericVals = allVals.filter(v => typeof v === 'number').sort((a,b) => a-b);
-    const vals = numericVals.length > 0 ? numericVals : allVals;
+    paramValsMap[p] = numericVals.length > 0 ? numericVals : allVals;
+  });
+ 
+  return { filteredSet, calmarMap, paramValsMap, keyOf };
+}
+ 
+function calcPlateauScore(row, paramCols, plateauMaps) {
+  if (paramCols.length === 0) return { neighbourCount: 0, plateauScore: null };
+  const { filteredSet, calmarMap, paramValsMap } = plateauMaps;
+ 
+  const neighbourCalmars = [];
+  paramCols.forEach(p => {
+    const vals = paramValsMap[p];
     const idx = vals.indexOf(row[p]);
     if (idx === -1) return;
     [-1, 1].forEach(delta => {
@@ -931,17 +983,17 @@ function calcPlateauScore(row, filteredData, paramCols) {
       if (nv === undefined || nv === null) return;
       const neighbKey = paramCols.map(q => q === p ? nv : row[q]).join('|');
       if (filteredSet.has(neighbKey)) {
-        const nc = calmarMap[neighbKey];
+        const nc = calmarMap.get(neighbKey);
         if (nc !== null && nc !== undefined) neighbourCalmars.push(nc);
       }
     });
   });
-
+ 
   const neighbourCount = neighbourCalmars.length;
   const plateauScore = neighbourCount > 0 ? neighbourCalmars.reduce((s,v) => s+v, 0) / neighbourCount : null;
   return { neighbourCount, plateauScore };
 }
-
+ 
 // ═══════════════════════════════════════════════════
 // STEP 5 — NORMALISE + FINAL SCORE
 // ═══════════════════════════════════════════════════
@@ -952,7 +1004,7 @@ function normalise(arr) {
   const range = mx - mn;
   return arr.map(v => v === null || !isFinite(v) ? 0 : (range === 0 ? 0.5 : (v - mn) / range));
 }
-
+ 
 // ═══════════════════════════════════════════════════
 // MAIN RENDER — IS selection (all 6 steps)
 // ═══════════════════════════════════════════════════
@@ -960,30 +1012,32 @@ function renderPlateau() {
   if (!plateauData) return;
   const { data } = plateauData;
   const paramCols = plateauParamCols;
-
+ 
   document.getElementById('plateau-empty').style.display = 'none';
   document.getElementById('plateau-content').style.display = 'block';
-
+ 
   // Step 1
   const { filtered, total, minTrades } = applyQualityFilter(data);
-
+ 
   // Step 2 — Calmar
   filtered.forEach(r => { r._calmar = calcCalmar(r); });
-
-  // Step 3 — Consistency
+ 
+  // Step 3 — Consistency (pre-build lookup maps ONCE, then O(1) per row)
+  const consistMaps = buildConsistencyMaps(data, paramCols);
   filtered.forEach(r => {
-    const res = calcConsistencyScore(r, data, paramCols);
+    const res = calcConsistencyScore(r, paramCols, consistMaps);
     r._consist = res.score;
     r._cliff   = res.cliffFlag;
   });
-
-  // Step 4 — Plateau
+ 
+  // Step 4 — Plateau (pre-build filteredSet + calmarMap + paramVals ONCE)
+  const plateauMaps = buildPlateauMaps(filtered, paramCols);
   filtered.forEach(r => {
-    const res = calcPlateauScore(r, filtered, paramCols);
+    const res = calcPlateauScore(r, paramCols, plateauMaps);
     r._neighbours = res.neighbourCount;
     r._plateau    = res.plateauScore;
   });
-
+ 
   // Step 5 — Final score
   const weights = getWeights();
   const calmarNorms  = normalise(filtered.map(r => r._calmar));
@@ -994,13 +1048,13 @@ function renderPlateau() {
                   + weights.plateau * plateauNorms[i]
                   + weights.consist * consistNorms[i];
   });
-
+ 
   // Sort, take top 20
   const ranked = [...filtered].sort((a,b) => b._finalScore - a._finalScore);
   const top20  = ranked.slice(0, 20);
   top20.forEach((r, i) => { r._rank = i + 1; });
   top20Global  = top20;  // store for Validation tab
-
+ 
   // Stats cards
   document.getElementById('plateau-stats').innerHTML = `
     <div class="card"><div class="card-title">Total Combinations</div><div class="card-value">${total.toLocaleString('en')}</div></div>
@@ -1008,7 +1062,7 @@ function renderPlateau() {
     <div class="card"><div class="card-title">Passed Quality Filter</div><div class="card-value ${filtered.length > 0 ? 'good' : 'bad'}">${filtered.length.toLocaleString('en')}</div></div>
     <div class="card"><div class="card-title">IS Window</div><div class="card-value">${isYears.toFixed(2)}yr</div></div>
   `;
-
+ 
   // Param select
   const paramSelect = document.getElementById('param-select');
   const prevParam = paramSelect.value;
@@ -1019,21 +1073,21 @@ function renderPlateau() {
     if (p === prevParam) o.selected = true;
     paramSelect.appendChild(o);
   });
-
+ 
   // Step 6 — Plateau safety rule
   const rank1 = top20[0] || null;
   const safePick = top20.find(r => r._neighbours >= 3) || null;
   const usedFallback = rank1 && safePick && rank1['Pass'] !== safePick['Pass'];
   const noNeighboursAnywhere = rank1 && !safePick;
-
+ 
   renderRecommendationBanner(rank1, safePick, usedFallback, noNeighboursAnywhere, paramCols);
   renderPlateauTable(top20, paramCols, safePick);
   renderPlateauChart();
-
+ 
   // Auto-populate Validation tab
   renderValidation();
 }
-
+ 
 // ═══════════════════════════════════════════════════
 // IS CANDIDATE BANNER
 // ═══════════════════════════════════════════════════
@@ -1044,15 +1098,15 @@ function renderRecommendationBanner(rank1, safePick, usedFallback, noNeighboursA
       '<div class="plateau-result spike">❌ No parameter set passed the quality filter. Adjust the IS years or check the XML file.</div>';
     return;
   }
-
+ 
   let html = '';
-
+ 
   if (noNeighboursAnywhere) {
     html += `<div class="plateau-result spike" style="margin-bottom:12px;">
       ⚠ <strong>Warning:</strong> No set in the top 20 has 3+ neighbours. Plateau robustness cannot be confirmed. Rank 1 used — proceed with caution.
     </div>`;
   }
-
+ 
   if (usedFallback && rank1) {
     const r1params = paramCols.map(p => `${escHtml(p.replace(/^Inp/,''))}=${escHtml(rank1[p])}`).join(', ');
     html += `<div class="plateau-result mixed" style="margin-bottom:12px;">
@@ -1061,7 +1115,7 @@ function renderRecommendationBanner(rank1, safePick, usedFallback, noNeighboursA
       Raw Rank 1 params: [${r1params}]
     </div>`;
   }
-
+ 
   const calmar  = rec._calmar;
   const consist = rec._consist;
   const paramStr = paramCols.map(p =>
@@ -1069,7 +1123,7 @@ function renderRecommendationBanner(rank1, safePick, usedFallback, noNeighboursA
   ).join('&nbsp;&nbsp;·&nbsp;&nbsp;');
   const cliffWarn = rec._cliff ? '<span style="color:var(--warn);margin-left:8px;">⚠ Cliff-edge on smooth param</span>' : '';
   const fallbackNote = usedFallback ? ' (Plateau-Safe Pick)' : '';
-
+ 
   html += `
     <div style="background:#0a1f10;border:1px solid #1a4020;border-radius:10px;padding:16px 20px;margin-bottom:20px;">
       <div style="font-family:'Syne',sans-serif;font-size:12px;font-weight:700;color:var(--accent);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;">
@@ -1106,10 +1160,10 @@ function renderRecommendationBanner(rank1, safePick, usedFallback, noNeighboursA
         </div>
       </div>
     </div>`;
-
+ 
   document.getElementById('plateau-recommendation').innerHTML = html;
 }
-
+ 
 // ═══════════════════════════════════════════════════
 // TOP 20 IS TABLE
 // ═══════════════════════════════════════════════════
@@ -1119,42 +1173,42 @@ function renderPlateauTable(top20, paramCols, safePick) {
     ...paramCols.map(p => escHtml(p.replace(/^Inp/,'').toUpperCase()))];
   hdrCols.forEach(h => { html += `<th>${h}</th>`; });
   html += '</tr></thead><tbody>';
-
+ 
   top20.forEach(row => {
     const isPick    = safePick && row['Pass'] === safePick['Pass'];
     const isIsolated = row._neighbours < 3;
     const rowClass   = isPick ? 'highlighted' : (isIsolated ? 'isolated' : '');
     html += `<tr class="${rowClass}">`;
-
+ 
     html += `<td>${isPick?'⭐ ':''}${row._rank}${isIsolated&&!isPick?' <span class="peak-flag">⚠</span>':''}</td>`;
     html += `<td><span style="color:${isPick?'var(--accent)':'var(--text2)'};font-weight:${isPick?700:400}">${escHtml(String(row['Pass']))}</span></td>`;
-
+ 
     const cm = row._calmar;
     const cmCol = cm===null?'var(--text3)':cm>=1.5?'var(--pass)':cm>=1.0?'var(--warn)':'var(--fail)';
     html += `<td><span style="color:${cmCol}">${cm!==null?cm.toFixed(2):'—'}</span></td>`;
-
+ 
     const ddVal = parseFloat(row['Equity DD %']);
     html += `<td>${isFinite(ddVal)?ddVal.toFixed(1)+'%':'—'}</td>`;
     html += `<td>${typeof row['Trades']==='number'?row['Trades'].toLocaleString('en'):'—'}</td>`;
-
+ 
     const cs = row._consist;
     const csCol = cs===null?'var(--text3)':cs>=0.7?'var(--pass)':cs>=0.5?'var(--warn)':'var(--fail)';
     html += `<td><span style="color:${csCol}">${cs!==null?(cs*100).toFixed(0)+'%':'—'}</span>${row._cliff?'<span class="peak-flag" title="Cliff-edge">⚡</span>':''}</td>`;
-
+ 
     html += `<td><span style="color:${row._neighbours>=3?'var(--pass)':'var(--warn)'}">${row._neighbours}</span></td>`;
     html += `<td><span style="color:var(--accent2)">${row._finalScore.toFixed(3)}</span></td>`;
-
+ 
     paramCols.forEach(p => {
       const pv = row[p];
       html += `<td>${pv!=null&&pv!==''?escHtml(String(pv)):'—'}</td>`;
     });
     html += '</tr>';
   });
-
+ 
   html += '</tbody>';
   document.getElementById('plateau-table').innerHTML = html;
 }
-
+ 
 // ═══════════════════════════════════════════════════
 // SURFACE CHART
 // ═══════════════════════════════════════════════════
@@ -1164,9 +1218,9 @@ function renderPlateauChart() {
   const param  = document.getElementById('param-select').value;
   const metric = document.getElementById('metric-select').value;
   if (!param || !metric) return;
-
+ 
   const validData = data.filter(r => typeof r['Profit'] === 'number' && r['Profit'] > 0 && r[param] !== undefined && r[param] !== '');
-
+ 
   const groups = {};
   validData.forEach(r => {
     const key = r[param];
@@ -1175,7 +1229,7 @@ function renderPlateauChart() {
     if (!groups[key]) groups[key] = [];
     groups[key].push(mv);
   });
-
+ 
   const rawKeys = Object.keys(groups);
   const allNum  = rawKeys.every(k => !isNaN(k) && k.trim() !== '');
   const labels  = allNum ? rawKeys.map(Number).sort((a,b)=>a-b) : rawKeys.sort();
@@ -1183,12 +1237,12 @@ function renderPlateauChart() {
     const arr = groups[String(k)];
     return arr ? arr.reduce((s,v)=>s+v,0)/arr.length : 0;
   });
-
+ 
   const isDD   = metric === 'Equity DD %';
   const best   = isDD ? Math.min(...values) : Math.max(...values);
   const bgC    = values.map(v => v===best?'rgba(200,240,74,0.9)':'rgba(74,175,240,0.45)');
   const bdC    = values.map(v => v===best?'rgba(200,240,74,1.0)':'rgba(74,175,240,1.0)');
-
+ 
   const ctx = document.getElementById('plateauChart').getContext('2d');
   if (plateauChart) plateauChart.destroy();
   plateauChart = new Chart(ctx, {
@@ -1214,7 +1268,7 @@ function renderPlateauChart() {
       }
     }
   });
-
+ 
   // Visual plateau verdict
   if (labels.length >= 3 && values.length >= 3) {
     const range = Math.abs(best - (isDD ? Math.max(...values) : Math.min(...values)));
@@ -1233,28 +1287,28 @@ function renderPlateauChart() {
     document.getElementById('plateau-verdict').innerHTML = '';
   }
 }
-
+ 
 // ═══════════════════════════════════════════════════
 // TAB 2 — VALIDATION
 // ═══════════════════════════════════════════════════
 // OOS column names detected once after XML load
 let oosColNames = { profit: null, dd: null, trades: null };
-
+ 
 function detectOOSColumns() {
   const headers = plateauData.headers;
   const paramCols = new Set(plateauParamCols);
-
+ 
   // IS metric columns we already know about
   const knownIS = new Set([
     'Pass','Forward_Result','Back_Result','Result',
     'Profit','Expected Payoff','Profit Factor','Recovery Factor',
     'Sharpe Ratio','Custom','Equity DD %','Trades'
   ]);
-
+ 
   // Remaining unknown columns after Trades — candidates for OOS metrics
   const tradesIdx = headers.indexOf('Trades');
   const candidates = tradesIdx >= 0 ? headers.slice(tradesIdx + 1).filter(h => !paramCols.has(h)) : [];
-
+ 
   // Try named matches first
   const tryFind = (...names) => {
     for (const name of names) {
@@ -1263,23 +1317,23 @@ function detectOOSColumns() {
     }
     return null;
   };
-
+ 
   oosColNames.profit = tryFind('Fwd_Profit','Forward_Profit','Fwd Profit','OOS_Profit','OOS Profit');
   oosColNames.dd     = tryFind('Fwd_DD','Forward_DD','Fwd DD','OOS_DD','OOS DD','Fwd_Equity_DD','Fwd Equity DD %');
   oosColNames.trades = tryFind('Fwd_Trades','Forward_Trades','Fwd Trades','OOS_Trades','OOS Trades');
-
+ 
   // If not found by name, try positional: first 3 unrecognised columns after params
   if (!oosColNames.profit && candidates.length >= 1) oosColNames.profit = candidates[0];
   if (!oosColNames.dd     && candidates.length >= 2) oosColNames.dd     = candidates[1];
   if (!oosColNames.trades && candidates.length >= 3) oosColNames.trades = candidates[2];
-
+ 
   // Warn user about detection result
   const dispEl = document.getElementById('deposit-display');
   const profitFound  = oosColNames.profit  ? `Profit="${oosColNames.profit}"` : 'Profit=NOT FOUND';
   const ddFound      = oosColNames.dd      ? `DD="${oosColNames.dd}"` : 'DD=NOT FOUND';
   const tradesFound  = oosColNames.trades  ? `Trades="${oosColNames.trades}"` : 'Trades=NOT FOUND';
   const allFound = oosColNames.profit && oosColNames.dd && oosColNames.trades;
-
+ 
   const depDisp = document.getElementById('deposit-display');
   const deposit = plateauData.deposit;
   let depText = deposit > 0 ? `Deposit: $${deposit.toLocaleString('en',{maximumFractionDigits:0})} · ` : 'Deposit: NOT FOUND · ';
@@ -1287,7 +1341,7 @@ function detectOOSColumns() {
   depDisp.textContent = depText;
   depDisp.style.color = allFound && deposit > 0 ? 'var(--accent2)' : 'var(--warn)';
 }
-
+ 
 function getForwardMetrics(row) {
   const get = col => {
     if (!col) return null;
@@ -1300,31 +1354,31 @@ function getForwardMetrics(row) {
     oosTrades: get(oosColNames.trades)
   };
 }
-
+ 
 function renderValidation() {
   if (!plateauData || top20Global.length === 0) return;
-
+ 
   document.getElementById('validation-empty').style.display = 'none';
   document.getElementById('validation-content').style.display = 'block';
-
+ 
   const paramCols = plateauParamCols;
   let passCount = 0, cautionCount = 0;
   let bestOOSProfit = null, bestDDRatio = null;
-
+ 
   // Build validation results
   const results = top20Global.map(row => {
     const fwd = getForwardMetrics(row);
     const { oosProfit, oosDD, oosTrades } = fwd;
-
+ 
     const isDD = typeof row['Equity DD %'] === 'number' ? row['Equity DD %'] : null;
     const ddRatio = (oosDD !== null && isDD !== null && isDD > 0) ? oosDD / isDD : null;
-
+ 
     // Validation criteria
     const c1 = oosProfit !== null && oosProfit > 0;                         // OOS Profit > 0
     const c2 = ddRatio !== null && ddRatio <= 1.5;                          // OOS DD ≤ 1.5 × IS DD
     const c3 = oosTrades !== null && oosTrades >= 30;                       // OOS Trades ≥ 30
     const outlier = oosProfit !== null && oosTrades !== null && oosProfit > 10000 && oosTrades < 20;
-
+ 
     let status;
     if (!c1 || !c2 || !c3) {
       status = 'FAIL';
@@ -1333,15 +1387,15 @@ function renderValidation() {
     } else {
       status = 'PASS';
     }
-
+ 
     if (status === 'PASS') passCount++;
     if (status === 'CAUTION') cautionCount++;
     if (oosProfit !== null && (bestOOSProfit === null || oosProfit > bestOOSProfit)) bestOOSProfit = oosProfit;
     if (ddRatio !== null && (bestDDRatio === null || ddRatio < bestDDRatio)) bestDDRatio = ddRatio;
-
+ 
     return { row, oosProfit, oosDD, oosTrades, ddRatio, c1, c2, c3, outlier, status };
   });
-
+ 
   // Stats cards
   const fmtProfit = v => v === null ? '—' : (v < 0 ? '-$'+Math.abs(v).toLocaleString('en',{maximumFractionDigits:0}) : '$'+v.toLocaleString('en',{maximumFractionDigits:0}));
   document.getElementById('validation-stats').innerHTML = `
@@ -1350,7 +1404,7 @@ function renderValidation() {
     <div class="card"><div class="card-title">Best OOS Profit</div><div class="card-value ${bestOOSProfit !== null && bestOOSProfit > 0 ? 'good' : 'bad'}">${fmtProfit(bestOOSProfit)}</div></div>
     <div class="card"><div class="card-title">Best DD Ratio</div><div class="card-value ${bestDDRatio !== null && bestDDRatio <= 1.0 ? 'good' : bestDDRatio !== null && bestDDRatio <= 1.5 ? 'warn' : 'bad'}">${bestDDRatio !== null ? bestDDRatio.toFixed(2) : '—'}</div></div>
   `;
-
+ 
   // Table
   let html = '<thead><tr>';
   const valHdrs = ['IS RANK','PASS','IS CALMAR','IS DD%','IS TRADES',
@@ -1358,45 +1412,45 @@ function renderValidation() {
     'OOS PROFIT','OOS DD%','OOS TRADES','DD RATIO','STATUS'];
   valHdrs.forEach(h => { html += `<th>${h}</th>`; });
   html += '</tr></thead><tbody>';
-
+ 
   results.forEach(res => {
     const { row, oosProfit, oosDD, oosTrades, ddRatio, c1, c2, c3, status } = res;
     const rowBg = status==='PASS' ? '#0a1f10' : status==='CAUTION' ? '#1f180a' : '#1f0a0a';
     const rowBorder = status==='PASS' ? '#1a4020' : status==='CAUTION' ? '#40300a' : '#401a1a';
     const rowOpacity = status==='FAIL' ? 'opacity:0.7;' : '';
-
+ 
     html += `<tr style="background:${rowBg};${rowOpacity}">`;
     html += `<td>${row._rank}</td>`;
     html += `<td><span style="color:var(--accent2);font-weight:600">${escHtml(String(row['Pass']))}</span></td>`;
-
+ 
     const cm = row._calmar;
     const cmC = cm===null?'var(--text3)':cm>=1.5?'var(--pass)':cm>=1.0?'var(--warn)':'var(--fail)';
     html += `<td><span style="color:${cmC}">${cm!==null?cm.toFixed(2):'—'}</span></td>`;
-
+ 
     const isDD = parseFloat(row['Equity DD %']);
     html += `<td>${isFinite(isDD)?isDD.toFixed(1)+'%':'—'}</td>`;
     html += `<td>${typeof row['Trades']==='number'?row['Trades'].toLocaleString('en'):'—'}</td>`;
-
+ 
     paramCols.forEach(p => {
       const pv = row[p];
       html += `<td>${pv!=null&&pv!==''?escHtml(String(pv)):'—'}</td>`;
     });
-
+ 
     // OOS columns — colour based on pass/fail of each criterion
     html += `<td style="color:${c1?'var(--pass)':'var(--fail)'}">${fmtProfit(oosProfit)}</td>`;
     html += `<td style="color:${c2?'var(--pass)':'var(--fail)'}">${oosDD!==null?oosDD.toFixed(1)+'%':'—'}</td>`;
     html += `<td style="color:${c3?'var(--pass)':'var(--fail)'}">${oosTrades!==null?oosTrades:'—'}</td>`;
     html += `<td style="color:${ddRatio===null?'var(--text3)':ddRatio<=1.0?'var(--pass)':ddRatio<=1.5?'var(--warn)':'var(--fail)'}">${ddRatio!==null?ddRatio.toFixed(2):'—'}</td>`;
-
+ 
     const statusCol = status==='PASS'?'var(--pass)':status==='CAUTION'?'var(--warn)':'var(--fail)';
     const statusNote = res.outlier && status==='CAUTION' ? '<span style="font-size:10px;color:var(--text3);margin-left:4px;">(outlier)</span>' : '';
     html += `<td><span style="color:${statusCol};font-weight:700">${status}</span>${statusNote}</td>`;
     html += '</tr>';
   });
-
+ 
   html += '</tbody>';
   document.getElementById('validation-table').innerHTML = html;
-
+ 
   // Summary line
   const readyCount = passCount + cautionCount;
   document.getElementById('validation-summary').textContent =
@@ -1404,7 +1458,7 @@ function renderValidation() {
     (cautionCount > 0 ? `${cautionCount} additional CAUTION candidate(s) require manual review. ` : '') +
     `${readyCount > 0 ? readyCount + ' candidate(s) are ready for tick data testing in MT5.' : 'No candidates ready for tick data testing.'}`;
 }
-
+ 
 // ═══════════════════════════════════════════════════
 // HELPERS
 // ═══════════════════════════════════════════════════
@@ -1412,6 +1466,6 @@ function escHtml(s) {
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 </script>
-
+ 
 </body>
 </html>
