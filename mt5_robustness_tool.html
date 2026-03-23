@@ -1578,7 +1578,7 @@ function addTickPass() {
   const pass = {
     is:    tickPendingIS,
     oos:   tickPendingOOS,
-    label: buildAutoLabel(tickPendingIS),
+    label: tickPendingIS.fileName || buildAutoLabel(tickPendingIS),
     _id:   Date.now()
   };
   tickPasses.push(pass);
@@ -1606,6 +1606,7 @@ function parseTickXLSX(file, callback) {
     const rows = XLSX.utils.sheet_to_json(ws, { header: 1, defval: null, raw: true });
  
     const parsed = {
+      fileName: file.name.replace(/\.xlsx$/i, ''),
       params: {}, deposit: 100000, periodStr: '', periodDays: 0, periodYears: 1,
       periodStart: '', periodEnd: '',
       historyQuality: '', realTicks: false,
@@ -1963,15 +1964,15 @@ function renderTickCharts() {
       ${outlierHtml}`;
     container.appendChild(wrapper);
  
-    // Build combined timeline: IS equity then OOS equity
-    // Both are already balance curves from deposit; we need to stitch them.
-    // IS equity ends at some balance; OOS equity starts at deposit again (separate run).
-    // We display them on a shared balance axis — OOS curve is offset by IS final balance - OOS start.
+    // Build combined % return chart so IS and OOS are on the same scale.
+    // Both curves start at 0% return from their respective deposits.
+    // This removes the account-size distortion: OOS moves are shown at
+    // their true magnitude relative to the starting deposit, not dwarfed
+    // by the IS account growth.
     const isEq  = p.is.equity;
     const oosEq = p.oos.equity;
     if (isEq.length === 0 && oosEq.length === 0) return;
  
-    // Sample each to max 300 points
     const sample = (arr, max) => {
       const step = Math.max(1, Math.floor(arr.length / max));
       return arr.filter((_, i) => i % step === 0);
@@ -1979,22 +1980,23 @@ function renderTickCharts() {
     const isSampled  = sample(isEq,  300);
     const oosSampled = sample(oosEq, 300);
  
-    // OOS offset: shift OOS balances so the curve continues from IS end
-    const isEnd  = isSampled.length  > 0 ? isSampled[isSampled.length-1].b : p.is.deposit;
-    const oosStart = oosSampled.length > 0 ? oosSampled[0].b : p.oos.deposit;
-    const oosOffset = isEnd - oosStart;
+    // Convert balance → % return from starting deposit
+    const isDeposit  = p.is.deposit  || 100000;
+    const oosDeposit = p.oos.deposit || 100000;
+    const toReturnPct = (balance, deposit) => ((balance - deposit) / deposit) * 100;
  
-    const isLabels  = isSampled.map(d => d.t.substring(0,10));
-    const isValues  = isSampled.map(d => d.b);
-    const oosLabels = oosSampled.map(d => d.t.substring(0,10));
-    const oosValues = oosSampled.map(d => d.b + oosOffset);
+    // IS % return series (starts at 0%)
+    const isLabels  = isSampled.map(d => d.t.substring(0, 10));
+    const isValues  = isSampled.map(d => toReturnPct(d.b, isDeposit));
  
-    // Null-gap: add a null point between IS end and OOS start to signal the boundary
-    // (Chart.js spanGaps:false will break the line there — but we want continuous,
-    // so we just concatenate directly — the vertical dashed line is drawn as annotation)
+    // OOS % return series — offset so it continues from where IS ended
+    const isEndPct  = isValues.length > 0 ? isValues[isValues.length - 1] : 0;
+    const oosLabels = oosSampled.map(d => d.t.substring(0, 10));
+    const oosValues = oosSampled.map(d => isEndPct + toReturnPct(d.b, oosDeposit));
+ 
     const allLabels = [...isLabels, ...oosLabels];
     const allValues = [...isValues, ...oosValues];
-    const splitIdx  = isLabels.length; // index where OOS starts
+    const splitIdx  = isLabels.length;
     const splitLabel = oosLabels.length > 0 ? oosLabels[0] : '';
  
     const ctx = document.getElementById(`chart-combo-${p._id}`).getContext('2d');
@@ -2056,7 +2058,7 @@ function renderTickCharts() {
             bodyFont:  { family: 'Montserrat', size: 11 },
             titleColor: '#8a8478', bodyColor: '#0f0e0b',
             callbacks: {
-              label: item => '$' + item.raw.toLocaleString('en', { maximumFractionDigits: 0 }),
+              label: item => item.raw.toFixed(1) + '% return',
               title: items => {
                 const idx = items[0].dataIndex;
                 return idx < splitIdx ? `IS — ${items[0].label}` : `OOS — ${items[0].label}`;
@@ -2072,7 +2074,7 @@ function renderTickCharts() {
           y: {
             grid: { color: 'rgba(0,0,0,0.06)' },
             ticks: { color: '#8a8478', font: { family: 'Montserrat', size: 10 },
-              callback: v => '$' + v.toLocaleString('en', { maximumFractionDigits: 0 }) }
+              callback: v => v.toFixed(0) + '%' }
           }
         }
       }
@@ -2090,8 +2092,6 @@ function escHtml(s) {
 }
 </script>
  
-<!-- ═══════════════════════════════════════════════ -->
-<!-- TAB 3: TICK DATA COMPARISON -->
 <!-- ═══════════════════════════════════════════════ -->
 <!-- TAB 3: TICK DATA COMPARISON -->
 <!-- ═══════════════════════════════════════════════ -->
