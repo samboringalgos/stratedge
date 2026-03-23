@@ -2186,8 +2186,8 @@ function tickBulkProcess(files) {
   const isFiles = {}, oosFiles = {}, unmatched = [];
   xlsx.forEach(f => {
     const name = f.name.replace(/\.xlsx$/i, '');
-    const isM  = name.match(/^(.+?)_IS$/i);
-    const oosM = name.match(/^(.+?)_OOS$/i);
+    const isM  = name.match(/^(.+?)[\s_]IS$/i);
+    const oosM = name.match(/^(.+?)[\s_]OOS$/i);
     if (isM)       isFiles[isM[1].toLowerCase()]   = f;
     else if (oosM) oosFiles[oosM[1].toLowerCase()] = f;
     else           unmatched.push(f.name);
