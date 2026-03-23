@@ -1964,9 +1964,10 @@ function renderTickCharts() {
       ${outlierHtml}`;
     container.appendChild(wrapper);
  
-    // Plot IS and OOS as two separate % return series, both starting at 0%.
-    // This keeps each curve's shape visible at full scale — no offsetting that
-    // compresses OOS into a flat line when IS made much larger gains.
+    // Single continuous balance curve: IS then OOS stitched together.
+    // OOS is offset so it continues from IS end balance (not restarting at deposit).
+    // Dual y-axes: IS left scale, OOS right scale — each section fills its own range
+    // so neither period is visually compressed by the other's magnitude.
     const isEq  = p.is.equity;
     const oosEq = p.oos.equity;
     if (isEq.length === 0 && oosEq.length === 0) return;
@@ -1978,28 +1979,29 @@ function renderTickCharts() {
     const isSampled  = sample(isEq,  400);
     const oosSampled = sample(oosEq, 400);
  
-    const isDeposit  = p.is.deposit  || 100000;
-    const oosDeposit = p.oos.deposit || 100000;
-    const toPct = (balance, deposit) => ((balance - deposit) / deposit) * 100;
- 
-    // IS dataset: % return, x-axis = IS timestamps
-    const isLabels = isSampled.map(d => d.t.substring(0, 10));
-    const isValues = isSampled.map(d => toPct(d.b, isDeposit));
- 
-    // OOS dataset: % return, x-axis = OOS timestamps
+    const isLabels  = isSampled.map(d => d.t.substring(0, 10));
+    const isValues  = isSampled.map(d => d.b);
     const oosLabels = oosSampled.map(d => d.t.substring(0, 10));
-    const oosValues = oosSampled.map(d => toPct(d.b, oosDeposit));
+    const oosValues = oosSampled.map(d => d.b);
  
-    // Combined x-axis: IS labels then OOS labels (split marked by dashed line)
-    // Each dataset only has values for its own period, null for the other
     const allLabels = [...isLabels, ...oosLabels];
     const splitIdx  = isLabels.length;
     const splitLabel = oosLabels.length > 0 ? oosLabels[0] : '';
  
-    // IS values: real for IS period, null for OOS period
+    // IS dataset: values for IS period, null for OOS period
     const isDataFull  = [...isValues,  ...Array(oosLabels.length).fill(null)];
-    // OOS values: null for IS period, real for OOS period
+    // OOS dataset: null for IS period, values for OOS period
     const oosDataFull = [...Array(isLabels.length).fill(null), ...oosValues];
+ 
+    // Compute IS and OOS y-axis ranges independently so each fills the chart
+    const isMin  = Math.min(...isValues);
+    const isMax  = Math.max(...isValues);
+    const oosMin = Math.min(...oosValues);
+    const oosMax = Math.max(...oosValues);
+    const isPad  = (isMax  - isMin)  * 0.08 || 1000;
+    const oosPad = (oosMax - oosMin) * 0.08 || 1000;
+ 
+    const fmt$ = v => '$' + v.toLocaleString('en', { maximumFractionDigits: 0 });
  
     const ctx = document.getElementById(`chart-combo-${p._id}`).getContext('2d');
  
@@ -2049,7 +2051,8 @@ function renderTickCharts() {
             borderWidth: 1.5,
             pointRadius: 0,
             tension: 0.1,
-            spanGaps: false
+            spanGaps: false,
+            yAxisID: 'yIS'
           },
           {
             label: 'OOS',
@@ -2059,7 +2062,8 @@ function renderTickCharts() {
             borderWidth: 1.5,
             pointRadius: 0,
             tension: 0.1,
-            spanGaps: false
+            spanGaps: false,
+            yAxisID: 'yOOS'
           }
         ]
       },
@@ -2068,10 +2072,7 @@ function renderTickCharts() {
         plugins: {
           legend: {
             display: true,
-            labels: {
-              color: '#8a8478', font: { family: 'Montserrat', size: 10 },
-              boxWidth: 12, padding: 12
-            }
+            labels: { color: '#8a8478', font: { family: 'Montserrat', size: 10 }, boxWidth: 12, padding: 12 }
           },
           tooltip: {
             backgroundColor: '#fff', borderColor: 'rgba(0,0,0,0.12)', borderWidth: 1,
@@ -2079,8 +2080,7 @@ function renderTickCharts() {
             bodyFont:  { family: 'Montserrat', size: 11 },
             titleColor: '#8a8478', bodyColor: '#0f0e0b',
             callbacks: {
-              label: item => `${item.dataset.label}: ${item.raw !== null ? item.raw.toFixed(1) + '%' : '—'}`,
-              title: items => items[0].label
+              label: item => `${item.dataset.label}: ${fmt$(item.raw)}`
             }
           }
         },
@@ -2089,10 +2089,23 @@ function renderTickCharts() {
             grid: { color: 'rgba(0,0,0,0.04)' },
             ticks: { color: '#8a8478', font: { family: 'Montserrat', size: 9 }, maxTicksLimit: 8, maxRotation: 0 }
           },
-          y: {
+          yIS: {
+            type: 'linear',
+            position: 'left',
+            min: isMin  - isPad,
+            max: isMax  + isPad,
             grid: { color: 'rgba(0,0,0,0.06)' },
-            ticks: { color: '#8a8478', font: { family: 'Montserrat', size: 10 },
-              callback: v => v.toFixed(0) + '%' }
+            ticks: { color: 'rgba(42,95,180,0.7)', font: { family: 'Montserrat', size: 9 },
+              callback: v => '$' + (v/1000).toFixed(0) + 'k' }
+          },
+          yOOS: {
+            type: 'linear',
+            position: 'right',
+            min: oosMin - oosPad,
+            max: oosMax + oosPad,
+            grid: { drawOnChartArea: false },
+            ticks: { color: 'rgba(42,122,74,0.7)', font: { family: 'Montserrat', size: 9 },
+              callback: v => '$' + (v/1000).toFixed(0) + 'k' }
           }
         }
       }
