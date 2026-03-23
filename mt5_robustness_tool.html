@@ -2012,16 +2012,16 @@ function renderTickCharts() {
     // Fraction-from-bottom where IS ends
     const isFrac  = (isEndVal - isYMin) / isRange;
  
-    // OOS natural range
-    const oosMin  = Math.min(...oosValues);
-    const oosMax  = Math.max(...oosValues);
-    const oosPad  = (oosMax - oosMin) * 0.08 || 5000;
-    const oosSpan = (oosMax + oosPad) - (oosMin - oosPad);
- 
-    // Anchor: oosStartVal should sit at isFrac of the OOS axis
-    // oosStartVal = oosYMin + isFrac * oosRange  →  oosYMin = oosStartVal - isFrac * oosRange
-    const oosYMin = oosStartVal - isFrac * oosSpan;
-    const oosYMax = oosYMin + oosSpan;
+    // Anchor: oosStart at isFrac from bottom of OOS axis.
+    // The axis range must be large enough to fit ALL OOS data on both sides.
+    // We derive the required total range from both directions and take the larger.
+    const oosAbove = (oosMax - oosStartVal) * 1.10; // data above start + 10% pad
+    const oosBelow = (oosStartVal - oosMin)  * 1.10; // data below start + 10% pad
+    const rangeFromAbove = isFrac     > 0.999 ? oosAbove * 20 : oosAbove / (1 - isFrac);
+    const rangeFromBelow = isFrac     < 0.001 ? oosBelow * 20 : oosBelow / isFrac;
+    const oosSpan  = Math.max(rangeFromAbove, rangeFromBelow, (oosMax - oosMin) * 1.2);
+    const oosYMin  = oosStartVal - isFrac * oosSpan;
+    const oosYMax  = oosYMin + oosSpan;
  
     const isDataFull  = [...isValues,  ...Array(oosLabels.length).fill(null)];
     const oosDataFull = [...Array(isLabels.length).fill(null), ...oosValues];
