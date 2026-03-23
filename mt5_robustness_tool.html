@@ -3,25 +3,32 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>StratEdge — IS Selection & Validation</title>
+<title>BoringAlgos — IS Selection & Validation</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Montserrat:wght@400;500;600&display=swap');
  
   :root {
-    --bg: #0a0c0f;
-    --surface: #111318;
-    --surface2: #181c23;
-    --border: #232830;
-    --border2: #2e3540;
-    --accent: #c8f04a;
-    --accent2: #4af0b8;
-    --danger: #f04a4a;
-    --warn: #f0a84a;
-    --text: #e8ecf0;
-    --text2: #8a94a0;
-    --text3: #555f6b;
-    --pass: #4af0b8;
-    --fail: #f04a4a;
+    --bg:       #ffffff;
+    --bg2:      #f7f6f2;
+    --bg3:      #f0ede6;
+    --text:     #0f0e0b;
+    --muted:    #8a8478;
+    --accent:   #c9a84c;
+    --accent-dim: rgba(201,168,76,0.12);
+    --border:   rgba(0,0,0,0.08);
+    --border2:  rgba(0,0,0,0.15);
+    --pass:     #2a7a4a;
+    --fail:     #c0392b;
+    --warn:     #c9770a;
+    --serif:    'DM Serif Display', serif;
+    --sans:     'Montserrat', sans-serif;
+    /* legacy aliases kept for JS template strings */
+    --surface:  #ffffff;
+    --surface2: #f7f6f2;
+    --text2:    #8a8478;
+    --text3:    #8a8478;
+    --accent2:  #c9a84c;
+    --danger:   #c0392b;
   }
  
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -29,72 +36,77 @@
   body {
     background: var(--bg);
     color: var(--text);
-    font-family: 'Inter', sans-serif;
+    font-family: var(--sans);
     font-size: 14px;
     min-height: 100vh;
   }
  
   /* HEADER */
   header {
-    padding: 20px 32px;
+    padding: 18px 32px;
     border-bottom: 1px solid var(--border);
     display: flex;
     align-items: center;
     gap: 16px;
-    background: var(--surface);
+    background: var(--bg);
   }
   .logo {
-    font-family: 'Syne', sans-serif;
-    font-weight: 800;
-    font-size: 20px;
-    color: var(--accent);
-    letter-spacing: -0.5px;
+    font-family: var(--serif);
+    font-size: 22px;
+    color: var(--text);
+    letter-spacing: -0.3px;
   }
-  .logo span { color: var(--text2); font-weight: 400; }
-  .tagline {
-    font-family: 'IBM Plex Mono', monospace;
+  .logo span { color: var(--accent); }
+  .logo-sub {
+    font-family: var(--sans);
     font-size: 11px;
-    color: var(--text3);
+    color: var(--muted);
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    margin-left: 10px;
+    padding-left: 10px;
+    border-left: 1px solid var(--border2);
+  }
+  .tagline {
+    font-family: var(--sans);
+    font-size: 10px;
+    color: var(--muted);
     margin-left: auto;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.16em;
+    font-weight: 600;
+    text-transform: uppercase;
   }
  
   /* TABS */
   .tabs {
     display: flex;
     border-bottom: 1px solid var(--border);
-    background: var(--surface);
+    background: var(--bg2);
     padding: 0 32px;
-    gap: 4px;
+    gap: 0;
   }
   .tab {
-    padding: 14px 20px;
-    font-family: 'Syne', sans-serif;
-    font-size: 13px;
+    padding: 14px 22px;
+    font-family: var(--sans);
+    font-size: 12px;
     font-weight: 600;
-    color: var(--text3);
+    color: var(--muted);
     cursor: pointer;
     border-bottom: 2px solid transparent;
     transition: all 0.15s;
-    letter-spacing: 0.3px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
     white-space: nowrap;
   }
-  .tab:hover { color: var(--text2); }
+  .tab:hover { color: var(--text); }
   .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
- 
   .tab-num {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 18px; height: 18px;
-    border-radius: 4px;
-    background: var(--surface2);
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 10px;
-    margin-right: 8px;
-    color: var(--text3);
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 18px; height: 18px; border-radius: 3px;
+    background: var(--bg3); font-size: 10px; margin-right: 8px;
+    color: var(--muted); font-family: var(--sans); font-weight: 600;
   }
-  .tab.active .tab-num { background: var(--accent); color: #000; }
+  .tab.active .tab-num { background: var(--accent); color: #fff; }
  
   /* PANEL */
   .panel { display: none; padding: 32px; max-width: 1400px; }
@@ -102,59 +114,60 @@
  
   /* SECTION HEADERS */
   .section-title {
-    font-family: 'Syne', sans-serif;
-    font-size: 22px;
-    font-weight: 700;
+    font-family: var(--serif);
+    font-size: 26px;
     margin-bottom: 6px;
+    color: var(--text);
   }
   .section-sub {
-    color: var(--text2);
+    color: var(--muted);
     font-size: 13px;
     margin-bottom: 28px;
-    line-height: 1.6;
+    line-height: 1.7;
+    font-weight: 400;
   }
  
   /* UPLOAD ZONE */
   .upload-zone {
-    border: 2px dashed var(--border2);
-    border-radius: 12px;
+    border: 1.5px dashed var(--border2);
+    border-radius: 8px;
     padding: 40px;
     text-align: center;
     cursor: pointer;
     transition: all 0.2s;
-    background: var(--surface);
+    background: var(--bg2);
     position: relative;
   }
-  .upload-zone:hover, .upload-zone.drag { border-color: var(--accent); background: #0f1208; }
-  .upload-zone input[type=file] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
-  .upload-icon { font-size: 32px; margin-bottom: 12px; }
-  .upload-label { font-family: 'Syne', sans-serif; font-weight: 600; font-size: 15px; margin-bottom: 6px; }
-  .upload-hint { color: var(--text3); font-size: 12px; font-family: 'IBM Plex Mono', monospace; }
+  .upload-zone:hover, .upload-zone.drag {
+    border-color: var(--accent);
+    background: var(--accent-dim);
+  }
+  .upload-zone input[type=file] {
+    position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;
+  }
+  .upload-icon { font-size: 28px; margin-bottom: 10px; }
+  .upload-label {
+    font-family: var(--sans); font-weight: 600; font-size: 14px;
+    margin-bottom: 4px; color: var(--text);
+  }
+  .upload-hint { color: var(--muted); font-size: 11px; font-weight: 500; letter-spacing: 0.08em; }
  
   /* CARDS */
   .card {
-    background: var(--surface);
+    background: var(--bg2);
     border: 1px solid var(--border);
-    border-radius: 12px;
+    border-radius: 8px;
     padding: 20px 24px;
   }
   .card-title {
-    font-family: 'Syne', sans-serif;
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--text3);
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    margin-bottom: 8px;
+    font-family: var(--sans); font-size: 11px; font-weight: 600;
+    color: var(--accent); letter-spacing: 0.16em; text-transform: uppercase; margin-bottom: 8px;
   }
   .card-value {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 24px;
-    font-weight: 500;
-    color: var(--text);
+    font-family: var(--serif); font-size: 28px; color: var(--text);
   }
   .card-value.good { color: var(--pass); }
-  .card-value.bad { color: var(--fail); }
+  .card-value.bad  { color: var(--fail); }
   .card-value.warn { color: var(--warn); }
  
   .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 24px; }
@@ -162,20 +175,18 @@
  
   /* FORM LABELS */
   label.ctrl-label {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 11px;
-    color: var(--text3);
-    letter-spacing: 0.5px;
-    display: block;
-    margin-bottom: 5px;
+    font-family: var(--sans); font-size: 10px; font-weight: 600;
+    color: var(--accent); letter-spacing: 0.16em; text-transform: uppercase;
+    display: block; margin-bottom: 5px;
   }
   select, input[type=number], input[type=text] {
-    background: var(--surface2);
+    background: var(--bg);
     border: 1px solid var(--border2);
-    border-radius: 8px;
+    border-radius: 5px;
     color: var(--text);
-    font-family: 'IBM Plex Mono', monospace;
+    font-family: var(--sans);
     font-size: 13px;
+    font-weight: 500;
     padding: 8px 12px;
     outline: none;
     transition: border-color 0.15s;
@@ -186,26 +197,23 @@
  
   /* CHART AREA */
   .chart-wrap {
-    background: var(--surface);
+    background: var(--bg2);
     border: 1px solid var(--border);
-    border-radius: 12px;
+    border-radius: 8px;
     padding: 24px;
     margin-bottom: 20px;
   }
   .chart-label {
-    font-family: 'Syne', sans-serif;
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--text2);
-    margin-bottom: 16px;
+    font-family: var(--sans); font-size: 12px; font-weight: 600;
+    color: var(--muted); margin-bottom: 16px; letter-spacing: 0.04em;
   }
   canvas { width: 100% !important; display: block; }
  
   /* TABLE */
   .tbl-wrap {
-    background: var(--surface);
+    background: var(--bg);
     border: 1px solid var(--border);
-    border-radius: 12px;
+    border-radius: 8px;
     overflow: hidden;
     margin-bottom: 20px;
   }
@@ -215,243 +223,178 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    background: var(--bg2);
   }
   .tbl-title {
-    font-family: 'Syne', sans-serif;
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--text);
+    font-family: var(--sans); font-size: 13px; font-weight: 600; color: var(--text);
   }
-  .tbl-scroll { overflow-x: auto; max-height: 380px; overflow-y: auto; }
+  .tbl-scroll { overflow-x: auto; max-height: 400px; overflow-y: auto; }
   table { width: 100%; border-collapse: collapse; }
   th {
-    background: var(--surface2);
+    background: var(--bg3);
     padding: 10px 14px;
     text-align: left;
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 11px;
-    color: var(--text3);
-    letter-spacing: 0.5px;
+    font-family: var(--sans);
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--accent);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
     white-space: nowrap;
     position: sticky;
     top: 0;
     z-index: 2;
+    border-bottom: 1px solid var(--border2);
   }
   td {
     padding: 9px 14px;
     border-bottom: 1px solid var(--border);
-    font-family: 'IBM Plex Mono', monospace;
+    font-family: var(--sans);
     font-size: 12px;
+    font-weight: 400;
     white-space: nowrap;
+    color: var(--text);
+    vertical-align: middle;
   }
   tr:last-child td { border-bottom: none; }
-  tr:hover td { background: var(--surface2); }
-  tr.highlighted td { background: #0f1a10 !important; }
+  tr:hover td { background: var(--bg2); }
+  tr.highlighted td { background: rgba(201,168,76,0.08) !important; }
   tr.highlighted td:first-child { border-left: 3px solid var(--accent); padding-left: 11px; }
  
+  /* BADGES */
   .badge {
-    display: inline-flex;
-    align-items: center;
-    padding: 2px 8px;
-    border-radius: 4px;
-    font-size: 11px;
-    font-family: 'IBM Plex Mono', monospace;
-    font-weight: 500;
+    display: inline-flex; align-items: center;
+    padding: 2px 8px; border-radius: 3px;
+    font-size: 10px; font-family: var(--sans); font-weight: 600; letter-spacing: 0.06em;
   }
-  .badge-green { background: #0f2a1a; color: var(--pass); }
-  .badge-red { background: #2a0f0f; color: var(--fail); }
-  .badge-yellow { background: #2a1f0f; color: var(--warn); }
-  .badge-grey { background: var(--surface2); color: var(--text3); }
- 
-  /* CHECKLIST */
-  .checklist { display: flex; flex-direction: column; gap: 10px; }
-  .check-item {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 14px 18px;
-    transition: border-color 0.15s;
-  }
-  .check-item.pass { border-color: #1a3a22; }
-  .check-item.fail { border-color: #3a1a1a; }
-  .check-item.warn { border-color: #3a2a1a; }
-  .check-dot {
-    width: 10px; height: 10px;
-    border-radius: 50%;
-    flex-shrink: 0;
-  }
-  .check-item.pass .check-dot { background: var(--pass); box-shadow: 0 0 8px var(--pass); }
-  .check-item.fail .check-dot { background: var(--fail); box-shadow: 0 0 8px var(--fail); }
-  .check-item.warn .check-dot { background: var(--warn); box-shadow: 0 0 8px var(--warn); }
-  .check-item.neutral .check-dot { background: var(--text3); }
-  .check-name {
-    font-family: 'Syne', sans-serif;
-    font-size: 13px;
-    font-weight: 600;
-    flex: 1;
-  }
-  .check-val {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 13px;
-    color: var(--text2);
-  }
-  .check-threshold {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 11px;
-    color: var(--text3);
-    min-width: 120px;
-    text-align: right;
-  }
- 
-  /* SCORE RING */
-  .score-ring-wrap {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 32px;
-  }
-  .score-label {
-    font-family: 'Syne', sans-serif;
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--text2);
-    margin-top: 16px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-  }
-  .verdict {
-    font-family: 'Syne', sans-serif;
-    font-size: 28px;
-    font-weight: 800;
-    margin-top: 8px;
-  }
-  .verdict.go { color: var(--pass); }
-  .verdict.review { color: var(--warn); }
-  .verdict.nogo { color: var(--fail); }
+  .badge-green  { background: rgba(42,122,74,0.12);  color: var(--pass); }
+  .badge-red    { background: rgba(192,57,43,0.10);  color: var(--fail); }
+  .badge-yellow { background: rgba(201,168,76,0.15); color: var(--warn); }
+  .badge-grey   { background: var(--bg3); color: var(--muted); }
  
   /* EMPTY STATE */
-  .empty {
-    text-align: center;
-    padding: 60px 20px;
-    color: var(--text3);
-  }
-  .empty-icon { font-size: 40px; margin-bottom: 14px; opacity: 0.4; }
-  .empty-text { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 600; margin-bottom: 6px; color: var(--text2); }
+  .empty { text-align: center; padding: 60px 20px; color: var(--muted); }
+  .empty-icon { font-size: 36px; margin-bottom: 14px; opacity: 0.35; }
+  .empty-text { font-family: var(--serif); font-size: 18px; margin-bottom: 6px; color: var(--text); }
   .empty-sub { font-size: 13px; }
  
   /* BTN */
   .btn {
-    padding: 10px 20px;
-    border-radius: 8px;
-    font-family: 'Syne', sans-serif;
-    font-weight: 700;
-    font-size: 13px;
-    cursor: pointer;
-    border: none;
-    transition: all 0.15s;
-    letter-spacing: 0.3px;
+    padding: 10px 20px; border-radius: 5px;
+    font-family: var(--sans); font-weight: 600;
+    font-size: 12px; cursor: pointer; border: none;
+    transition: all 0.15s; letter-spacing: 0.08em; text-transform: uppercase;
   }
-  .btn-primary { background: var(--accent); color: #000; }
-  .btn-primary:hover { background: #d4f55c; transform: translateY(-1px); }
-  .btn-ghost { background: transparent; color: var(--text2); border: 1px solid var(--border2); }
-  .btn-ghost:hover { border-color: var(--text2); color: var(--text); }
-  .btn-danger { background: transparent; color: var(--danger); border: 1px solid var(--danger); }
-  .btn-danger:hover { background: var(--danger); color: #fff; }
+  .btn-primary { background: var(--accent); color: #fff; }
+  .btn-primary:hover { background: #b8962e; }
+  .btn-ghost {
+    background: transparent; color: var(--muted);
+    border: 1px solid var(--border2);
+  }
+  .btn-ghost:hover { border-color: var(--text); color: var(--text); }
+  .btn-danger { background: transparent; color: var(--fail); border: 1px solid var(--fail); }
+  .btn-danger:hover { background: var(--fail); color: #fff; }
  
-  /* PLATEAU ANALYSIS */
+  /* NOTICE BOXES */
   .plateau-result {
-    padding: 14px 18px;
-    border-radius: 10px;
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 13px;
-    margin-bottom: 16px;
-    border: 1px solid transparent;
+    padding: 12px 16px; border-radius: 6px;
+    font-family: var(--sans); font-size: 12px; font-weight: 500;
+    margin-bottom: 16px; border: 1px solid transparent; line-height: 1.6;
   }
-  .plateau-result.plateau { background: #0a1f12; border-color: #1a4028; color: var(--pass); }
-  .plateau-result.spike { background: #1f0a0a; border-color: #401a1a; color: var(--fail); }
-  .plateau-result.mixed { background: #1f180a; border-color: #40300a; color: var(--warn); }
+  .plateau-result.plateau { background: rgba(42,122,74,0.08);  border-color: rgba(42,122,74,0.25);  color: var(--pass); }
+  .plateau-result.spike   { background: rgba(192,57,43,0.08);  border-color: rgba(192,57,43,0.25);  color: var(--fail); }
+  .plateau-result.mixed   { background: rgba(201,168,76,0.10); border-color: rgba(201,168,76,0.30); color: var(--warn); }
  
-  /* WFO FORM */
+  /* FORM */
   .form-row { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 16px; align-items: flex-end; }
   .form-group { display: flex; flex-direction: column; }
  
   /* SCROLLBAR */
-  ::-webkit-scrollbar { width: 6px; height: 6px; }
-  ::-webkit-scrollbar-track { background: var(--surface); }
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: var(--bg2); }
   ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
-  ::-webkit-scrollbar-thumb:hover { background: var(--text3); }
+  ::-webkit-scrollbar-thumb:hover { background: var(--muted); }
  
-  .text3 { color: var(--text3); }
+  .text3 { color: var(--muted); }
   .mb16 { margin-bottom: 16px; }
   .mb24 { margin-bottom: 24px; }
   .flex { display: flex; gap: 12px; align-items: center; }
  
   .info-box {
-    background: #0a1218;
-    border: 1px solid #1a2a38;
-    border-radius: 8px;
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    border-radius: 6px;
     padding: 12px 16px;
     font-size: 12px;
-    color: var(--text2);
+    color: var(--muted);
     line-height: 1.6;
     margin-bottom: 20px;
   }
-  .info-box strong { color: var(--accent2); }
- 
-  /* WFO Summary row */
-  .wfo-summary-row {
-    background: var(--surface2);
-    border-top: 2px solid var(--border2);
-  }
-  .wfo-summary-row td {
-    font-weight: 500;
-    color: var(--accent2);
-  }
+  .info-box strong { color: var(--accent); }
  
   /* PARAM TYPE TAGS */
   .param-tag {
     display: inline-flex; align-items: center;
-    padding: 1px 6px; border-radius: 3px;
-    font-size: 10px; font-family: 'IBM Plex Mono', monospace;
+    padding: 2px 8px; border-radius: 3px;
+    font-size: 10px; font-family: var(--sans); font-weight: 600; letter-spacing: 0.08em;
     cursor: pointer; border: 1px solid transparent;
     transition: all 0.15s; margin-left: 4px;
+    text-transform: uppercase;
   }
-  .param-tag.cat { background: #0a1828; color: #4a9ef0; border-color: #1a3050; }
-  .param-tag.smooth { background: #1a0a28; color: #c04af0; border-color: #380a50; }
-  .param-tag.cat:hover { background: #0f2040; }
-  .param-tag.smooth:hover { background: #280f40; }
+  .param-tag.cat    { background: rgba(74,120,200,0.10); color: #2a5fc9; border-color: rgba(74,120,200,0.25); }
+  .param-tag.smooth { background: rgba(150,60,200,0.10); color: #7a2ac9; border-color: rgba(150,60,200,0.25); }
+  .param-tag.cat:hover    { background: rgba(74,120,200,0.18); }
+  .param-tag.smooth:hover { background: rgba(150,60,200,0.18); }
  
   /* WEIGHT SLIDERS */
   .weight-row { display: flex; gap: 16px; align-items: center; margin-bottom: 10px; flex-wrap: wrap; }
-  .weight-label { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--text3); min-width: 140px; }
-  .weight-val { font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--accent); min-width: 36px; text-align: right; }
-  input[type=range] { -webkit-appearance: none; width: 140px; height: 4px; border-radius: 2px; background: var(--border2); outline: none; border: none; padding: 0; }
-  input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 14px; height: 14px; border-radius: 50%; background: var(--accent); cursor: pointer; }
- 
-  /* CROSS-WINDOW TRACKER */
-  .tracker-window-pick { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--accent2); }
-  .tracker-fallback { color: var(--warn); }
+  .weight-label { font-family: var(--sans); font-size: 11px; font-weight: 500; color: var(--muted); min-width: 160px; }
+  .weight-val   { font-family: var(--sans); font-size: 12px; font-weight: 600; color: var(--accent); min-width: 36px; text-align: right; }
+  input[type=range] {
+    -webkit-appearance: none; width: 140px; height: 3px;
+    border-radius: 2px; background: var(--border2); outline: none; border: none; padding: 0;
+  }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none; width: 14px; height: 14px;
+    border-radius: 50%; background: var(--accent); cursor: pointer;
+  }
  
   /* ISOLATED PEAK */
-  tr.isolated td { opacity: 0.7; }
+  tr.isolated td { opacity: 0.6; }
   tr.isolated td:first-child { border-left: 3px solid var(--warn); padding-left: 11px; }
   .peak-flag { font-size: 10px; color: var(--warn); margin-left: 4px; }
+ 
+  /* TAB 3 — TICK DATA */
+  .medal-gold   { color: #b8860b; font-size: 15px; }
+  .medal-silver { color: #888;    font-size: 15px; }
+  .medal-bronze { color: #a0522d; font-size: 15px; }
+  .pass-row-gold   { background: rgba(201,168,76,0.10) !important; }
+  .pass-row-silver { background: rgba(0,0,0,0.03) !important; }
+  .pass-row-bronze { background: rgba(160,82,45,0.06) !important; }
+  .quality-warn { color: var(--warn); font-size: 10px; margin-left: 4px; }
+  .editable-label {
+    cursor: pointer; border-bottom: 1px dashed var(--muted);
+    font-weight: 500;
+  }
+  .editable-label:hover { border-color: var(--accent); color: var(--accent); }
+  .chart-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+  .chart-pair-label {
+    font-family: var(--sans); font-size: 13px; font-weight: 600;
+    color: var(--text); margin-bottom: 12px; display: flex; align-items: center; gap: 8px;
+  }
 </style>
 </head>
 <body>
  
 <header>
-  <div class="logo">StratEdge <span>/ IS Selection &amp; Validation</span></div>
-  <div class="tagline">IS SELECTION · FORWARD TEST VALIDATION</div>
+  <div class="logo">Boring<span>Algos</span><span class="logo-sub">IS Selection &amp; Validation</span></div>
+  <div class="tagline">IS Selection · Validation · Tick Data</div>
 </header>
  
 <div class="tabs">
   <div class="tab active" onclick="switchTab(0)"><span class="tab-num">1</span>IS Selection</div>
   <div class="tab" onclick="switchTab(1)"><span class="tab-num">2</span>Validation</div>
+  <div class="tab" onclick="switchTab(2)"><span class="tab-num">3</span>Tick Data</div>
 </div>
  
 <!-- ═══════════════════════════════════════════════ -->
@@ -459,7 +402,7 @@
 <!-- ═══════════════════════════════════════════════ -->
 <div class="panel active" id="tab0">
   <div class="section-title">IS Selection</div>
-  <div class="section-sub">Upload two XML files from MT5's Strategy Tester: <strong style="color:var(--accent2)">Optimization Results</strong> (IS data, all passes) and <strong style="color:var(--accent2)">Forward Results</strong> (OOS data, top passes). Tab 1 selects the top 20 IS candidates. Tab 2 validates them against the forward test year.</div>
+  <div class="section-sub">Upload two XML files from MT5's Strategy Tester: <strong style="color:var(--accent)">Optimization Results</strong> (IS data, all passes) and <strong style="color:var(--accent)">Forward Results</strong> (OOS data, top passes). Tab 1 selects the top 20 IS candidates. Tab 2 validates them against the forward test year.</div>
  
   <!-- Upload + IS dates -->
   <div style="display:flex;gap:16px;align-items:stretch;margin-bottom:24px;flex-wrap:wrap;">
@@ -496,9 +439,9 @@
             <input type="number" id="is-years-input" placeholder="6.0" step="0.1" min="0.1" style="width:72px;" oninput="updateISYears()">
           </div>
         </div>
-        <div id="is-years-display" style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text3);margin-top:6px;">Enter IS dates or years above</div>
-        <div id="deposit-display" style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text3);margin-top:4px;">Deposit: not yet loaded</div>
-        <div id="fwd-status-display" style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text3);margin-top:4px;">Forward Results: not loaded</div>
+        <div id="is-years-display" style="font-family:'Montserrat',sans-serif;font-size:11px;color:var(--text3);margin-top:6px;">Enter IS dates or years above</div>
+        <div id="deposit-display" style="font-family:'Montserrat',sans-serif;font-size:11px;color:var(--text3);margin-top:4px;">Deposit: not yet loaded</div>
+        <div id="fwd-status-display" style="font-family:'Montserrat',sans-serif;font-size:11px;color:var(--text3);margin-top:4px;">Forward Results: not loaded</div>
       </div>
     </div>
   </div>
@@ -512,7 +455,7 @@
  
   <!-- Score weights -->
   <div id="weights-section" style="display:none;" class="card mb24">
-    <div class="chart-label" style="margin-bottom:12px;">Final Score Weights <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text3);font-weight:400;margin-left:8px;">must sum to 1.0</span></div>
+    <div class="chart-label" style="margin-bottom:12px;">Final Score Weights <span style="font-family:'Montserrat',sans-serif;font-size:11px;color:var(--text3);font-weight:400;margin-left:8px;">must sum to 1.0</span></div>
     <div class="weight-row">
       <div class="weight-label">Calmar (performance)</div>
       <input type="range" id="w-calmar" min="0" max="100" value="30" oninput="updateWeightDisplay()">
@@ -528,14 +471,14 @@
       <input type="range" id="w-consist" min="0" max="100" value="30" oninput="updateWeightDisplay()">
       <div class="weight-val" id="wv-consist">0.30</div>
     </div>
-    <div id="weight-sum-warning" style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--warn);display:none;margin-top:6px;">⚠ Weights do not sum to 1.0 — normalised automatically.</div>
+    <div id="weight-sum-warning" style="font-family:'Montserrat',sans-serif;font-size:11px;color:var(--warn);display:none;margin-top:6px;">⚠ Weights do not sum to 1.0 — normalised automatically.</div>
     <button class="btn btn-ghost" onclick="rerunAnalysis()" style="margin-top:12px;font-size:12px;">↻ Rerun with these weights</button>
   </div>
  
   <!-- Results content -->
   <div id="plateau-content" style="display:none;margin-top:0;">
     <div class="grid-4" id="plateau-stats"></div>
-    <div id="dedup-notice" style="display:none;font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--warn);background:#1a140a;border:1px solid #3a2a0a;border-radius:8px;padding:10px 16px;margin-bottom:20px;"></div>
+    <div id="dedup-notice" style="display:none;font-family:'Montserrat',sans-serif;font-size:12px;font-weight:500;color:var(--warn);background:rgba(201,168,76,0.10);border:1px solid rgba(201,168,76,0.30);border-radius:6px;padding:10px 16px;margin-bottom:20px;"></div>
  
     <!-- Surface chart -->
     <div class="chart-wrap">
@@ -566,7 +509,7 @@
     <div class="tbl-wrap" style="margin-top:20px;">
       <div class="tbl-header">
         <div class="tbl-title">Top 20 IS Candidates</div>
-        <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text3);">Ranked by Final Score &nbsp;·&nbsp; <span id="legend-isolated" style="color:var(--warn);">⚠ = isolated peak (&lt;3 neighbours)</span> &nbsp;·&nbsp; <span style="color:var(--warn);">⚡ = cliff-edge smooth param</span></div>
+        <div style="font-family:'Montserrat',sans-serif;font-size:11px;color:var(--text3);">Ranked by Final Score &nbsp;·&nbsp; <span id="legend-isolated" style="color:var(--warn);">⚠ = isolated peak (&lt;3 neighbours)</span> &nbsp;·&nbsp; <span style="color:var(--warn);">⚡ = cliff-edge smooth param</span></div>
       </div>
       <div class="tbl-scroll"><table id="plateau-table"></table></div>
     </div>
@@ -598,7 +541,7 @@
     <div class="tbl-wrap">
       <div class="tbl-header">
         <div class="tbl-title">Validation Results</div>
-        <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text3);">
+        <div style="font-family:'Montserrat',sans-serif;font-size:11px;color:var(--text3);">
           <span style="color:var(--pass);">■ PASS</span> &nbsp;·&nbsp;
           <span style="color:var(--warn);">■ CAUTION</span> &nbsp;·&nbsp;
           <span style="color:var(--fail);">■ FAIL</span>
@@ -606,14 +549,18 @@
       </div>
       <div class="tbl-scroll"><table id="validation-table"></table></div>
     </div>
-    <div id="validation-summary" style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--text2);padding:12px 4px;"></div>
+    <div id="validation-summary" style="font-family:'Montserrat',sans-serif;font-size:12px;color:var(--text2);padding:12px 4px;"></div>
   </div>
 </div>
  
+<!-- SheetJS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <!-- Chart.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
  
 <script>
+ 
+ 
 // ═══════════════════════════════════════════════════
 // GLOBALS
 // ═══════════════════════════════════════════════════
@@ -669,14 +616,14 @@ function updateISYears() {
     isYears = directYr;
     const floor = Math.round(30 * isYears);
     disp.textContent = `IS: ${isYears.toFixed(2)} yr → Trade floor: ${floor} trades minimum (direct entry)`;
-    disp.style.color = 'var(--accent2)';
+    disp.style.color = 'var(--accent)';
     return;
   }
   if (datesValid) {
     isYears = Math.max(0.1, (d2 - d1) / (365.25 * 24 * 3600 * 1000));
     const floor = Math.round(30 * isYears);
     disp.textContent = `IS: ${isYears.toFixed(2)} yr → Trade floor: ${floor} trades minimum (from dates)`;
-    disp.style.color = 'var(--accent2)';
+    disp.style.color = 'var(--accent)';
     return;
   }
   isYears = (plateauData && plateauData.xmlYears) ? plateauData.xmlYears : 6;
@@ -714,7 +661,8 @@ function getWeights() {
 function loadXML(input, target) {
   const file = input.files[0];
   if (!file) return;
-  document.getElementById('upload1-label').textContent = file.name;
+  if (target === 'plateau') document.getElementById('upload1-label').textContent = file.name;
+  if (target === 'forward') document.getElementById('upload2-label').textContent = file.name;
   const reader = new FileReader();
   reader.onload = e => {
     const text = e.target.result;
@@ -811,7 +759,7 @@ function onXMLLoaded() {
   const depDisp = document.getElementById('deposit-display');
   if (deposit !== null && !isNaN(deposit) && deposit > 0) {
     depDisp.textContent = `Deposit: $${deposit.toLocaleString('en',{maximumFractionDigits:0})} · ${plateauData.data.length.toLocaleString('en')} passes loaded`;
-    depDisp.style.color = 'var(--accent2)';
+    depDisp.style.color = 'var(--accent)';
   } else {
     depDisp.textContent = 'Deposit: not found in XML — check file';
     depDisp.style.color = 'var(--fail)';
@@ -829,7 +777,7 @@ function onXMLLoaded() {
     wrapper.style.display = 'flex'; wrapper.style.alignItems = 'center'; wrapper.style.gap = '4px';
  
     const nameSpan = document.createElement('span');
-    nameSpan.style.cssText = "font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--text2);";
+    nameSpan.style.cssText = "font-family:'Montserrat',sans-serif;font-size:12px;color:var(--text2);";
     nameSpan.textContent = label;
  
     const tagSpan = document.createElement('span');
@@ -1196,44 +1144,44 @@ function renderRecommendationBanner(rank1, safePick, usedFallback, noNeighboursA
   const calmar  = rec._calmar;
   const consist = rec._consist;
   const paramStr = paramCols.map(p =>
-    `<span style="color:var(--accent2)">${escHtml(p.replace(/^Inp/,''))}</span> = <strong style="color:var(--text)">${escHtml(rec[p])}</strong>`
+    `<span style="color:var(--accent)">${escHtml(p.replace(/^Inp/,''))}</span> = <strong style="color:var(--text)">${escHtml(rec[p])}</strong>`
   ).join(' &nbsp;·&nbsp; ');
   const cliffWarn = rec._cliff ? '<span style="color:var(--warn);margin-left:8px;">⚠ Cliff-edge on smooth param</span>' : '';
   const fallbackNote = (!allCategorical && usedFallback) ? ' (Plateau-Safe Pick)' : '';
  
   html += `
-    <div style="background:#0a1f10;border:1px solid #1a4020;border-radius:10px;padding:16px 20px;margin-bottom:20px;overflow:hidden;">
-      <div style="font-family:'Syne',sans-serif;font-size:12px;font-weight:700;color:var(--accent);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;">
+    <div style="background:rgba(42,122,74,0.07);border:1px solid rgba(42,122,74,0.20);border-radius:8px;padding:16px 20px;margin-bottom:20px;overflow:hidden;">
+      <div style="font-family:'Montserrat',sans-serif;font-size:11px;font-weight:600;color:var(--accent);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:10px;">
         ⭐ IS Candidate for Validation${fallbackNote} — Pass ${escHtml(rec['Pass'])}
       </div>
       <div style="display:flex;gap:24px;flex-wrap:wrap;align-items:center;">
         <div>
-          <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text3);margin-bottom:3px;">CALMAR</div>
-          <div style="font-family:'Syne',sans-serif;font-size:26px;font-weight:800;color:${calmar&&calmar>=1?'var(--pass)':'var(--warn)'}">${calmar!=null?calmar.toFixed(2):'—'}</div>
+          <div style="font-family:'Montserrat',sans-serif;font-size:10px;font-weight:600;color:var(--accent);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:3px;">CALMAR</div>
+          <div style="font-family:'DM Serif Display',serif;font-size:28px;font-weight:400;color:${calmar&&calmar>=1?'var(--pass)':'var(--warn)'}">${calmar!=null?calmar.toFixed(2):'—'}</div>
         </div>
         <div>
-          <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text3);margin-bottom:3px;">MAX DD</div>
-          <div style="font-family:'IBM Plex Mono',monospace;font-size:16px;color:var(--text)">${(typeof rec['Equity DD %']==='number'&&isFinite(rec['Equity DD %']))?rec['Equity DD %'].toFixed(1)+'%':'—'}</div>
+          <div style="font-family:'Montserrat',sans-serif;font-size:10px;font-weight:600;color:var(--accent);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:3px;">MAX DD</div>
+          <div style="font-family:'DM Serif Display',serif;font-size:20px;color:var(--text)">${(typeof rec['Equity DD %']==='number'&&isFinite(rec['Equity DD %']))?rec['Equity DD %'].toFixed(1)+'%':'—'}</div>
         </div>
         <div>
-          <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text3);margin-bottom:3px;">TRADES</div>
-          <div style="font-family:'IBM Plex Mono',monospace;font-size:16px;color:var(--text)">${rec['Trades']}</div>
+          <div style="font-family:'Montserrat',sans-serif;font-size:10px;font-weight:600;color:var(--accent);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:3px;">TRADES</div>
+          <div style="font-family:'DM Serif Display',serif;font-size:20px;color:var(--text)">${rec['Trades']}</div>
         </div>
         <div>
-          <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text3);margin-bottom:3px;">CONSISTENCY</div>
-          <div style="font-family:'IBM Plex Mono',monospace;font-size:16px;color:${consist!=null&&consist>=0.7?'var(--pass)':consist!=null&&consist>=0.5?'var(--warn)':'var(--fail)'}">${consist!=null?(consist*100).toFixed(0)+'%':'—'}</div>
+          <div style="font-family:'Montserrat',sans-serif;font-size:10px;font-weight:600;color:var(--accent);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:3px;">CONSISTENCY</div>
+          <div style="font-family:'DM Serif Display',serif;font-size:20px;color:${consist!=null&&consist>=0.7?'var(--pass)':consist!=null&&consist>=0.5?'var(--warn)':'var(--fail)'}">${consist!=null?(consist*100).toFixed(0)+'%':'—'}</div>
         </div>
         <div>
-          <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text3);margin-bottom:3px;">NEIGHBOURS</div>
-          <div style="font-family:'IBM Plex Mono',monospace;font-size:16px;color:${rec._neighbours>=3?'var(--pass)':'var(--warn)'}">${rec._neighbours}</div>
+          <div style="font-family:'Montserrat',sans-serif;font-size:10px;font-weight:600;color:var(--accent);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:3px;">NEIGHBOURS</div>
+          <div style="font-family:'DM Serif Display',serif;font-size:20px;color:${rec._neighbours>=3?'var(--pass)':'var(--warn)'}">${rec._neighbours}</div>
         </div>
         <div>
-          <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text3);margin-bottom:3px;">FINAL SCORE</div>
-          <div style="font-family:'IBM Plex Mono',monospace;font-size:16px;color:var(--accent)">${rec._finalScore.toFixed(3)}</div>
+          <div style="font-family:'Montserrat',sans-serif;font-size:10px;font-weight:600;color:var(--accent);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:3px;">FINAL SCORE</div>
+          <div style="font-family:'DM Serif Display',serif;font-size:20px;color:var(--accent)">${rec._finalScore.toFixed(3)}</div>
         </div>
         <div style="flex:1;min-width:200px;max-width:100%;overflow:hidden;">
-          <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text3);margin-bottom:6px;">PARAMETERS</div>
-          <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;line-height:1.8;white-space:normal;overflow-wrap:break-word;word-break:break-word;">${paramStr}${cliffWarn}</div>
+          <div style="font-family:'Montserrat',sans-serif;font-size:11px;color:var(--text3);margin-bottom:6px;">PARAMETERS</div>
+          <div style="font-family:'Montserrat',sans-serif;font-size:12px;font-weight:500;line-height:1.9;white-space:normal;overflow-wrap:break-word;word-break:break-word;">${paramStr}${cliffWarn}</div>
         </div>
       </div>
     </div>`;
@@ -1277,7 +1225,7 @@ function renderPlateauTable(top20, paramCols, safePick) {
     // Neighbours — neutral colour when all categorical (count not meaningful)
     const neighbourCol = allCategorical ? 'var(--text3)' : row._neighbours>=3 ? 'var(--pass)' : 'var(--warn)';
     html += `<td><span style="color:${neighbourCol}">${row._neighbours}</span></td>`;
-    html += `<td><span style="color:var(--accent2)">${row._finalScore.toFixed(3)}</span></td>`;
+    html += `<td><span style="color:var(--accent)">${row._finalScore.toFixed(3)}</span></td>`;
  
     paramCols.forEach(p => {
       const pv = row[p];
@@ -1325,8 +1273,8 @@ function renderPlateauChart() {
  
   const isDD   = metric === 'Equity DD %';
   const best   = isDD ? Math.min(...values) : Math.max(...values);
-  const bgC    = values.map(v => v===best?'rgba(200,240,74,0.9)':'rgba(74,175,240,0.45)');
-  const bdC    = values.map(v => v===best?'rgba(200,240,74,1.0)':'rgba(74,175,240,1.0)');
+  const bgC    = values.map(v => v===best?'rgba(201,168,76,0.9)':'rgba(201,168,76,0.30)');
+  const bdC    = values.map(v => v===best?'rgba(201,168,76,1.0)':'rgba(201,168,76,0.55)');
  
   const ctx = document.getElementById('plateauChart').getContext('2d');
   if (plateauChart) plateauChart.destroy();
@@ -1338,9 +1286,9 @@ function renderPlateauChart() {
       plugins: {
         legend: { display: false },
         tooltip: {
-          backgroundColor: '#181c23', borderColor: '#2e3540', borderWidth: 1,
-          titleFont: { family: 'IBM Plex Mono', size: 11 }, bodyFont: { family: 'IBM Plex Mono', size: 12 },
-          titleColor: '#8a94a0', bodyColor: '#e8ecf0',
+          backgroundColor: '#fff', borderColor: 'rgba(0,0,0,0.12)', borderWidth: 1,
+          titleFont: { family: 'Montserrat', size: 11 }, bodyFont: { family: 'Montserrat', size: 12 },
+          titleColor: '#8a8478', bodyColor: '#0f0e0b',
           callbacks: {
             title: items => `${param.replace(/^Inp/,'')} = ${items[0].label}`,
             label: item => `Avg ${metric}: ${item.raw.toFixed(3)}`
@@ -1348,8 +1296,8 @@ function renderPlateauChart() {
         }
       },
       scales: {
-        x: { grid: {color:'#1a1f28'}, ticks:{color:'#555f6b',font:{family:'IBM Plex Mono',size:11}}, title:{display:true,text:param.replace(/^Inp/,''),color:'#8a94a0',font:{family:'Syne',size:12}} },
-        y: { grid: {color:'#1a1f28'}, ticks:{color:'#555f6b',font:{family:'IBM Plex Mono',size:11}}, title:{display:true,text:metric,color:'#8a94a0',font:{family:'Syne',size:12}} }
+        x: { grid: {color:'rgba(0,0,0,0.06)'}, ticks:{color:'#8a8478',font:{family:'Montserrat',size:11}}, title:{display:true,text:param.replace(/^Inp/,''),color:'#8a8478',font:{family:'Montserrat',size:12}} },
+        y: { grid: {color:'rgba(0,0,0,0.06)'}, ticks:{color:'#8a8478',font:{family:'Montserrat',size:11}}, title:{display:true,text:metric,color:'#8a8478',font:{family:'Montserrat',size:12}} }
       }
     }
   });
@@ -1408,7 +1356,7 @@ function onForwardXMLLoaded(parsed) {
   const hasForwardResult = headers.includes('Forward Result') || headers.includes('Forward_Result');
   if (hasForwardResult) {
     fwdDisp.textContent = `Forward Results: ${data.length} passes loaded ✓`;
-    fwdDisp.style.color = 'var(--accent2)';
+    fwdDisp.style.color = 'var(--accent)';
   } else {
     fwdDisp.textContent = `Forward Results: ${data.length} rows loaded — check this is the correct file`;
     fwdDisp.style.color = 'var(--warn)';
@@ -1510,13 +1458,13 @@ function renderValidation() {
  
   results.forEach(res => {
     const { row, oosProfit, oosDD, oosTrades, ddRatio, c1, c2, c3, status } = res;
-    const rowBg = status==='PASS' ? '#0a1f10' : status==='CAUTION' ? '#1f180a' : '#1f0a0a';
+    const rowBg = status==='PASS' ? 'rgba(42,122,74,0.08)' : status==='CAUTION' ? 'rgba(201,168,76,0.08)' : 'rgba(192,57,43,0.06)';
     const rowBorder = status==='PASS' ? '#1a4020' : status==='CAUTION' ? '#40300a' : '#401a1a';
     const rowOpacity = status==='FAIL' ? 'opacity:0.7;' : '';
  
     html += `<tr style="background:${rowBg};${rowOpacity}">`;
     html += `<td>${row._rank}</td>`;
-    html += `<td><span style="color:var(--accent2);font-weight:600">${escHtml(String(row['Pass']))}</span></td>`;
+    html += `<td><span style="color:var(--accent);font-weight:600">${escHtml(String(row['Pass']))}</span></td>`;
  
     const cm = row._calmar;
     const cmC = cm===null?'var(--text3)':cm>=1.5?'var(--pass)':cm>=1.0?'var(--warn)':'var(--fail)';
@@ -1560,6 +1508,580 @@ function renderValidation() {
     `${readyCount > 0 ? readyCount + ' candidate(s) are ready for tick data testing in MT5.' : 'No candidates ready for tick data testing.'}`;
 }
  
+// ═══════════════════════════════════════════════════════════════
+// TAB 3 — TICK DATA COMPARISON
+// ═══════════════════════════════════════════════════════════════
+let tickPasses        = [];
+let tickPendingIS     = null;
+let tickPendingOOS    = null;
+let tickChartInstances = [];
+ 
+// ── File selection / drop ──────────────────────────────────────
+function tickDrop(e, side) {
+  e.preventDefault();
+  dragLeave('tick-dropzone-' + side);
+  const files = e.dataTransfer.files;
+  if (files.length >= 2) {
+    tickAutoAssignTwoFiles(files[0], files[1]);
+  } else if (files.length === 1) {
+    const inp = document.getElementById('tick-' + side + '-file');
+    const dt = new DataTransfer(); dt.items.add(files[0]); inp.files = dt.files;
+    tickFileSelected(inp, side);
+  }
+}
+ 
+function tickFileSelected(input, side) {
+  const file = input.files[0];
+  if (!file) return;
+  const statusEl = document.getElementById('tick-add-status');
+  statusEl.textContent = `Parsing ${side.toUpperCase()} file…`;
+  parseTickXLSX(file, parsed => {
+    if (side === 'is') {
+      tickPendingIS = parsed;
+      document.getElementById('tick-is-label').textContent = file.name;
+    } else {
+      tickPendingOOS = parsed;
+      document.getElementById('tick-oos-label').textContent = file.name;
+    }
+    const both = tickPendingIS && tickPendingOOS;
+    statusEl.textContent = `${side.toUpperCase()} parsed: ${parsed.totalTrades} trades, ${parsed.periodDays}d. ${both ? 'Ready — click Add Pass.' : 'Now upload the other file.'}`;
+    statusEl.style.color = both ? 'var(--pass)' : 'var(--accent)';
+  });
+}
+ 
+function tickAutoAssignTwoFiles(f1, f2) {
+  const statusEl = document.getElementById('tick-add-status');
+  statusEl.textContent = 'Parsing two files…';
+  parseTickXLSX(f1, p1 => {
+    parseTickXLSX(f2, p2 => {
+      if (p1.periodDays >= p2.periodDays) {
+        tickPendingIS = p1; tickPendingOOS = p2;
+        document.getElementById('tick-is-label').textContent = f1.name;
+        document.getElementById('tick-oos-label').textContent = f2.name;
+      } else {
+        tickPendingIS = p2; tickPendingOOS = p1;
+        document.getElementById('tick-is-label').textContent = f2.name;
+        document.getElementById('tick-oos-label').textContent = f1.name;
+      }
+      statusEl.textContent = 'Both files parsed and auto-assigned. Click Add Pass.';
+      statusEl.style.color = 'var(--pass)';
+    });
+  });
+}
+ 
+function addTickPass() {
+  if (!tickPendingIS || !tickPendingOOS) {
+    document.getElementById('tick-add-status').textContent = '⚠ Upload both IS and OOS files first.';
+    document.getElementById('tick-add-status').style.color = 'var(--warn)';
+    return;
+  }
+  const pass = {
+    is:    tickPendingIS,
+    oos:   tickPendingOOS,
+    label: buildAutoLabel(tickPendingIS),
+    _id:   Date.now()
+  };
+  tickPasses.push(pass);
+  tickPendingIS = null; tickPendingOOS = null;
+  document.getElementById('tick-is-label').textContent  = 'IS Report';
+  document.getElementById('tick-oos-label').textContent = 'OOS Report';
+  document.getElementById('tick-is-file').value  = '';
+  document.getElementById('tick-oos-file').value = '';
+  document.getElementById('tick-add-status').textContent = `Pass added. Total: ${tickPasses.length}`;
+  document.getElementById('tick-add-status').style.color = 'var(--pass)';
+  renderTickTab();
+}
+ 
+function removeTickPass(id) {
+  tickPasses = tickPasses.filter(p => p._id !== id);
+  renderTickTab();
+}
+ 
+// ── XLSX PARSER ───────────────────────────────────────────────
+function parseTickXLSX(file, callback) {
+  const reader = new FileReader();
+  reader.onload = e => {
+    const wb  = XLSX.read(new Uint8Array(e.target.result), { type: 'array', cellDates: false });
+    const ws  = wb.Sheets[wb.SheetNames[0]];
+    const rows = XLSX.utils.sheet_to_json(ws, { header: 1, defval: null, raw: true });
+ 
+    const parsed = {
+      params: {}, deposit: 100000, periodStr: '', periodDays: 0, periodYears: 1,
+      periodStart: '', periodEnd: '',
+      historyQuality: '', realTicks: false,
+      netProfit: 0, ddPct: 0, totalTrades: 0,
+      profitFactor: 0, lrCorr: null, largestTrade: 0,
+      equity: [], monthlyPnL: {}, monthlyWinRate: null
+    };
+ 
+    // Scan settings + summary rows
+    for (let i = 0; i < Math.min(rows.length, 90); i++) {
+      const r = rows[i];
+      if (!r) continue;
+      const a = r[0] != null ? String(r[0]).trim() : '';
+      const d = r[3];
+      const e5 = r[4] != null ? String(r[4]).trim() : '';
+      const h = r[7];
+ 
+      if (a === 'Period:' && d) {
+        parsed.periodStr = String(d);
+        const m = parsed.periodStr.match(/(\d{4}\.\d{2}\.\d{2})\s*-\s*(\d{4}\.\d{2}\.\d{2})/);
+        if (m) {
+          parsed.periodStart = m[1].replace(/\./g, '-');
+          parsed.periodEnd   = m[2].replace(/\./g, '-');
+          const d1 = new Date(parsed.periodStart);
+          const d2 = new Date(parsed.periodEnd);
+          parsed.periodDays  = Math.round((d2 - d1) / 86400000);
+          parsed.periodYears = Math.max(0.01, parsed.periodDays / 365.25);
+        }
+      }
+      if (a === 'Initial Deposit:' && typeof d === 'number') parsed.deposit = d;
+      if (a === 'History Quality:' && d) {
+        parsed.historyQuality = String(d);
+        parsed.realTicks = parsed.historyQuality.toLowerCase().includes('real ticks');
+      }
+      // Parameters: col D = 'Name=Value', skip '<unnamed>='
+      if (d && typeof d === 'string' && d.includes('=') && !d.startsWith('<')) {
+        const eq = d.indexOf('=');
+        const pn = d.substring(0, eq).trim();
+        const pv = d.substring(eq + 1).trim();
+        if (pn) parsed.params[pn] = pv;
+      }
+ 
+      // Summary stats — col A labels
+      if (a === 'Total Net Profit:' && typeof d === 'number') parsed.netProfit = d;
+      if (a === 'Profit Factor:'    && typeof d === 'number') parsed.profitFactor = d;
+      if (a === 'Total Trades:'     && typeof d === 'number') parsed.totalTrades = d;
+ 
+      // Summary stats — col E labels, col H values
+      if (e5 === 'Balance Drawdown Maximal:' && h != null) {
+        const dm = String(h).match(/\(([\d.]+)%\)/);
+        if (dm) parsed.ddPct = parseFloat(dm[1]);
+      }
+      if (e5 === 'LR Correlation:'     && typeof h === 'number') parsed.lrCorr = h;
+      if (e5 === 'Largest profit trade:' && typeof h === 'number') parsed.largestTrade = h;
+    }
+ 
+    // Find Deals table header
+    let dealsDataRow = -1;
+    for (let i = 0; i < rows.length; i++) {
+      if (rows[i] && rows[i][0] === 'Deals') { dealsDataRow = i + 2; break; }
+    }
+ 
+    if (dealsDataRow >= 0) {
+      const mMap = {};
+      for (let i = dealsDataRow; i < rows.length; i++) {
+        const r = rows[i];
+        if (!r || r[0] == null) continue;
+        const ts  = String(r[0]);
+        const bal = typeof r[11] === 'number' ? r[11] : null;
+        const pnl = typeof r[10] === 'number' ? r[10] : 0;
+        const dir = r[4] != null ? String(r[4]).toLowerCase() : '';
+        if (bal !== null && ts.length > 6) parsed.equity.push({ t: ts, b: bal });
+        if (dir === 'out' && ts.length >= 7) {
+          const ym = ts.substring(0, 7).replace('.', '-');
+          mMap[ym] = (mMap[ym] || 0) + pnl;
+        }
+      }
+      parsed.monthlyPnL = mMap;
+      const months = Object.values(mMap);
+      parsed.monthlyWinRate = months.length > 0
+        ? months.filter(v => v > 0).length / months.length : null;
+    }
+ 
+    callback(parsed);
+  };
+  reader.readAsArrayBuffer(file);
+}
+ 
+// ── SCORING ───────────────────────────────────────────────────
+// All criteria are IS vs OOS comparisons.
+// Ratios capped at 1.0 for scoring but displayed as actual.
+function computeAllCriteria(p) {
+  const is = p.is, oos = p.oos;
+ 
+  // Calmar for each period
+  is._calmar  = (is.deposit > 0 && is.ddPct > 0 && is.periodYears > 0)
+    ? ((is.netProfit / is.deposit * 100) / is.periodYears) / is.ddPct : null;
+  oos._calmar = (oos.deposit > 0 && oos.ddPct > 0 && oos.periodYears > 0)
+    ? ((oos.netProfit / oos.deposit * 100) / oos.periodYears) / oos.ddPct : null;
+ 
+  // C1 — Calmar degradation ratio (cap 1.0 for score)
+  p._c1_actual = (is._calmar && is._calmar > 0 && oos._calmar !== null)
+    ? oos._calmar / is._calmar : null;
+  p._c1_score  = p._c1_actual !== null ? Math.min(1.0, p._c1_actual) : null;
+ 
+  // C2 — DD consistency ratio (cap 1.0 for score — lower OOS DD is fine)
+  p._c2_actual = (is.ddPct > 0 && oos.ddPct > 0) ? oos.ddPct / is.ddPct : null;
+  p._c2_score  = p._c2_actual !== null ? Math.min(1.0, 1 / p._c2_actual) : null;
+  // score: ratio<=1 → full score; ratio>1 → penalty
+ 
+  // C3 — LR Correlation diff (smaller = better; invert for score)
+  p._c3_diff   = (is.lrCorr !== null && oos.lrCorr !== null)
+    ? Math.abs(is.lrCorr - oos.lrCorr) : null;
+  p._c3_score  = p._c3_diff !== null ? Math.max(0, 1 - p._c3_diff) : null;
+ 
+  // C4 — Trade frequency consistency
+  const expectedOOS = (is.totalTrades > 0 && is.periodYears > 0 && oos.periodYears > 0)
+    ? (is.totalTrades / is.periodYears) * oos.periodYears : null;
+  p._c4_expected = expectedOOS !== null ? Math.round(expectedOOS) : null;
+  p._c4_actual   = oos.totalTrades;
+  p._c4_ratio    = (expectedOOS && expectedOOS > 0) ? oos.totalTrades / expectedOOS : null;
+  // Score: ratio in [0.6,1.4] = full; outside = penalty
+  p._c4_score    = p._c4_ratio !== null ? Math.min(1.0, p._c4_ratio <= 1 ? p._c4_ratio : 1 / p._c4_ratio) : null;
+ 
+  // C5 — Win rate consistency (diff in pp)
+  const isMWR  = is.monthlyWinRate  !== null ? is.monthlyWinRate  * 100 : null;
+  const oosMWR = oos.monthlyWinRate !== null ? oos.monthlyWinRate * 100 : null;
+  p._c5_diff   = (isMWR !== null && oosMWR !== null) ? Math.abs(isMWR - oosMWR) : null;
+  p._c5_score  = p._c5_diff !== null ? Math.max(0, 1 - p._c5_diff / 20) : null;
+ 
+  // C6 — Profit Factor consistency
+  p._c6_ratio  = (is.profitFactor > 0 && oos.profitFactor > 0)
+    ? oos.profitFactor / is.profitFactor : null;
+  p._c6_score  = p._c6_ratio !== null ? Math.min(1.0, p._c6_ratio) : null;
+ 
+  // Outlier flags — checked independently for IS and OOS
+  p._outlierIS  = (is.netProfit  > 0 && is.largestTrade  > 0) ? is.largestTrade  / is.netProfit  : null;
+  p._outlierOOS = (oos.netProfit > 0 && oos.largestTrade > 0) ? oos.largestTrade / oos.netProfit : null;
+}
+ 
+function rankTickPasses() {
+  if (tickPasses.length === 0) return;
+  tickPasses.forEach(p => computeAllCriteria(p));
+ 
+  // Normalise each score dimension across all passes then combine with weights
+  const norm = arr => {
+    const vals = arr.filter(v => v !== null && isFinite(v));
+    if (vals.length === 0) return arr.map(() => 0);
+    const mn = Math.min(...vals), mx = Math.max(...vals), r = mx - mn;
+    return arr.map(v => v == null || !isFinite(v) ? 0 : (r === 0 ? 0.5 : (v - mn) / r));
+  };
+ 
+  const n1 = norm(tickPasses.map(p => p._c1_score));
+  const n2 = norm(tickPasses.map(p => p._c2_score));
+  const n3 = norm(tickPasses.map(p => p._c3_score));
+  const n4 = norm(tickPasses.map(p => p._c4_score));
+  const n5 = norm(tickPasses.map(p => p._c5_score));
+  const n6 = norm(tickPasses.map(p => p._c6_score));
+ 
+  tickPasses.forEach((p, i) => {
+    p._finalScore = 0.30*n1[i] + 0.25*n2[i] + 0.20*n3[i] + 0.15*n4[i] + 0.05*n5[i] + 0.05*n6[i];
+  });
+ 
+  tickPasses.sort((a, b) => b._finalScore - a._finalScore);
+  tickPasses.forEach((p, i) => { p._rank = i + 1; });
+}
+ 
+// "All green" = every criterion is at its green threshold
+function isAllGreen(p) {
+  return (p._c1_actual !== null && p._c1_actual >= 0.6) &&
+         (p._c2_actual !== null && p._c2_actual <= 1.3) &&
+         (p._c3_diff   !== null && p._c3_diff   <= 0.10) &&
+         (p._c4_ratio  !== null && p._c4_ratio  >= 0.6 && p._c4_ratio <= 1.4) &&
+         (p._c5_diff   !== null && p._c5_diff   <= 10) &&
+         (p._c6_ratio  !== null && p._c6_ratio  >= 0.7);
+}
+ 
+// ── LABEL ─────────────────────────────────────────────────────
+function buildAutoLabel(isParsed) {
+  const skip = new Set(['EMA_Period','WMA_Period','SMMA_Period','ATR_Length','ATR_EvalPeriod',
+    'ER_Length','RiskPercent','MaxSpreadPoints','StartHour','EndHour','SL_Lookback',
+    'TrailerOrder_Switch','TrailStart_Switch','SAR_Mode']);
+  const parts = [];
+  for (const [k, v] of Object.entries(isParsed.params)) {
+    if (skip.has(k)) continue;
+    const short = k.replace(/^Inp/,'').replace(/_Switch$/,'').replace(/_Ratio$/,'');
+    parts.push(`${short}=${v}`);
+    if (parts.length >= 6) break;
+  }
+  return parts.length > 0 ? parts.join(' ') : 'Pass';
+}
+ 
+function renameTickPass(id) {
+  const p = tickPasses.find(x => x._id === id);
+  if (!p) return;
+  const newLabel = prompt('Rename pass:', p.label);
+  if (newLabel && newLabel.trim()) { p.label = newLabel.trim(); renderTickTab(); }
+}
+ 
+// ── RENDER ────────────────────────────────────────────────────
+function renderTickTab() {
+  const has = tickPasses.length > 0;
+  document.getElementById('tick-empty').style.display   = has ? 'none'  : 'block';
+  document.getElementById('tick-content').style.display = has ? 'block' : 'none';
+  if (!has) return;
+ 
+  rankTickPasses();
+ 
+  const allGreenCount = tickPasses.filter(isAllGreen).length;
+  const bestC1 = tickPasses.reduce((b, p) =>
+    (p._c1_actual !== null && (b === null || p._c1_actual > b)) ? p._c1_actual : b, null);
+  const top1 = tickPasses[0];
+ 
+  // Summary cards
+  const c1Col = bestC1 === null ? '' : bestC1 >= 0.6 ? 'good' : bestC1 >= 0.3 ? 'warn' : 'bad';
+  document.getElementById('tick-summary-cards').innerHTML = `
+    <div class="card"><div class="card-title">Passes Uploaded</div><div class="card-value">${tickPasses.length}</div></div>
+    <div class="card"><div class="card-title">All Criteria Green</div><div class="card-value ${allGreenCount>0?'good':'bad'}">${allGreenCount}</div></div>
+    <div class="card"><div class="card-title">Best Calmar Degradation</div><div class="card-value ${c1Col}">${bestC1!==null?bestC1.toFixed(2):'—'}</div></div>
+    <div class="card"><div class="card-title">Top Pick</div><div class="card-value" style="font-size:13px;word-break:break-word;">${top1?escHtml(top1.label):'—'}</div></div>
+  `;
+ 
+  // Colour helper: returns CSS colour string
+  const col = (v, greenThresh, warnThresh, invert) => {
+    if (v === null || !isFinite(v)) return 'var(--muted)';
+    if (invert) return v <= greenThresh ? 'var(--pass)' : v <= warnThresh ? 'var(--warn)' : 'var(--fail)';
+    return v >= greenThresh ? 'var(--pass)' : v >= warnThresh ? 'var(--warn)' : 'var(--fail)';
+  };
+  const f2 = v => (v !== null && isFinite(v)) ? v.toFixed(2) : '—';
+  const f1 = v => (v !== null && isFinite(v)) ? v.toFixed(1) : '—';
+  const fPct = v => (v !== null && isFinite(v)) ? (v*100).toFixed(0)+'%' : '—';
+ 
+  // Table
+  const medals   = ['🥇','🥈','🥉'];
+  const rowClsMap = ['pass-row-gold','pass-row-silver','pass-row-bronze'];
+  const colHdrs = [
+    'RANK','LABEL',
+    'IS CALMAR','OOS CALMAR','CALMAR RATIO',
+    'IS DD%','OOS DD%','DD RATIO',
+    'IS LR CORR','OOS LR CORR','LR DIFF',
+    'EXP OOS TRADES','ACT OOS TRADES','TRADE FREQ RATIO',
+    'IS WIN%','OOS WIN%','WIN RATE DIFF',
+    'IS PF','OOS PF','PF RATIO',
+    'QUALITY','FINAL SCORE',''
+  ];
+ 
+  let html = '<thead><tr>';
+  colHdrs.forEach(h => { html += `<th>${h}</th>`; });
+  html += '</tr></thead><tbody>';
+ 
+  tickPasses.forEach(p => {
+    const is = p.is, oos = p.oos;
+    const rank = p._rank;
+    const medal = rank <= 3 ? medals[rank-1] : '';
+    const rCls  = rank <= 3 ? rowClsMap[rank-1] : '';
+ 
+    html += `<tr class="${rCls}">`;
+ 
+    // Rank + label
+    html += `<td style="font-weight:600">${medal} ${rank}</td>`;
+    html += `<td><span class="editable-label" onclick="renameTickPass(${p._id})">${escHtml(p.label)}</span>`;
+    if (!is.realTicks) html += ` <span style="color:var(--fail);font-size:10px;font-weight:600;">⚠ NOT REAL TICKS</span>`;
+    html += `</td>`;
+ 
+    // C1 — Calmar
+    html += `<td>${f2(is._calmar)}</td>`;
+    html += `<td>${f2(oos._calmar)}</td>`;
+    html += `<td style="color:${col(p._c1_actual,0.6,0.3,false)};font-weight:600">${f2(p._c1_actual)}</td>`;
+ 
+    // C2 — DD
+    html += `<td>${f1(is.ddPct)}%</td>`;
+    html += `<td>${f1(oos.ddPct)}%</td>`;
+    html += `<td style="color:${col(p._c2_actual,1.3,1.8,true)};font-weight:600">${f2(p._c2_actual)}</td>`;
+ 
+    // C3 — LR Corr
+    html += `<td>${f2(is.lrCorr)}</td>`;
+    html += `<td>${f2(oos.lrCorr)}</td>`;
+    const lrDiffCol = p._c3_diff===null?'var(--muted)':p._c3_diff<=0.10?'var(--pass)':p._c3_diff<=0.20?'var(--warn)':'var(--fail)';
+    html += `<td style="color:${lrDiffCol};font-weight:600">${f2(p._c3_diff)}</td>`;
+ 
+    // C4 — Trade freq
+    html += `<td style="color:var(--muted)">${p._c4_expected!==null?p._c4_expected:'—'}</td>`;
+    html += `<td>${p._c4_actual.toLocaleString('en')}</td>`;
+    const tfCol = p._c4_ratio===null?'var(--muted)':
+      (p._c4_ratio>=0.6&&p._c4_ratio<=1.4)?'var(--pass)':
+      (p._c4_ratio>=0.4&&p._c4_ratio<=1.8)?'var(--warn)':'var(--fail)';
+    html += `<td style="color:${tfCol};font-weight:600">${f2(p._c4_ratio)}</td>`;
+ 
+    // C5 — Win rate
+    const isMWRPct  = is.monthlyWinRate  !== null ? (is.monthlyWinRate*100).toFixed(0)+'%'  : '—';
+    const oosMWRPct = oos.monthlyWinRate !== null ? (oos.monthlyWinRate*100).toFixed(0)+'%' : '—';
+    html += `<td>${isMWRPct}</td>`;
+    html += `<td>${oosMWRPct}</td>`;
+    const wrDiffCol = p._c5_diff===null?'var(--muted)':p._c5_diff<=10?'var(--pass)':p._c5_diff<=20?'var(--warn)':'var(--fail)';
+    html += `<td style="color:${wrDiffCol};font-weight:600">${p._c5_diff!==null?p._c5_diff.toFixed(1)+'pp':'—'}</td>`;
+ 
+    // C6 — PF
+    html += `<td>${f2(is.profitFactor)}</td>`;
+    html += `<td>${f2(oos.profitFactor)}</td>`;
+    html += `<td style="color:${col(p._c6_ratio,0.7,0.5,false)};font-weight:600">${f2(p._c6_ratio)}</td>`;
+ 
+    // Quality
+    const rtCol = is.realTicks && oos.realTicks ? 'var(--pass)' : 'var(--fail)';
+    const rtTxt = is.realTicks && oos.realTicks ? '✓ Both real' : '⚠ Check files';
+    html += `<td style="color:${rtCol}">${rtTxt}</td>`;
+ 
+    // Final score
+    html += `<td style="color:var(--accent);font-weight:600">${p._finalScore.toFixed(3)}</td>`;
+ 
+    // Delete
+    html += `<td><button class="btn btn-ghost" onclick="removeTickPass(${p._id})" style="font-size:10px;padding:3px 8px;">✕</button></td>`;
+ 
+    html += '</tr>';
+  });
+ 
+  html += '</tbody>';
+  document.getElementById('tick-table').innerHTML = html;
+ 
+  renderTickCharts();
+}
+ 
+// ── EQUITY CHARTS — single continuous curve per pass ──────────
+function renderTickCharts() {
+  tickChartInstances.forEach(ch => ch.destroy());
+  tickChartInstances = [];
+  const container = document.getElementById('tick-charts');
+  container.innerHTML = '';
+ 
+  tickPasses.forEach(p => {
+    const medals = ['🥇','🥈','🥉'];
+    const medal = p._rank <= 3 ? medals[p._rank-1] : `#${p._rank}`;
+    const scoreStr = p._finalScore.toFixed(3);
+    const c1Str = p._c1_actual !== null ? p._c1_actual.toFixed(2) : '—';
+ 
+    // Outlier notices — IS and OOS checked independently
+    const isOut  = p._outlierIS  !== null && p._outlierIS  > 0.25;
+    const oosOut = p._outlierOOS !== null && p._outlierOOS > 0.25;
+    const noticeStyle = 'font-family:\'Montserrat\',sans-serif;font-size:11px;font-weight:500;color:var(--warn);background:rgba(201,119,10,0.08);border:1px solid rgba(201,119,10,0.25);border-radius:5px;padding:7px 12px;margin-top:8px;';
+    const failStyle   = 'font-family:\'Montserrat\',sans-serif;font-size:11px;font-weight:600;color:var(--fail);background:rgba(192,57,43,0.07);border:1px solid rgba(192,57,43,0.20);border-radius:5px;padding:7px 12px;margin-top:8px;';
+    let outlierHtml = '';
+    if (isOut)  outlierHtml += `<div style="${noticeStyle}">⚠ IS outlier trade dependency — largest trade accounts for ${(p._outlierIS*100).toFixed(0)}% of total IS profit. IS Calmar may be inflated.</div>`;
+    if (oosOut) outlierHtml += `<div style="${noticeStyle}">⚠ OOS outlier trade dependency — largest trade accounts for ${(p._outlierOOS*100).toFixed(0)}% of total OOS profit. OOS validation result may be misleading.</div>`;
+    if (isOut && oosOut) outlierHtml += `<div style="${failStyle}">⚠ Outlier dependency in both periods — treat this pass with significant caution.</div>`;
+ 
+    const wrapper = document.createElement('div');
+    wrapper.className = 'card mb24';
+    wrapper.innerHTML = `
+      <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:12px;flex-wrap:wrap;">
+        <div style="font-family:'DM Serif Display',serif;font-size:16px;color:var(--text);">${medal} ${escHtml(p.label)}</div>
+        <div style="font-family:'Montserrat',sans-serif;font-size:11px;font-weight:500;color:var(--muted);">
+          Score&nbsp;${scoreStr} &nbsp;·&nbsp; Calmar ratio&nbsp;${c1Str} &nbsp;·&nbsp; IS:&nbsp;${escHtml(p.is.periodStr)} &nbsp;·&nbsp; OOS:&nbsp;${escHtml(p.oos.periodStr)}
+        </div>
+      </div>
+      <canvas id="chart-combo-${p._id}" height="180"></canvas>
+      ${outlierHtml}`;
+    container.appendChild(wrapper);
+ 
+    // Build combined timeline: IS equity then OOS equity
+    // Both are already balance curves from deposit; we need to stitch them.
+    // IS equity ends at some balance; OOS equity starts at deposit again (separate run).
+    // We display them on a shared balance axis — OOS curve is offset by IS final balance - OOS start.
+    const isEq  = p.is.equity;
+    const oosEq = p.oos.equity;
+    if (isEq.length === 0 && oosEq.length === 0) return;
+ 
+    // Sample each to max 300 points
+    const sample = (arr, max) => {
+      const step = Math.max(1, Math.floor(arr.length / max));
+      return arr.filter((_, i) => i % step === 0);
+    };
+    const isSampled  = sample(isEq,  300);
+    const oosSampled = sample(oosEq, 300);
+ 
+    // OOS offset: shift OOS balances so the curve continues from IS end
+    const isEnd  = isSampled.length  > 0 ? isSampled[isSampled.length-1].b : p.is.deposit;
+    const oosStart = oosSampled.length > 0 ? oosSampled[0].b : p.oos.deposit;
+    const oosOffset = isEnd - oosStart;
+ 
+    const isLabels  = isSampled.map(d => d.t.substring(0,10));
+    const isValues  = isSampled.map(d => d.b);
+    const oosLabels = oosSampled.map(d => d.t.substring(0,10));
+    const oosValues = oosSampled.map(d => d.b + oosOffset);
+ 
+    // Null-gap: add a null point between IS end and OOS start to signal the boundary
+    // (Chart.js spanGaps:false will break the line there — but we want continuous,
+    // so we just concatenate directly — the vertical dashed line is drawn as annotation)
+    const allLabels = [...isLabels, ...oosLabels];
+    const allValues = [...isValues, ...oosValues];
+    const splitIdx  = isLabels.length; // index where OOS starts
+    const splitLabel = oosLabels.length > 0 ? oosLabels[0] : '';
+ 
+    const ctx = document.getElementById(`chart-combo-${p._id}`).getContext('2d');
+ 
+    // Background plugin: blue left, green right of boundary
+    const bgPlugin = {
+      id: `bg-${p._id}`,
+      beforeDraw(chart) {
+        const { ctx: c2, chartArea: { left, right, top, bottom }, scales: { x } } = chart;
+        if (!x || splitIdx <= 0 || splitIdx >= allLabels.length) return;
+        const splitX = x.getPixelForValue(splitIdx - 1 + 0.5);
+        c2.save();
+        c2.fillStyle = 'rgba(42,95,180,0.04)';
+        c2.fillRect(left, top, Math.min(splitX, right) - left, bottom - top);
+        c2.fillStyle = 'rgba(42,122,74,0.04)';
+        c2.fillRect(Math.max(splitX, left), top, right - Math.max(splitX, left), bottom - top);
+        // Vertical dashed boundary line
+        c2.strokeStyle = 'rgba(0,0,0,0.25)';
+        c2.lineWidth = 1.5;
+        c2.setLineDash([4, 3]);
+        c2.beginPath();
+        c2.moveTo(splitX, top);
+        c2.lineTo(splitX, bottom);
+        c2.stroke();
+        c2.setLineDash([]);
+        // Label
+        if (splitLabel) {
+          c2.fillStyle = 'rgba(0,0,0,0.4)';
+          c2.font = '10px Montserrat, sans-serif';
+          c2.textAlign = 'center';
+          c2.fillText(splitLabel, splitX, top - 4);
+        }
+        c2.restore();
+      }
+    };
+ 
+    const ch = new Chart(ctx, {
+      type: 'line',
+      plugins: [bgPlugin],
+      data: {
+        labels: allLabels,
+        datasets: [{
+          data: allValues,
+          borderColor: 'rgba(42,95,180,0.75)',
+          backgroundColor: 'transparent',
+          borderWidth: 1.5,
+          pointRadius: 0,
+          tension: 0.1,
+          spanGaps: true
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: '#fff', borderColor: 'rgba(0,0,0,0.12)', borderWidth: 1,
+            titleFont: { family: 'Montserrat', size: 10 },
+            bodyFont:  { family: 'Montserrat', size: 11 },
+            titleColor: '#8a8478', bodyColor: '#0f0e0b',
+            callbacks: {
+              label: item => '$' + item.raw.toLocaleString('en', { maximumFractionDigits: 0 }),
+              title: items => {
+                const idx = items[0].dataIndex;
+                return idx < splitIdx ? `IS — ${items[0].label}` : `OOS — ${items[0].label}`;
+              }
+            }
+          }
+        },
+        scales: {
+          x: {
+            grid: { color: 'rgba(0,0,0,0.04)' },
+            ticks: { color: '#8a8478', font: { family: 'Montserrat', size: 9 }, maxTicksLimit: 8, maxRotation: 0 }
+          },
+          y: {
+            grid: { color: 'rgba(0,0,0,0.06)' },
+            ticks: { color: '#8a8478', font: { family: 'Montserrat', size: 10 },
+              callback: v => '$' + v.toLocaleString('en', { maximumFractionDigits: 0 }) }
+          }
+        }
+      }
+    });
+    tickChartInstances.push(ch);
+  });
+}
+ 
+ 
 // ═══════════════════════════════════════════════════
 // HELPERS
 // ═══════════════════════════════════════════════════
@@ -1568,5 +2090,73 @@ function escHtml(s) {
 }
 </script>
  
+<!-- ═══════════════════════════════════════════════ -->
+<!-- TAB 3: TICK DATA COMPARISON -->
+<!-- ═══════════════════════════════════════════════ -->
+<!-- TAB 3: TICK DATA COMPARISON -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="panel" id="tab2">
+  <div class="section-title">Tick Data Comparison</div>
+  <div class="section-sub">Upload one IS and one OOS Strategy Tester Report (XLSX) per pass. Both files must use Every Tick based on real ticks. Add as many passes as needed — the table updates live with each addition. All scoring is based on IS vs OOS consistency, not IS performance alone. Visually inspect the equity curve overlays before making your final selection.</div>
+ 
+  <!-- Upload panel -->
+  <div class="card mb24">
+    <div class="chart-label" style="margin-bottom:14px;">Add Pass</div>
+    <div style="display:flex;gap:16px;align-items:flex-end;flex-wrap:wrap;">
+      <div style="flex:1;min-width:220px;">
+        <label class="ctrl-label">IS REPORT (REAL TICKS)</label>
+        <div class="upload-zone" id="tick-dropzone-is" style="padding:20px;"
+          ondragover="dragOver(event,'tick-dropzone-is')" ondragleave="dragLeave('tick-dropzone-is')"
+          ondrop="tickDrop(event,'is')">
+          <input type="file" id="tick-is-file" accept=".xlsx" onchange="tickFileSelected(this,'is')">
+          <div class="upload-label" id="tick-is-label" style="font-size:13px;">IS Report</div>
+          <div class="upload-hint">XLSX · IS PERIOD</div>
+        </div>
+      </div>
+      <div style="flex:1;min-width:220px;">
+        <label class="ctrl-label">OOS REPORT (REAL TICKS)</label>
+        <div class="upload-zone" id="tick-dropzone-oos" style="padding:20px;"
+          ondragover="dragOver(event,'tick-dropzone-oos')" ondragleave="dragLeave('tick-dropzone-oos')"
+          ondrop="tickDrop(event,'oos')">
+          <input type="file" id="tick-oos-file" accept=".xlsx" onchange="tickFileSelected(this,'oos')">
+          <div class="upload-label" id="tick-oos-label" style="font-size:13px;">OOS Report</div>
+          <div class="upload-hint">XLSX · OOS PERIOD</div>
+        </div>
+      </div>
+      <div>
+        <button class="btn btn-primary" onclick="addTickPass()" style="height:44px;">+ Add Pass</button>
+      </div>
+    </div>
+    <div id="tick-add-status" style="font-family:'Montserrat',sans-serif;font-size:11px;color:var(--text3);margin-top:8px;"></div>
+  </div>
+ 
+  <!-- Empty state -->
+  <div id="tick-empty" class="empty">
+    <div class="empty-icon">📋</div>
+    <div class="empty-text">No passes uploaded yet</div>
+    <div class="empty-sub">Upload an IS and OOS XLSX report above, then click Add Pass</div>
+  </div>
+ 
+  <!-- Results -->
+  <div id="tick-content" style="display:none;">
+    <!-- Summary cards -->
+    <div class="grid-4 mb24" id="tick-summary-cards"></div>
+ 
+    <!-- Comparison table -->
+    <div class="tbl-wrap mb24">
+      <div class="tbl-header">
+        <div class="tbl-title">Pass Comparison</div>
+        <div style="font-family:'Montserrat',sans-serif;font-size:11px;color:var(--text3);">Ranked by Final Score · 🥇🥈🥉 = Top 3</div>
+      </div>
+      <div class="tbl-scroll"><table id="tick-table"></table></div>
+    </div>
+ 
+    <!-- Equity curve charts -->
+    <div id="tick-charts"></div>
+  </div>
+</div>
+ 
+ 
 </body>
 </html>
+ 
