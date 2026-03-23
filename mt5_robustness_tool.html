@@ -2019,41 +2019,19 @@ function renderTickCharts() {
     const oosLabels = oosSampled.map(d => d.t.substring(0, 10));
     const oosValues = oosSampled.map(d => d.b);
  
-    // Dual y-axes: IS on left, OOS on right.
-    // The right axis is calibrated so that OOS start value maps to the same
-    // pixel height as IS end value — giving a visual join while each axis
-    // uses its own range so neither curve is compressed.
-    //
-    // Alignment: we want  (isEnd - isMin) / (isMax - isMin)
-    //                   == (oosStart - oosMin2) / (oosMax2 - oosMin2)
-    // i.e. the fraction-from-bottom is equal for both values.
-    // We fix oosMin2 and oosMax2 by anchoring oosStart at the IS-end fraction,
-    // then stretching the OOS range by the same padding factor.
-    const isEndVal    = isValues.length  > 0 ? isValues[isValues.length - 1]  : (p.is.deposit  || 100000);
-    const oosStartVal = oosValues.length > 0 ? oosValues[0]                   : (p.oos.deposit || 100000);
+    // Each axis scaled tightly to its own data so both curves are fully readable.
+    // IS left axis, OOS right axis — independent ranges, each with 8% padding.
+    const isMin  = Math.min(...isValues);
+    const isMax  = Math.max(...isValues);
+    const isPad  = (isMax - isMin) * 0.08 || 5000;
+    const isYMin = isMin - isPad;
+    const isYMax = isMax + isPad;
  
-    const isMin   = Math.min(...isValues);
-    const isMax   = Math.max(...isValues);
-    const isPad   = (isMax - isMin) * 0.08 || 5000;
-    const isYMin  = isMin  - isPad;
-    const isYMax  = isMax  + isPad;
-    const isRange = isYMax - isYMin;
- 
-    // Fraction-from-bottom where IS ends
-    const isFrac  = (isEndVal - isYMin) / isRange;
- 
-    // Anchor: oosStart at isFrac from bottom of OOS axis.
-    // The axis range must be large enough to fit ALL OOS data on both sides.
-    // We derive the required total range from both directions and take the larger.
-    const oosMin   = oosValues.length > 0 ? Math.min(...oosValues) : oosStartVal;
-    const oosMax   = oosValues.length > 0 ? Math.max(...oosValues) : oosStartVal;
-    const oosAbove = (oosMax - oosStartVal) * 1.10; // data above start + 10% pad
-    const oosBelow = (oosStartVal - oosMin)  * 1.10; // data below start + 10% pad
-    const rangeFromAbove = isFrac     > 0.999 ? oosAbove * 20 : oosAbove / (1 - isFrac);
-    const rangeFromBelow = isFrac     < 0.001 ? oosBelow * 20 : oosBelow / isFrac;
-    const oosSpan  = Math.max(rangeFromAbove, rangeFromBelow, (oosMax - oosMin) * 1.2);
-    const oosYMin  = oosStartVal - isFrac * oosSpan;
-    const oosYMax  = oosYMin + oosSpan;
+    const oosMin  = oosValues.length > 0 ? Math.min(...oosValues) : 0;
+    const oosMax  = oosValues.length > 0 ? Math.max(...oosValues) : 0;
+    const oosPad  = (oosMax - oosMin) * 0.10 || 5000;
+    const oosYMin = oosMin - oosPad;
+    const oosYMax = oosMax + oosPad;
  
     const isDataFull  = [...isValues,  ...Array(oosLabels.length).fill(null)];
     const oosDataFull = [...Array(isLabels.length).fill(null), ...oosValues];
