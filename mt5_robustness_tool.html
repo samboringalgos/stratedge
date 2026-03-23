@@ -1535,18 +1535,29 @@ function tickFileSelected(input, side) {
   if (!file) return;
   const statusEl = document.getElementById('tick-add-status');
   statusEl.textContent = `Parsing ${side.toUpperCase()} file…`;
-  parseTickXLSX(file, parsed => {
-    if (side === 'is') {
-      tickPendingIS = parsed;
-      document.getElementById('tick-is-label').textContent = file.name;
-    } else {
-      tickPendingOOS = parsed;
-      document.getElementById('tick-oos-label').textContent = file.name;
-    }
-    const both = tickPendingIS && tickPendingOOS;
-    statusEl.textContent = `${side.toUpperCase()} parsed: ${parsed.totalTrades} trades, ${parsed.periodDays}d. ${both ? 'Ready — click Add Pass.' : 'Now upload the other file.'}`;
-    statusEl.style.color = both ? 'var(--pass)' : 'var(--accent)';
-  });
+  statusEl.style.color = 'var(--muted)';
+  try {
+    parseTickXLSX(file, parsed => {
+      try {
+        if (side === 'is') {
+          tickPendingIS = parsed;
+          document.getElementById('tick-is-label').textContent = file.name;
+        } else {
+          tickPendingOOS = parsed;
+          document.getElementById('tick-oos-label').textContent = file.name;
+        }
+        const both = tickPendingIS && tickPendingOOS;
+        statusEl.textContent = `${side.toUpperCase()} parsed: ${parsed.totalTrades} trades, ${parsed.periodDays}d. ${both ? 'Ready — click Add Pass.' : 'Now upload the other file.'}`;
+        statusEl.style.color = both ? 'var(--pass)' : 'var(--accent)';
+      } catch(err) {
+        statusEl.textContent = `Error reading ${side.toUpperCase()} file: ${err.message}`;
+        statusEl.style.color = 'var(--fail)';
+      }
+    });
+  } catch(err) {
+    statusEl.textContent = `Failed to parse ${side.toUpperCase()} file: ${err.message}`;
+    statusEl.style.color = 'var(--fail)';
+  }
 }
  
 function tickAutoAssignTwoFiles(f1, f2) {
@@ -1575,21 +1586,27 @@ function addTickPass() {
     document.getElementById('tick-add-status').style.color = 'var(--warn)';
     return;
   }
-  const pass = {
-    is:    tickPendingIS,
-    oos:   tickPendingOOS,
-    label: tickPendingIS.fileName || buildAutoLabel(tickPendingIS),
-    _id:   Date.now()
-  };
-  tickPasses.push(pass);
-  tickPendingIS = null; tickPendingOOS = null;
-  document.getElementById('tick-is-label').textContent  = 'IS Report';
-  document.getElementById('tick-oos-label').textContent = 'OOS Report';
-  document.getElementById('tick-is-file').value  = '';
-  document.getElementById('tick-oos-file').value = '';
-  document.getElementById('tick-add-status').textContent = `Pass added. Total: ${tickPasses.length}`;
-  document.getElementById('tick-add-status').style.color = 'var(--pass)';
-  renderTickTab();
+  try {
+    const pass = {
+      is:    tickPendingIS,
+      oos:   tickPendingOOS,
+      label: tickPendingIS.fileName || buildAutoLabel(tickPendingIS),
+      _id:   Date.now()
+    };
+    tickPasses.push(pass);
+    tickPendingIS = null; tickPendingOOS = null;
+    document.getElementById('tick-is-label').textContent  = 'IS Report';
+    document.getElementById('tick-oos-label').textContent = 'OOS Report';
+    document.getElementById('tick-is-file').value  = '';
+    document.getElementById('tick-oos-file').value = '';
+    document.getElementById('tick-add-status').textContent = `Pass added. Total: ${tickPasses.length}`;
+    document.getElementById('tick-add-status').style.color = 'var(--pass)';
+    renderTickTab();
+  } catch(err) {
+    document.getElementById('tick-add-status').textContent = `Error adding pass: ${err.message}`;
+    document.getElementById('tick-add-status').style.color = 'var(--fail)';
+    console.error('addTickPass error:', err);
+  }
 }
  
 function removeTickPass(id) {
@@ -1600,7 +1617,9 @@ function removeTickPass(id) {
 // ── XLSX PARSER ───────────────────────────────────────────────
 function parseTickXLSX(file, callback) {
   const reader = new FileReader();
+  reader.onerror = () => { throw new Error('FileReader failed — could not read ' + file.name); };
   reader.onload = e => {
+    try {
     const wb  = XLSX.read(new Uint8Array(e.target.result), { type: 'array', cellDates: false });
     const ws  = wb.Sheets[wb.SheetNames[0]];
     const rows = XLSX.utils.sheet_to_json(ws, { header: 1, defval: null, raw: true });
@@ -1691,6 +1710,9 @@ function parseTickXLSX(file, callback) {
     }
  
     callback(parsed);
+    } catch(err) {
+      throw new Error('XLSX parse error: ' + err.message);
+    }
   };
   reader.readAsArrayBuffer(file);
 }
@@ -1925,7 +1947,15 @@ function renderTickTab() {
   html += '</tbody>';
   document.getElementById('tick-table').innerHTML = html;
  
-  renderTickCharts();
+  try {
+    renderTickCharts();
+  } catch(err) {
+    console.error('Chart render error:', err);
+    document.getElementById('tick-charts').innerHTML =
+      `<div style="font-family:'Montserrat',sans-serif;font-size:12px;color:var(--fail);padding:12px;">
+        Chart render error: ${err.message}. Table data above is still valid.
+      </div>`;
+  }
 }
  
 // ── EQUITY CHARTS — single continuous curve per pass ──────────
@@ -2203,4 +2233,28 @@ function escHtml(s) {
   <div id="tick-empty" class="empty">
     <div class="empty-icon">📋</div>
     <div class="empty-text">No passes uploaded yet</div>
-    <div class="empty-sub">Upload an IS and OOS XLSX report above, then click Add Pass</div
+    <div class="empty-sub">Upload an IS and OOS XLSX report above, then click Add Pass</div>
+  </div>
+ 
+  <!-- Results -->
+  <div id="tick-content" style="display:none;">
+    <!-- Summary cards -->
+    <div class="grid-4 mb24" id="tick-summary-cards"></div>
+ 
+    <!-- Comparison table -->
+    <div class="tbl-wrap mb24">
+      <div class="tbl-header">
+        <div class="tbl-title">Pass Comparison</div>
+        <div style="font-family:'Montserrat',sans-serif;font-size:11px;color:var(--text3);">Ranked by Final Score · 🥇🥈🥉 = Top 3</div>
+      </div>
+      <div class="tbl-scroll"><table id="tick-table"></table></div>
+    </div>
+ 
+    <!-- Equity curve charts -->
+    <div id="tick-charts"></div>
+  </div>
+</div>
+ 
+ 
+</body>
+</html>
