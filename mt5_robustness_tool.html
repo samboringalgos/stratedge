@@ -626,9 +626,8 @@ function updateISYears() {
     disp.style.color = 'var(--accent)';
     return;
   }
-  isYears = (plateauData && plateauData.xmlYears) ? plateauData.xmlYears : 6;
-  const floor = Math.round(30 * isYears);
-  disp.textContent = `IS: ${isYears.toFixed(2)} yr → Trade floor: ${floor} trades minimum (default)`;
+  isYears = 6;
+  disp.textContent = `Enter IS dates or years above — XML title cannot be used (MT5 includes OOS period in title)`;
   disp.style.color = 'var(--warn)';
 }
  
@@ -685,18 +684,6 @@ function parseXML(text) {
   const depositEl = doc.querySelector('Deposit');
   const deposit = depositEl ? parseFloat(depositEl.textContent) : null;
  
-  // Try to parse dates from title
-  let xmlYears = 6;
-  const titleEl = doc.querySelector('Title');
-  if (titleEl) {
-    const m = titleEl.textContent.match(/(\d{4}\.\d{2}\.\d{2})-(\d{4}\.\d{2}\.\d{2})/);
-    if (m) {
-      const d1 = new Date(m[1].replace(/\./g,'-'));
-      const d2 = new Date(m[2].replace(/\./g,'-'));
-      xmlYears = Math.max(0.1, (d2 - d1) / (365.25 * 24 * 3600 * 1000));
-    }
-  }
- 
   // Find header row
   const headers = [];
   let headerRowIdx = 0;
@@ -722,7 +709,7 @@ function parseXML(text) {
     data.push(row);
   }
  
-  return { headers, data, deposit, xmlYears };
+  return { headers, data, deposit };
 }
  
 // ═══════════════════════════════════════════════════
@@ -2339,3 +2326,4 @@ function escHtml(s) {
  
 </body>
 </html>
+ 
