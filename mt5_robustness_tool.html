@@ -6,7 +6,7 @@
 <title>BoringAlgos — IS Selection & Validation</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Montserrat:wght@400;500;600&display=swap');
- 
+
   :root {
     --bg:       #ffffff;
     --bg2:      #f7f6f2;
@@ -30,9 +30,9 @@
     --accent2:  #c9a84c;
     --danger:   #c0392b;
   }
- 
+
   * { box-sizing: border-box; margin: 0; padding: 0; }
- 
+
   body {
     background: var(--bg);
     color: var(--text);
@@ -40,7 +40,7 @@
     font-size: 14px;
     min-height: 100vh;
   }
- 
+
   /* HEADER */
   header {
     padding: 18px 32px;
@@ -76,7 +76,7 @@
     font-weight: 600;
     text-transform: uppercase;
   }
- 
+
   /* TABS */
   .tabs {
     display: flex;
@@ -107,11 +107,11 @@
     color: var(--muted); font-family: var(--sans); font-weight: 600;
   }
   .tab.active .tab-num { background: var(--accent); color: #fff; }
- 
+
   /* PANEL */
   .panel { display: none; padding: 32px; max-width: 1400px; }
   .panel.active { display: block; }
- 
+
   /* SECTION HEADERS */
   .section-title {
     font-family: var(--serif);
@@ -126,7 +126,7 @@
     line-height: 1.7;
     font-weight: 400;
   }
- 
+
   /* UPLOAD ZONE */
   .upload-zone {
     border: 1.5px dashed var(--border2);
@@ -151,7 +151,7 @@
     margin-bottom: 4px; color: var(--text);
   }
   .upload-hint { color: var(--muted); font-size: 11px; font-weight: 500; letter-spacing: 0.08em; }
- 
+
   /* CARDS */
   .card {
     background: var(--bg2);
@@ -169,10 +169,10 @@
   .card-value.good { color: var(--pass); }
   .card-value.bad  { color: var(--fail); }
   .card-value.warn { color: var(--warn); }
- 
+
   .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 24px; }
   .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
- 
+
   /* FORM LABELS */
   label.ctrl-label {
     font-family: var(--sans); font-size: 10px; font-weight: 600;
@@ -194,7 +194,7 @@
   select:focus, input:focus { border-color: var(--accent); }
   select { cursor: pointer; min-width: 180px; }
   input[type=number] { width: 90px; }
- 
+
   /* CHART AREA */
   .chart-wrap {
     background: var(--bg2);
@@ -208,7 +208,7 @@
     color: var(--muted); margin-bottom: 16px; letter-spacing: 0.04em;
   }
   canvas { width: 100% !important; display: block; }
- 
+
   /* TABLE */
   .tbl-wrap {
     background: var(--bg);
@@ -260,7 +260,7 @@
   tr:hover td { background: var(--bg2); }
   tr.highlighted td { background: rgba(201,168,76,0.08) !important; }
   tr.highlighted td:first-child { border-left: 3px solid var(--accent); padding-left: 11px; }
- 
+
   /* BADGES */
   .badge {
     display: inline-flex; align-items: center;
@@ -271,13 +271,13 @@
   .badge-red    { background: rgba(192,57,43,0.10);  color: var(--fail); }
   .badge-yellow { background: rgba(201,168,76,0.15); color: var(--warn); }
   .badge-grey   { background: var(--bg3); color: var(--muted); }
- 
+
   /* EMPTY STATE */
   .empty { text-align: center; padding: 60px 20px; color: var(--muted); }
   .empty-icon { font-size: 36px; margin-bottom: 14px; opacity: 0.35; }
   .empty-text { font-family: var(--serif); font-size: 18px; margin-bottom: 6px; color: var(--text); }
   .empty-sub { font-size: 13px; }
- 
+
   /* BTN */
   .btn {
     padding: 10px 20px; border-radius: 5px;
@@ -294,7 +294,7 @@
   .btn-ghost:hover { border-color: var(--text); color: var(--text); }
   .btn-danger { background: transparent; color: var(--fail); border: 1px solid var(--fail); }
   .btn-danger:hover { background: var(--fail); color: #fff; }
- 
+
   /* NOTICE BOXES */
   .plateau-result {
     padding: 12px 16px; border-radius: 6px;
@@ -304,22 +304,22 @@
   .plateau-result.plateau { background: rgba(42,122,74,0.08);  border-color: rgba(42,122,74,0.25);  color: var(--pass); }
   .plateau-result.spike   { background: rgba(192,57,43,0.08);  border-color: rgba(192,57,43,0.25);  color: var(--fail); }
   .plateau-result.mixed   { background: rgba(201,168,76,0.10); border-color: rgba(201,168,76,0.30); color: var(--warn); }
- 
+
   /* FORM */
   .form-row { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 16px; align-items: flex-end; }
   .form-group { display: flex; flex-direction: column; }
- 
+
   /* SCROLLBAR */
   ::-webkit-scrollbar { width: 5px; height: 5px; }
   ::-webkit-scrollbar-track { background: var(--bg2); }
   ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
   ::-webkit-scrollbar-thumb:hover { background: var(--muted); }
- 
+
   .text3 { color: var(--muted); }
   .mb16 { margin-bottom: 16px; }
   .mb24 { margin-bottom: 24px; }
   .flex { display: flex; gap: 12px; align-items: center; }
- 
+
   .info-box {
     background: var(--bg3);
     border: 1px solid var(--border2);
@@ -331,7 +331,7 @@
     margin-bottom: 20px;
   }
   .info-box strong { color: var(--accent); }
- 
+
   /* PARAM TYPE TAGS */
   .param-tag {
     display: inline-flex; align-items: center;
@@ -345,7 +345,7 @@
   .param-tag.smooth { background: rgba(150,60,200,0.10); color: #7a2ac9; border-color: rgba(150,60,200,0.25); }
   .param-tag.cat:hover    { background: rgba(74,120,200,0.18); }
   .param-tag.smooth:hover { background: rgba(150,60,200,0.18); }
- 
+
   /* WEIGHT SLIDERS */
   .weight-row { display: flex; gap: 16px; align-items: center; margin-bottom: 10px; flex-wrap: wrap; }
   .weight-label { font-family: var(--sans); font-size: 11px; font-weight: 500; color: var(--muted); min-width: 160px; }
@@ -358,12 +358,12 @@
     -webkit-appearance: none; width: 14px; height: 14px;
     border-radius: 50%; background: var(--accent); cursor: pointer;
   }
- 
+
   /* ISOLATED PEAK */
   tr.isolated td { opacity: 0.6; }
   tr.isolated td:first-child { border-left: 3px solid var(--warn); padding-left: 11px; }
   .peak-flag { font-size: 10px; color: var(--warn); margin-left: 4px; }
- 
+
   /* TAB 3 — TICK DATA */
   .medal-gold   { color: #b8860b; font-size: 15px; }
   .medal-silver { color: #888;    font-size: 15px; }
@@ -385,25 +385,25 @@
 </style>
 </head>
 <body>
- 
+
 <header>
   <div class="logo">Boring<span>Algos</span><span class="logo-sub">IS Selection &amp; Validation</span></div>
   <div class="tagline">IS Selection · Validation · Tick Data</div>
 </header>
- 
+
 <div class="tabs">
   <div class="tab active" onclick="switchTab(0)"><span class="tab-num">1</span>IS Selection</div>
   <div class="tab" onclick="switchTab(1)"><span class="tab-num">2</span>Validation</div>
   <div class="tab" onclick="switchTab(2)"><span class="tab-num">3</span>Tick Data</div>
 </div>
- 
+
 <!-- ═══════════════════════════════════════════════ -->
 <!-- TAB 1: IS SELECTION -->
 <!-- ═══════════════════════════════════════════════ -->
 <div class="panel active" id="tab0">
   <div class="section-title">IS Selection</div>
   <div class="section-sub">Upload two XML files from MT5's Strategy Tester: <strong style="color:var(--accent)">Optimization Results</strong> (IS data, all passes) and <strong style="color:var(--accent)">Forward Results</strong> (OOS data, top passes). Tab 1 selects the top 20 IS candidates. Tab 2 validates them against the forward test year.</div>
- 
+
   <!-- Upload + IS dates -->
   <div style="display:flex;gap:16px;align-items:stretch;margin-bottom:24px;flex-wrap:wrap;">
     <div style="display:flex;flex-direction:column;gap:12px;flex:1;min-width:280px;">
@@ -445,14 +445,14 @@
       </div>
     </div>
   </div>
- 
+
   <!-- Param classification -->
   <div id="param-types-section" style="display:none;" class="card mb24">
     <div class="chart-label" style="margin-bottom:10px;">Parameter Classification</div>
     <div class="info-box" style="margin-bottom:12px;"><strong>Required:</strong> Click each tag to toggle between <span style="color:#4a9ef0">CATEGORICAL</span> (switch/mode selector) and <span style="color:#c04af0">SMOOTH</span> (numeric — adjacent values are similar). If unsure, leave as Categorical.</div>
     <div id="param-type-tags" style="display:flex;gap:10px;flex-wrap:wrap;"></div>
   </div>
- 
+
   <!-- Score weights -->
   <div id="weights-section" style="display:none;" class="card mb24">
     <div class="chart-label" style="margin-bottom:12px;">Final Score Weights <span style="font-family:'Montserrat',sans-serif;font-size:11px;color:var(--text3);font-weight:400;margin-left:8px;">must sum to 1.0</span></div>
@@ -474,12 +474,12 @@
     <div id="weight-sum-warning" style="font-family:'Montserrat',sans-serif;font-size:11px;color:var(--warn);display:none;margin-top:6px;">⚠ Weights do not sum to 1.0 — normalised automatically.</div>
     <button class="btn btn-ghost" onclick="rerunAnalysis()" style="margin-top:12px;font-size:12px;">↻ Rerun with these weights</button>
   </div>
- 
+
   <!-- Results content -->
   <div id="plateau-content" style="display:none;margin-top:0;">
     <div class="grid-4" id="plateau-stats"></div>
     <div id="dedup-notice" style="display:none;font-family:'Montserrat',sans-serif;font-size:12px;font-weight:500;color:var(--warn);background:rgba(201,168,76,0.10);border:1px solid rgba(201,168,76,0.30);border-radius:6px;padding:10px 16px;margin-bottom:20px;"></div>
- 
+
     <!-- Surface chart -->
     <div class="chart-wrap">
       <div class="flex mb16">
@@ -501,10 +501,10 @@
       </div>
       <canvas id="plateauChart" height="260"></canvas>
     </div>
- 
+
     <div id="plateau-verdict"></div>
     <div id="plateau-recommendation"></div>
- 
+
     <!-- Top 20 table -->
     <div class="tbl-wrap" style="margin-top:20px;">
       <div class="tbl-header">
@@ -514,30 +514,30 @@
       <div class="tbl-scroll"><table id="plateau-table"></table></div>
     </div>
   </div>
- 
+
   <div id="plateau-empty" class="empty">
     <div class="empty-icon">📈</div>
     <div class="empty-text">No data loaded</div>
     <div class="empty-sub">Upload your MT5 forward test XML and enter the IS window dates to begin</div>
   </div>
 </div>
- 
+
 <!-- ═══════════════════════════════════════════════ -->
 <!-- TAB 2: VALIDATION -->
 <!-- ═══════════════════════════════════════════════ -->
 <div class="panel" id="tab1">
   <div class="section-title">Validation</div>
   <div class="section-sub">Top 20 IS candidates validated against the validation year. Take PASS and CAUTION candidates into MT5 for tick data testing. Visually inspect equity curve similarity between IS and OOS before going live.</div>
- 
+
   <div id="validation-empty" class="empty">
     <div class="empty-icon">🔍</div>
     <div class="empty-text">No data loaded</div>
     <div class="empty-sub">Upload both XML files in Tab 1 — Validation auto-populates once both are loaded</div>
   </div>
- 
+
   <div id="validation-content" style="display:none;">
     <div class="grid-4 mb24" id="validation-stats"></div>
- 
+
     <div class="tbl-wrap">
       <div class="tbl-header">
         <div class="tbl-title">Validation Results</div>
@@ -552,15 +552,15 @@
     <div id="validation-summary" style="font-family:'Montserrat',sans-serif;font-size:12px;color:var(--text2);padding:12px 4px;"></div>
   </div>
 </div>
- 
+
 <!-- SheetJS -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <!-- Chart.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
- 
+
 <script>
- 
- 
+
+
 // ═══════════════════════════════════════════════════
 // GLOBALS
 // ═══════════════════════════════════════════════════
@@ -571,7 +571,7 @@ let isYears = 6;
 let paramTypes = {};
 let top20Global = [];   // stored after IS selection, used by Validation tab
 let fwdData = null;        // parsed Forward_Results XML, keyed by Pass
- 
+
 // ═══════════════════════════════════════════════════
 // TAB SWITCHING
 // ═══════════════════════════════════════════════════
@@ -579,7 +579,7 @@ function switchTab(i) {
   document.querySelectorAll('.tab').forEach((t,j) => t.classList.toggle('active', i===j));
   document.querySelectorAll('.panel').forEach((p,j) => p.classList.toggle('active', i===j));
 }
- 
+
 // ═══════════════════════════════════════════════════
 // DRAG & DROP
 // ═══════════════════════════════════════════════════
@@ -597,7 +597,7 @@ function dropFile(e, id, inputId) {
     inp.dispatchEvent(new Event("change"));
   }
 }
- 
+
 // ═══════════════════════════════════════════════════
 // IS YEARS INPUT
 // ═══════════════════════════════════════════════════
@@ -606,12 +606,12 @@ function updateISYears() {
   const endRaw   = document.getElementById('is-end-date').value.trim();
   const directYr = parseFloat(document.getElementById('is-years-input').value);
   const disp     = document.getElementById('is-years-display');
- 
+
   const fmt = s => s.replace(/\./g, '-');
   const d1 = new Date(fmt(startRaw));
   const d2 = new Date(fmt(endRaw));
   const datesValid = !isNaN(d1) && !isNaN(d2) && d2 > d1;
- 
+
   if (!isNaN(directYr) && directYr > 0) {
     isYears = directYr;
     const floor = Math.round(30 * isYears);
@@ -630,7 +630,7 @@ function updateISYears() {
   disp.textContent = `Enter IS dates or years above — XML title cannot be used (MT5 includes OOS period in title)`;
   disp.style.color = 'var(--warn)';
 }
- 
+
 // ═══════════════════════════════════════════════════
 // WEIGHT DISPLAY
 // ═══════════════════════════════════════════════════
@@ -644,7 +644,7 @@ function updateWeightDisplay() {
   const sum = wc + wp + wk;
   document.getElementById('weight-sum-warning').style.display = Math.abs(sum - 100) > 1 ? 'block' : 'none';
 }
- 
+
 function getWeights() {
   const wc = parseInt(document.getElementById('w-calmar').value)  / 100;
   const wp = parseInt(document.getElementById('w-plateau').value) / 100;
@@ -653,7 +653,7 @@ function getWeights() {
   if (total === 0) return { calmar: 0.30, plateau: 0.40, consist: 0.30 };
   return { calmar: wc/total, plateau: wp/total, consist: wk/total };
 }
- 
+
 // ═══════════════════════════════════════════════════
 // XML PARSER
 // ═══════════════════════════════════════════════════
@@ -673,17 +673,17 @@ function loadXML(input, target) {
   reader.onerror = () => alert('Failed to read file. Please try again.');
   reader.readAsText(file);
 }
- 
+
 function parseXML(text) {
   const parser = new DOMParser();
   const doc = parser.parseFromString(text, 'text/xml');
   const rows = doc.querySelectorAll('Row');
   if (!rows.length) return null;
- 
+
   // Read deposit from XML header
   const depositEl = doc.querySelector('Deposit');
   const deposit = depositEl ? parseFloat(depositEl.textContent) : null;
- 
+
   // Find header row
   const headers = [];
   let headerRowIdx = 0;
@@ -696,7 +696,7 @@ function parseXML(text) {
     }
   }
   if (!headers.length) return null;
- 
+
   // Parse all data rows
   const data = [];
   for (let i = headerRowIdx + 1; i < rows.length; i++) {
@@ -708,17 +708,17 @@ function parseXML(text) {
     });
     data.push(row);
   }
- 
+
   return { headers, data, deposit };
 }
- 
+
 // ═══════════════════════════════════════════════════
 // ON XML LOADED
 // ═══════════════════════════════════════════════════
 function onXMLLoaded() {
   const { headers } = plateauData;
   const deposit = plateauData.deposit;
- 
+
   // Identify IS metric columns and param columns
   // Forward test XML structure:
   // Pass, Forward_Result, Back_Result, Profit, Expected Payoff, Profit Factor,
@@ -729,7 +729,7 @@ function onXMLLoaded() {
     'Profit','Expected Payoff','Profit Factor','Recovery Factor',
     'Sharpe Ratio','Custom','Equity DD %','Trades'
   ]);
- 
+
   // Find Trades index — params start after it
   const tradesIdx = headers.indexOf('Trades');
   let paramCols;
@@ -741,7 +741,7 @@ function onXMLLoaded() {
     paramCols = headers.filter(h => !knownISCols.has(h));
   }
   plateauParamCols = paramCols;
- 
+
   // Show deposit
   const depDisp = document.getElementById('deposit-display');
   if (deposit !== null && !isNaN(deposit) && deposit > 0) {
@@ -751,10 +751,10 @@ function onXMLLoaded() {
     depDisp.textContent = 'Deposit: not found in XML — check file';
     depDisp.style.color = 'var(--fail)';
   }
- 
+
   // Init param types
   paramCols.forEach(p => { if (!paramTypes[p]) paramTypes[p] = 'cat'; });
- 
+
   // Render param type tags
   const tagsEl = document.getElementById('param-type-tags');
   tagsEl.innerHTML = '';
@@ -762,28 +762,28 @@ function onXMLLoaded() {
     const label = p.replace(/^Inp/, '');
     const wrapper = document.createElement('div');
     wrapper.style.display = 'flex'; wrapper.style.alignItems = 'center'; wrapper.style.gap = '4px';
- 
+
     const nameSpan = document.createElement('span');
     nameSpan.style.cssText = "font-family:'Montserrat',sans-serif;font-size:12px;color:var(--text2);";
     nameSpan.textContent = label;
- 
+
     const tagSpan = document.createElement('span');
     tagSpan.className = 'param-tag ' + paramTypes[p];
     tagSpan.id = 'ptag-' + p;
     tagSpan.textContent = paramTypes[p] === 'cat' ? 'CATEGORICAL' : 'SMOOTH';
     tagSpan.addEventListener('click', () => toggleParamType(p));
- 
+
     wrapper.appendChild(nameSpan);
     wrapper.appendChild(tagSpan);
     tagsEl.appendChild(wrapper);
   });
   document.getElementById('param-types-section').style.display = paramCols.length > 0 ? 'block' : 'none';
   document.getElementById('weights-section').style.display = 'block';
- 
+
   updateISYears();
   renderPlateau();
 }
- 
+
 function toggleParamType(p) {
   paramTypes[p] = paramTypes[p] === 'cat' ? 'smooth' : 'cat';
   const tag = document.getElementById('ptag-' + p);
@@ -794,12 +794,12 @@ function toggleParamType(p) {
   // Re-run immediately so scores, banner and verdicts reflect the change
   rerunAnalysis();
 }
- 
+
 function rerunAnalysis() {
   if (!plateauData) return;
   renderPlateau();
 }
- 
+
 // ═══════════════════════════════════════════════════
 // CALMAR (uses global isYears, deposit from XML)
 // ═══════════════════════════════════════════════════
@@ -812,7 +812,7 @@ function calcCalmar(row) {
   if (!isFinite(annualReturn)) return null;
   return annualReturn / dd;
 }
- 
+
 // ═══════════════════════════════════════════════════
 // STEP 1 — QUALITY FILTER (30 × isYears trade floor, DD < 25%)
 // ═══════════════════════════════════════════════════
@@ -826,7 +826,7 @@ function applyQualityFilter(data) {
   );
   return { filtered, total, minTrades };
 }
- 
+
 // ═══════════════════════════════════════════════════
 // STEP 1b — DEDUPLICATION
 // Keep only the lowest Pass number when multiple passes produce identical results.
@@ -838,32 +838,32 @@ function applyQualityFilter(data) {
 function deduplicateFiltered(filtered) {
   // Sort by Pass number ascending so lowest Pass wins when de-duping
   const sorted = [...filtered].sort((a, b) => a['Pass'] - b['Pass']);
- 
+
   const seen = new Map(); // key -> representative row
   const deduped = [];
- 
+
   sorted.forEach(r => {
     // Round to tolerance bucket to create a stable key
     const profitKey  = Math.round(r['Profit']        / 0.01) * 0.01;
     const ddKey      = Math.round(r['Equity DD %']   / 0.001) * 0.001;
     const tradesKey  = r['Trades'];
     const key = `${profitKey}|${ddKey}|${tradesKey}`;
- 
+
     if (!seen.has(key)) {
       seen.set(key, r);
       deduped.push(r);
     }
     // else: discard — a lower Pass number already represents this result
   });
- 
+
   const removed = filtered.length - deduped.length;
   return { deduped, removed };
 }
- 
+
 // ═══════════════════════════════════════════════════
 // STEP 3 — CONSISTENCY SCORE  (pre-computed lookups)
 // ═══════════════════════════════════════════════════
- 
+
 // Pre-build grouped lookup maps once per param across allData.
 // For each param p, build a map: (key of all OTHER params) -> { total, profitable }
 // Then per-row lookup is a single Map.get() instead of a full allData.filter().
@@ -875,7 +875,7 @@ function buildConsistencyMaps(allData, paramCols) {
   const smoothNeighbours = {};
   // paramVals[p] = sorted numeric values for smooth ±1 step
   const paramVals = {};
- 
+
   paramCols.forEach(p => {
     maps[p] = new Map();
     if (paramTypes[p] === 'smooth') {
@@ -883,7 +883,7 @@ function buildConsistencyMaps(allData, paramCols) {
       paramVals[p] = [...new Set(allData.map(r => r[p]).filter(v => typeof v === 'number'))].sort((a,b) => a-b);
     }
   });
- 
+
   allData.forEach(r => {
     paramCols.forEach(p => {
       // Key = all OTHER params joined
@@ -892,7 +892,7 @@ function buildConsistencyMaps(allData, paramCols) {
       if (!entry) { entry = { total: 0, profitable: 0 }; maps[p].set(otherKey, entry); }
       entry.total++;
       if (typeof r['Profit'] === 'number' && r['Profit'] > 0) entry.profitable++;
- 
+
       // For smooth params, also index by full key for cliff-edge lookup
       if (paramTypes[p] === 'smooth') {
         const fullKey = paramCols.map(q => r[q]).join('|');
@@ -900,23 +900,23 @@ function buildConsistencyMaps(allData, paramCols) {
       }
     });
   });
- 
+
   return { maps, smoothNeighbours, paramVals };
 }
- 
+
 function calcConsistencyScore(row, paramCols, consistMaps) {
   if (paramCols.length === 0) return { score: null, cliffFlag: false };
   const { maps, smoothNeighbours, paramVals } = consistMaps;
   let totalFraction = 0;
   let cliffFlag = false;
- 
+
   paramCols.forEach(p => {
     // O(1) lookup instead of O(n) filter
     const otherKey = paramCols.filter(q => q !== p).map(q => row[q]).join('|');
     const entry = maps[p].get(otherKey);
     if (!entry || entry.total === 0) { totalFraction += 0; return; }
     totalFraction += entry.profitable / entry.total;
- 
+
     // Cliff-edge for smooth params — O(1) neighbour lookup
     if (paramTypes[p] === 'smooth' && paramVals[p]) {
       const idx = paramVals[p].indexOf(row[p]);
@@ -934,21 +934,21 @@ function calcConsistencyScore(row, paramCols, consistMaps) {
       }
     }
   });
- 
+
   return { score: totalFraction / paramCols.length, cliffFlag };
 }
- 
+
 // ═══════════════════════════════════════════════════
 // STEP 4 — PLATEAU SCORE  (pre-computed lookups)
 // ═══════════════════════════════════════════════════
- 
+
 // Pre-build everything needed for plateau scoring once, not per row.
 function buildPlateauMaps(filteredData, paramCols) {
   const keyOf = r => paramCols.map(p => r[p]).join('|');
   const filteredSet = new Set(filteredData.map(keyOf));
   const calmarMap = new Map();
   filteredData.forEach(r => { calmarMap.set(keyOf(r), calcCalmar(r)); });
- 
+
   // Pre-sort param values from full dataset once per param
   const allDataFull = plateauData.data;
   const paramValsMap = {};
@@ -957,14 +957,14 @@ function buildPlateauMaps(filteredData, paramCols) {
     const numericVals = allVals.filter(v => typeof v === 'number').sort((a,b) => a-b);
     paramValsMap[p] = numericVals.length > 0 ? numericVals : allVals;
   });
- 
+
   return { filteredSet, calmarMap, paramValsMap, keyOf };
 }
- 
+
 function calcPlateauScore(row, paramCols, plateauMaps) {
   if (paramCols.length === 0) return { neighbourCount: 0, plateauScore: null };
   const { filteredSet, calmarMap, paramValsMap } = plateauMaps;
- 
+
   const neighbourCalmars = [];
   paramCols.forEach(p => {
     const vals = paramValsMap[p];
@@ -980,12 +980,12 @@ function calcPlateauScore(row, paramCols, plateauMaps) {
       }
     });
   });
- 
+
   const neighbourCount = neighbourCalmars.length;
   const plateauScore = neighbourCount > 0 ? neighbourCalmars.reduce((s,v) => s+v, 0) / neighbourCount : null;
   return { neighbourCount, plateauScore };
 }
- 
+
 // ═══════════════════════════════════════════════════
 // STEP 5 — NORMALISE + FINAL SCORE
 // ═══════════════════════════════════════════════════
@@ -996,7 +996,7 @@ function normalise(arr) {
   const range = mx - mn;
   return arr.map(v => v === null || !isFinite(v) ? 0 : (range === 0 ? 0.5 : (v - mn) / range));
 }
- 
+
 // ═══════════════════════════════════════════════════
 // MAIN RENDER — IS selection (all 6 steps)
 // ═══════════════════════════════════════════════════
@@ -1004,19 +1004,19 @@ function renderPlateau() {
   if (!plateauData) return;
   const { data } = plateauData;
   const paramCols = plateauParamCols;
- 
+
   document.getElementById('plateau-empty').style.display = 'none';
   document.getElementById('plateau-content').style.display = 'block';
- 
+
   // Step 1
   const { filtered: filteredRaw, total, minTrades } = applyQualityFilter(data);
- 
+
   // Step 1b — Deduplication
   const { deduped: filtered, removed: dedupRemoved } = deduplicateFiltered(filteredRaw);
- 
+
   // Step 2 — Calmar
   filtered.forEach(r => { r._calmar = calcCalmar(r); });
- 
+
   // Step 3 — Consistency (pre-build lookup maps ONCE, then O(1) per row)
   const consistMaps = buildConsistencyMaps(data, paramCols);
   filtered.forEach(r => {
@@ -1024,7 +1024,7 @@ function renderPlateau() {
     r._consist = res.score;
     r._cliff   = res.cliffFlag;
   });
- 
+
   // Step 4 — Plateau (pre-build filteredSet + calmarMap + paramVals ONCE)
   const plateauMaps = buildPlateauMaps(filtered, paramCols);
   filtered.forEach(r => {
@@ -1032,7 +1032,7 @@ function renderPlateau() {
     r._neighbours = res.neighbourCount;
     r._plateau    = res.plateauScore;
   });
- 
+
   // Step 5 — Final score
   const weights = getWeights();
   const calmarNorms  = normalise(filtered.map(r => r._calmar));
@@ -1043,14 +1043,14 @@ function renderPlateau() {
                   + weights.plateau * plateauNorms[i]
                   + weights.consist * consistNorms[i];
   });
- 
+
   // Sort, take top 20
   const ranked = [...filtered].sort((a,b) => b._finalScore - a._finalScore);
   const top20  = ranked.slice(0, 20);
   top20.forEach((r, i) => { r._rank = i + 1; });
   top20Global  = top20;  // store for Validation tab
   if (fwdData) renderValidation();
- 
+
   // Stats cards
   document.getElementById('plateau-stats').innerHTML = `
     <div class="card"><div class="card-title">Total Combinations</div><div class="card-value">${total.toLocaleString('en')}</div></div>
@@ -1058,7 +1058,7 @@ function renderPlateau() {
     <div class="card"><div class="card-title">Passed Quality Filter</div><div class="card-value ${filteredRaw.length > 0 ? 'good' : 'bad'}">${filteredRaw.length.toLocaleString('en')}</div></div>
     <div class="card"><div class="card-title">IS Window</div><div class="card-value">${isYears.toFixed(2)}yr</div></div>
   `;
- 
+
   // Dedup notice
   const dedupEl = document.getElementById('dedup-notice');
   if (dedupEl) {
@@ -1069,7 +1069,7 @@ function renderPlateau() {
       dedupEl.style.display = 'none';
     }
   }
- 
+
   // Param select
   const paramSelect = document.getElementById('param-select');
   const prevParam = paramSelect.value;
@@ -1080,18 +1080,18 @@ function renderPlateau() {
     if (p === prevParam) o.selected = true;
     paramSelect.appendChild(o);
   });
- 
+
   // Step 6 — Plateau safety rule
   const rank1 = top20[0] || null;
   const safePick = top20.find(r => r._neighbours >= 3) || null;
   const usedFallback = rank1 && safePick && rank1['Pass'] !== safePick['Pass'];
   const noNeighboursAnywhere = rank1 && !safePick;
- 
+
   renderRecommendationBanner(rank1, safePick, usedFallback, noNeighboursAnywhere, paramCols);
   renderPlateauTable(top20, paramCols, safePick);
   renderPlateauChart();
 }
- 
+
 // ═══════════════════════════════════════════════════
 // IS CANDIDATE BANNER
 // ═══════════════════════════════════════════════════
@@ -1102,12 +1102,12 @@ function renderRecommendationBanner(rank1, safePick, usedFallback, noNeighboursA
       '<div class="plateau-result spike">❌ No parameter set passed the quality filter. Adjust the IS years or check the XML file.</div>';
     return;
   }
- 
+
   let html = '';
- 
+
   // Check if all params are categorical — plateau/neighbour concepts don't apply
   const allCategorical = paramCols.length > 0 && paramCols.every(p => !paramTypes[p] || paramTypes[p] === 'cat');
- 
+
   if (allCategorical) {
     html += `<div class="plateau-result mixed" style="margin-bottom:12px;">
       ℹ <strong>All parameters are Categorical.</strong> Plateau safety rule and neighbour counts are not meaningful for categorical switches — adjacent values represent different behaviours, not a continuous surface. Rank 1 is used directly.
@@ -1127,7 +1127,7 @@ function renderRecommendationBanner(rank1, safePick, usedFallback, noNeighboursA
       </div>`;
     }
   }
- 
+
   const calmar  = rec._calmar;
   const consist = rec._consist;
   const paramStr = paramCols.map(p =>
@@ -1135,7 +1135,7 @@ function renderRecommendationBanner(rank1, safePick, usedFallback, noNeighboursA
   ).join(' &nbsp;·&nbsp; ');
   const cliffWarn = rec._cliff ? '<span style="color:var(--warn);margin-left:8px;">⚠ Cliff-edge on smooth param</span>' : '';
   const fallbackNote = (!allCategorical && usedFallback) ? ' (Plateau-Safe Pick)' : '';
- 
+
   html += `
     <div style="background:rgba(42,122,74,0.07);border:1px solid rgba(42,122,74,0.20);border-radius:8px;padding:16px 20px;margin-bottom:20px;overflow:hidden;">
       <div style="font-family:'Montserrat',sans-serif;font-size:11px;font-weight:600;color:var(--accent);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:10px;">
@@ -1172,63 +1172,63 @@ function renderRecommendationBanner(rank1, safePick, usedFallback, noNeighboursA
         </div>
       </div>
     </div>`;
- 
+
   document.getElementById('plateau-recommendation').innerHTML = html;
 }
- 
+
 // ═══════════════════════════════════════════════════
 // TOP 20 IS TABLE
 // ═══════════════════════════════════════════════════
 function renderPlateauTable(top20, paramCols, safePick) {
   const allCategorical = paramCols.length > 0 && paramCols.every(p => !paramTypes[p] || paramTypes[p] === 'cat');
- 
+
   let html = '<thead><tr>';
   const hdrCols = ['RANK','PASS','CALMAR','DD%','TRADES','CONSISTENCY','NEIGHBOURS','FINAL SCORE',
     ...paramCols.map(p => escHtml(p.replace(/^Inp/,'').toUpperCase()))];
   hdrCols.forEach(h => { html += `<th>${h}</th>`; });
   html += '</tr></thead><tbody>';
- 
+
   top20.forEach(row => {
     const isPick     = safePick && row['Pass'] === safePick['Pass'];
     const isIsolated = !allCategorical && row._neighbours < 3;
     const rowClass   = isPick ? 'highlighted' : (isIsolated ? 'isolated' : '');
     html += `<tr class="${rowClass}">`;
- 
+
     html += `<td>${isPick?'⭐ ':''}${row._rank}${isIsolated&&!isPick?' <span class="peak-flag">⚠</span>':''}</td>`;
     html += `<td><span style="color:${isPick?'var(--accent)':'var(--text2)'};font-weight:${isPick?700:400}">${escHtml(String(row['Pass']))}</span></td>`;
- 
+
     const cm = row._calmar;
     const cmCol = cm===null?'var(--text3)':cm>=1.5?'var(--pass)':cm>=1.0?'var(--warn)':'var(--fail)';
     html += `<td><span style="color:${cmCol}">${cm!==null?cm.toFixed(2):'—'}</span></td>`;
- 
+
     const ddVal = parseFloat(row['Equity DD %']);
     html += `<td>${isFinite(ddVal)?ddVal.toFixed(1)+'%':'—'}</td>`;
     html += `<td>${typeof row['Trades']==='number'?row['Trades'].toLocaleString('en'):'—'}</td>`;
- 
+
     const cs = row._consist;
     const csCol = cs===null?'var(--text3)':cs>=0.7?'var(--pass)':cs>=0.5?'var(--warn)':'var(--fail)';
     html += `<td><span style="color:${csCol}">${cs!==null?(cs*100).toFixed(0)+'%':'—'}</span>${row._cliff?'<span class="peak-flag" title="Cliff-edge">⚡</span>':''}</td>`;
- 
+
     // Neighbours — neutral colour when all categorical (count not meaningful)
     const neighbourCol = allCategorical ? 'var(--text3)' : row._neighbours>=3 ? 'var(--pass)' : 'var(--warn)';
     html += `<td><span style="color:${neighbourCol}">${row._neighbours}</span></td>`;
     html += `<td><span style="color:var(--accent)">${row._finalScore.toFixed(3)}</span></td>`;
- 
+
     paramCols.forEach(p => {
       const pv = row[p];
       html += `<td>${pv!=null&&pv!==''?escHtml(String(pv)):'—'}</td>`;
     });
     html += '</tr>';
   });
- 
+
   html += '</tbody>';
   document.getElementById('plateau-table').innerHTML = html;
- 
+
   // Hide isolated peak legend when all categorical
   const legendEl = document.getElementById('legend-isolated');
   if (legendEl) legendEl.style.display = allCategorical ? 'none' : 'inline';
 }
- 
+
 // ═══════════════════════════════════════════════════
 // SURFACE CHART
 // ═══════════════════════════════════════════════════
@@ -1238,9 +1238,9 @@ function renderPlateauChart() {
   const param  = document.getElementById('param-select').value;
   const metric = document.getElementById('metric-select').value;
   if (!param || !metric) return;
- 
+
   const validData = data.filter(r => typeof r['Profit'] === 'number' && r['Profit'] > 0 && r[param] !== undefined && r[param] !== '');
- 
+
   const groups = {};
   validData.forEach(r => {
     const key = r[param];
@@ -1249,7 +1249,7 @@ function renderPlateauChart() {
     if (!groups[key]) groups[key] = [];
     groups[key].push(mv);
   });
- 
+
   const rawKeys = Object.keys(groups);
   const allNum  = rawKeys.every(k => !isNaN(k) && k.trim() !== '');
   const labels  = allNum ? rawKeys.map(Number).sort((a,b)=>a-b) : rawKeys.sort();
@@ -1257,12 +1257,12 @@ function renderPlateauChart() {
     const arr = groups[String(k)];
     return arr ? arr.reduce((s,v)=>s+v,0)/arr.length : 0;
   });
- 
+
   const isDD   = metric === 'Equity DD %';
   const best   = isDD ? Math.min(...values) : Math.max(...values);
   const bgC    = values.map(v => v===best?'rgba(201,168,76,0.9)':'rgba(201,168,76,0.30)');
   const bdC    = values.map(v => v===best?'rgba(201,168,76,1.0)':'rgba(201,168,76,0.55)');
- 
+
   const ctx = document.getElementById('plateauChart').getContext('2d');
   if (plateauChart) plateauChart.destroy();
   plateauChart = new Chart(ctx, {
@@ -1288,7 +1288,7 @@ function renderPlateauChart() {
       }
     }
   });
- 
+
   // Visual plateau verdict
   // Suppress if the selected parameter is categorical — plateau/spike concepts don't apply
   const paramIsCat = !paramTypes[param] || paramTypes[param] === 'cat';
@@ -1312,7 +1312,7 @@ function renderPlateauChart() {
     document.getElementById('plateau-verdict').innerHTML = '';
   }
 }
- 
+
 // ═══════════════════════════════════════════════════
 // TAB 2 — VALIDATION
 // ═══════════════════════════════════════════════════
@@ -1325,19 +1325,19 @@ function onForwardXMLLoaded(parsed) {
   // Recovery Factor, Sharpe Ratio, Custom, Equity DD%, Trades, [params...]
   // Where Profit/DD%/Trades = FORWARD PERIOD (OOS) metrics
   // Back Result = IS score, Forward Result = OOS score
- 
+
   const headers = parsed.headers;
   const data    = parsed.data;
- 
+
   // Build a Map keyed by Pass number for fast lookup
   const byPass = new Map();
   data.forEach(row => {
     const passKey = String(row['Pass']);
     byPass.set(passKey, row);
   });
- 
+
   fwdData = byPass;
- 
+
   // Update status display
   const fwdDisp = document.getElementById('fwd-status-display');
   const hasForwardResult = headers.includes('Forward Result') || headers.includes('Forward_Result');
@@ -1348,25 +1348,25 @@ function onForwardXMLLoaded(parsed) {
     fwdDisp.textContent = `Forward Results: ${data.length} rows loaded — check this is the correct file`;
     fwdDisp.style.color = 'var(--warn)';
   }
- 
+
   document.getElementById('upload2-label').textContent =
     `② Forward_Results.xml (${data.length} passes)`;
- 
+
   // If IS selection already done, re-render validation with this data
   if (top20Global.length > 0) renderValidation();
 }
- 
+
 function getForwardMetrics(isRow) {
   if (!fwdData) return { oosProfit: null, oosDD: null, oosTrades: null };
   const fwdRow = fwdData.get(String(isRow['Pass']));
   if (!fwdRow) return { oosProfit: null, oosDD: null, oosTrades: null };
- 
+
   // In the Forward Results XML, Profit/Equity DD%/Trades = OOS (forward period) metrics
   const get = key => {
     const v = fwdRow[key];
     return typeof v === 'number' ? v : null;
   };
- 
+
   return {
     oosProfit:  get('Profit'),
     oosDD:      get('Equity DD %'),
@@ -1375,7 +1375,7 @@ function getForwardMetrics(isRow) {
     backResult: get('Back Result')
   };
 }
- 
+
 function renderValidation() {
   if (!plateauData || top20Global.length === 0) return;
   if (!fwdData) {
@@ -1383,28 +1383,28 @@ function renderValidation() {
     document.getElementById('validation-content').style.display = 'none';
     return;
   }
- 
+
   document.getElementById('validation-empty').style.display = 'none';
   document.getElementById('validation-content').style.display = 'block';
- 
+
   const paramCols = plateauParamCols;
   let passCount = 0, cautionCount = 0;
   let bestOOSProfit = null, bestDDRatio = null;
- 
+
   // Build validation results
   const results = top20Global.map(row => {
     const fwd = getForwardMetrics(row);
     const { oosProfit, oosDD, oosTrades } = fwd;
- 
+
     const isDD = typeof row['Equity DD %'] === 'number' ? row['Equity DD %'] : null;
     const ddRatio = (oosDD !== null && isDD !== null && isDD > 0) ? oosDD / isDD : null;
- 
+
     // Validation criteria
     const c1 = oosProfit !== null && oosProfit > 0;                         // OOS Profit > 0
     const c2 = ddRatio !== null && ddRatio <= 1.5;                          // OOS DD ≤ 1.5 × IS DD
     const c3 = oosTrades !== null && oosTrades >= 30;                       // OOS Trades ≥ 30
     const outlier = oosProfit !== null && oosTrades !== null && oosProfit > 10000 && oosTrades < 20;
- 
+
     let status;
     if (!c1 || !c2 || !c3) {
       status = 'FAIL';
@@ -1413,19 +1413,19 @@ function renderValidation() {
     } else {
       status = 'PASS';
     }
- 
+
     if (status === 'PASS') passCount++;
     if (status === 'CAUTION') cautionCount++;
     if (oosProfit !== null && (bestOOSProfit === null || oosProfit > bestOOSProfit)) bestOOSProfit = oosProfit;
     if (ddRatio !== null && (bestDDRatio === null || ddRatio < bestDDRatio)) bestDDRatio = ddRatio;
- 
+
     return { row, oosProfit, oosDD, oosTrades, ddRatio, fwdResult: fwd.fwdResult || null, c1, c2, c3, outlier, status };
   });
- 
+
   // Sort: PASS first, CAUTION second, FAIL last
   const statusOrder = { 'PASS': 0, 'CAUTION': 1, 'FAIL': 2 };
   results.sort((a, b) => statusOrder[a.status] - statusOrder[b.status]);
- 
+
   // Stats cards
   const fmtProfit = v => v === null ? '—' : (v < 0 ? '-$'+Math.abs(v).toLocaleString('en',{maximumFractionDigits:0}) : '$'+v.toLocaleString('en',{maximumFractionDigits:0}));
   document.getElementById('validation-stats').innerHTML = `
@@ -1434,7 +1434,7 @@ function renderValidation() {
     <div class="card"><div class="card-title">Best OOS Profit</div><div class="card-value ${bestOOSProfit !== null && bestOOSProfit > 0 ? 'good' : 'bad'}">${fmtProfit(bestOOSProfit)}</div></div>
     <div class="card"><div class="card-title">Best DD Ratio</div><div class="card-value ${bestDDRatio !== null && bestDDRatio <= 1.0 ? 'good' : bestDDRatio !== null && bestDDRatio <= 1.5 ? 'warn' : 'bad'}">${bestDDRatio !== null ? bestDDRatio.toFixed(2) : '—'}</div></div>
   `;
- 
+
   // Table
   let html = '<thead><tr>';
   const valHdrs = ['IS RANK','PASS','IS CALMAR','IS DD%','IS TRADES',
@@ -1442,39 +1442,39 @@ function renderValidation() {
     'OOS PROFIT','OOS DD%','OOS TRADES','DD RATIO','FWD SCORE','STATUS'];
   valHdrs.forEach(h => { html += `<th>${h}</th>`; });
   html += '</tr></thead><tbody>';
- 
+
   results.forEach(res => {
     const { row, oosProfit, oosDD, oosTrades, ddRatio, c1, c2, c3, status } = res;
     const rowBg = status==='PASS' ? 'rgba(42,122,74,0.08)' : status==='CAUTION' ? 'rgba(201,168,76,0.08)' : 'rgba(192,57,43,0.06)';
     const rowBorder = status==='PASS' ? '#1a4020' : status==='CAUTION' ? '#40300a' : '#401a1a';
     const rowOpacity = status==='FAIL' ? 'opacity:0.7;' : '';
- 
+
     html += `<tr style="background:${rowBg};${rowOpacity}">`;
     html += `<td>${row._rank}</td>`;
     html += `<td><span style="color:var(--accent);font-weight:600">${escHtml(String(row['Pass']))}</span></td>`;
- 
+
     const cm = row._calmar;
     const cmC = cm===null?'var(--text3)':cm>=1.5?'var(--pass)':cm>=1.0?'var(--warn)':'var(--fail)';
     html += `<td><span style="color:${cmC}">${cm!==null?cm.toFixed(2):'—'}</span></td>`;
- 
+
     const isDD = parseFloat(row['Equity DD %']);
     html += `<td>${isFinite(isDD)?isDD.toFixed(1)+'%':'—'}</td>`;
     html += `<td>${typeof row['Trades']==='number'?row['Trades'].toLocaleString('en'):'—'}</td>`;
- 
+
     paramCols.forEach(p => {
       const pv = row[p];
       html += `<td>${pv!=null&&pv!==''?escHtml(String(pv)):'—'}</td>`;
     });
- 
+
     // OOS columns — colour based on pass/fail of each criterion
     html += `<td style="color:${c1?'var(--pass)':'var(--fail)'}">${fmtProfit(oosProfit)}</td>`;
     html += `<td style="color:${c2?'var(--pass)':'var(--fail)'}">${oosDD!==null?oosDD.toFixed(1)+'%':'—'}</td>`;
     html += `<td style="color:${c3?'var(--pass)':'var(--fail)'}">${oosTrades!==null?oosTrades:'—'}</td>`;
     html += `<td style="color:${ddRatio===null?'var(--text3)':ddRatio<=1.0?'var(--pass)':ddRatio<=1.5?'var(--warn)':'var(--fail)'}">${ddRatio!==null?ddRatio.toFixed(2):'—'}</td>`;
- 
+
     const fwdScore = res.fwdResult;
     html += `<td style="color:${fwdScore===null?'var(--text3)':fwdScore>=50?'var(--pass)':fwdScore>=20?'var(--warn)':'var(--fail)'}">${fwdScore!==null?fwdScore.toFixed(1):'—'}</td>`;
- 
+
     const notInFwd = res.oosProfit === null && res.oosDD === null && res.oosTrades === null;
     const statusCol = status==='PASS'?'var(--pass)':status==='CAUTION'?'var(--warn)':'var(--fail)';
     const statusNote = notInFwd
@@ -1483,10 +1483,10 @@ function renderValidation() {
     html += `<td><span style="color:${statusCol};font-weight:700">${status}</span>${statusNote}</td>`;
     html += '</tr>';
   });
- 
+
   html += '</tbody>';
   document.getElementById('validation-table').innerHTML = html;
- 
+
   // Summary line
   const readyCount = passCount + cautionCount;
   document.getElementById('validation-summary').textContent =
@@ -1494,7 +1494,7 @@ function renderValidation() {
     (cautionCount > 0 ? `${cautionCount} additional CAUTION candidate(s) require manual review. ` : '') +
     `${readyCount > 0 ? readyCount + ' candidate(s) are ready for tick data testing in MT5.' : 'No candidates ready for tick data testing.'}`;
 }
- 
+
 // ═══════════════════════════════════════════════════════════════
 // TAB 3 — TICK DATA COMPARISON
 // ═══════════════════════════════════════════════════════════════
@@ -1502,8 +1502,14 @@ let tickPasses        = [];
 let tickPendingIS     = null;
 let tickPendingOOS    = null;
 let tickChartInstances = [];
- 
-// ── File selection / drop ──────────────────────────────────────
+let tickISYears       = null; // set by user — IS period length in years
+
+function tickISYearsChanged() {
+  const v = parseFloat(document.getElementById('tick-is-years').value);
+  tickISYears = (!isNaN(v) && v > 0) ? v : null;
+  // Re-rank and re-render if passes already loaded
+  if (tickPasses.length > 0) renderTickTab();
+}
 function tickDrop(e, side) {
   e.preventDefault();
   dragLeave('tick-dropzone-' + side);
@@ -1516,7 +1522,7 @@ function tickDrop(e, side) {
     tickFileSelected(inp, side);
   }
 }
- 
+
 function tickFileSelected(input, side) {
   const file = input.files[0];
   if (!file) return;
@@ -1546,7 +1552,7 @@ function tickFileSelected(input, side) {
     statusEl.style.color = 'var(--fail)';
   }
 }
- 
+
 function tickAutoAssignTwoFiles(f1, f2) {
   const statusEl = document.getElementById('tick-add-status');
   statusEl.textContent = 'Parsing two files…';
@@ -1566,7 +1572,7 @@ function tickAutoAssignTwoFiles(f1, f2) {
     });
   });
 }
- 
+
 function addTickPass() {
   if (!tickPendingIS || !tickPendingOOS) {
     document.getElementById('tick-add-status').textContent = '⚠ Upload both IS and OOS files first.';
@@ -1595,12 +1601,12 @@ function addTickPass() {
     console.error('addTickPass error:', err);
   }
 }
- 
+
 function removeTickPass(id) {
   tickPasses = tickPasses.filter(p => p._id !== id);
   renderTickTab();
 }
- 
+
 // ── XLSX PARSER ───────────────────────────────────────────────
 function parseTickXLSX(file, callback) {
   const reader = new FileReader();
@@ -1610,7 +1616,7 @@ function parseTickXLSX(file, callback) {
     const wb  = XLSX.read(new Uint8Array(e.target.result), { type: 'array', cellDates: false });
     const ws  = wb.Sheets[wb.SheetNames[0]];
     const rows = XLSX.utils.sheet_to_json(ws, { header: 1, defval: null, raw: true });
- 
+
     const parsed = {
       fileName: file.name.replace(/\.xlsx$/i, ''),
       params: {}, deposit: 100000, periodStr: '', periodDays: 0, periodYears: 1,
@@ -1620,7 +1626,7 @@ function parseTickXLSX(file, callback) {
       profitFactor: 0, lrCorr: null, largestTrade: 0,
       equity: [], monthlyPnL: {}, monthlyWinRate: null
     };
- 
+
     // Scan settings + summary rows
     for (let i = 0; i < Math.min(rows.length, 90); i++) {
       const r = rows[i];
@@ -1629,7 +1635,7 @@ function parseTickXLSX(file, callback) {
       const d = r[3];
       const e5 = r[4] != null ? String(r[4]).trim() : '';
       const h = r[7];
- 
+
       if (a === 'Period:' && d) {
         parsed.periodStr = String(d);
         const m = parsed.periodStr.match(/(\d{4}\.\d{2}\.\d{2})\s*-\s*(\d{4}\.\d{2}\.\d{2})/);
@@ -1654,12 +1660,12 @@ function parseTickXLSX(file, callback) {
         const pv = d.substring(eq + 1).trim();
         if (pn) parsed.params[pn] = pv;
       }
- 
+
       // Summary stats — col A labels
       if (a === 'Total Net Profit:' && typeof d === 'number') parsed.netProfit = d;
       if (a === 'Profit Factor:'    && typeof d === 'number') parsed.profitFactor = d;
       if (a === 'Total Trades:'     && typeof d === 'number') parsed.totalTrades = d;
- 
+
       // Summary stats — col E labels, col H values
       if (e5 === 'Balance Drawdown Maximal:' && h != null) {
         const dm = String(h).match(/\(([\d.]+)%\)/);
@@ -1668,13 +1674,13 @@ function parseTickXLSX(file, callback) {
       if (e5 === 'LR Correlation:'     && typeof h === 'number') parsed.lrCorr = h;
       if (e5 === 'Largest profit trade:' && typeof h === 'number') parsed.largestTrade = h;
     }
- 
+
     // Find Deals table header
     let dealsDataRow = -1;
     for (let i = 0; i < rows.length; i++) {
       if (rows[i] && rows[i][0] === 'Deals') { dealsDataRow = i + 2; break; }
     }
- 
+
     if (dealsDataRow >= 0) {
       const mMap = {};
       for (let i = dealsDataRow; i < rows.length; i++) {
@@ -1695,7 +1701,7 @@ function parseTickXLSX(file, callback) {
       parsed.monthlyWinRate = months.length > 0
         ? months.filter(v => v > 0).length / months.length : null;
     }
- 
+
     callback(parsed);
     } catch(err) {
       throw new Error('XLSX parse error: ' + err.message);
@@ -1703,63 +1709,68 @@ function parseTickXLSX(file, callback) {
   };
   reader.readAsArrayBuffer(file);
 }
- 
+
 // ── SCORING ───────────────────────────────────────────────────
 // All criteria are IS vs OOS comparisons.
 // Ratios capped at 1.0 for scoring but displayed as actual.
 function computeAllCriteria(p) {
   const is = p.is, oos = p.oos;
- 
+
   // Calmar for each period
-  is._calmar  = (is.deposit > 0 && is.ddPct > 0 && is.periodYears > 0)
-    ? ((is.netProfit / is.deposit * 100) / is.periodYears) / is.ddPct : null;
+  // Use user-supplied IS years if available (same reason as C4 above)
+  const isYrs = (tickISYears && tickISYears > 0) ? tickISYears : is.periodYears;
+  is._calmar  = (is.deposit > 0 && is.ddPct > 0 && isYrs > 0)
+    ? ((is.netProfit / is.deposit * 100) / isYrs) / is.ddPct : null;
   oos._calmar = (oos.deposit > 0 && oos.ddPct > 0 && oos.periodYears > 0)
     ? ((oos.netProfit / oos.deposit * 100) / oos.periodYears) / oos.ddPct : null;
- 
+
   // C1 — Calmar degradation ratio (cap 1.0 for score)
   p._c1_actual = (is._calmar && is._calmar > 0 && oos._calmar !== null)
     ? oos._calmar / is._calmar : null;
   p._c1_score  = p._c1_actual !== null ? Math.min(1.0, p._c1_actual) : null;
- 
+
   // C2 — DD consistency ratio (cap 1.0 for score — lower OOS DD is fine)
   p._c2_actual = (is.ddPct > 0 && oos.ddPct > 0) ? oos.ddPct / is.ddPct : null;
   p._c2_score  = p._c2_actual !== null ? Math.min(1.0, 1 / p._c2_actual) : null;
   // score: ratio<=1 → full score; ratio>1 → penalty
- 
+
   // C3 — LR Correlation diff (smaller = better; invert for score)
   p._c3_diff   = (is.lrCorr !== null && oos.lrCorr !== null)
     ? Math.abs(is.lrCorr - oos.lrCorr) : null;
   p._c3_score  = p._c3_diff !== null ? Math.max(0, 1 - p._c3_diff) : null;
- 
+
   // C4 — Trade frequency consistency
-  const expectedOOS = (is.totalTrades > 0 && is.periodYears > 0 && oos.periodYears > 0)
-    ? (is.totalTrades / is.periodYears) * oos.periodYears : null;
+  // Use user-supplied IS years if available — MT5 writes full IS+OOS range
+  // into the Period field so periodYears from the file cannot be trusted.
+  const isYearsForCalc = (tickISYears && tickISYears > 0) ? tickISYears : is.periodYears;
+  const expectedOOS = (is.totalTrades > 0 && isYearsForCalc > 0 && oos.periodYears > 0)
+    ? (is.totalTrades / isYearsForCalc) * oos.periodYears : null;
   p._c4_expected = expectedOOS !== null ? Math.round(expectedOOS) : null;
   p._c4_actual   = oos.totalTrades;
   p._c4_ratio    = (expectedOOS && expectedOOS > 0) ? oos.totalTrades / expectedOOS : null;
   // Score: ratio in [0.6,1.4] = full; outside = penalty
   p._c4_score    = p._c4_ratio !== null ? Math.min(1.0, p._c4_ratio <= 1 ? p._c4_ratio : 1 / p._c4_ratio) : null;
- 
+
   // C5 — Win rate consistency (diff in pp)
   const isMWR  = is.monthlyWinRate  !== null ? is.monthlyWinRate  * 100 : null;
   const oosMWR = oos.monthlyWinRate !== null ? oos.monthlyWinRate * 100 : null;
   p._c5_diff   = (isMWR !== null && oosMWR !== null) ? Math.abs(isMWR - oosMWR) : null;
   p._c5_score  = p._c5_diff !== null ? Math.max(0, 1 - p._c5_diff / 20) : null;
- 
+
   // C6 — Profit Factor consistency
   p._c6_ratio  = (is.profitFactor > 0 && oos.profitFactor > 0)
     ? oos.profitFactor / is.profitFactor : null;
   p._c6_score  = p._c6_ratio !== null ? Math.min(1.0, p._c6_ratio) : null;
- 
+
   // Outlier flags — checked independently for IS and OOS
   p._outlierIS  = (is.netProfit  > 0 && is.largestTrade  > 0) ? is.largestTrade  / is.netProfit  : null;
   p._outlierOOS = (oos.netProfit > 0 && oos.largestTrade > 0) ? oos.largestTrade / oos.netProfit : null;
 }
- 
+
 function rankTickPasses() {
   if (tickPasses.length === 0) return;
   tickPasses.forEach(p => computeAllCriteria(p));
- 
+
   // Normalise each score dimension across all passes then combine with weights
   const norm = arr => {
     const vals = arr.filter(v => v !== null && isFinite(v));
@@ -1767,22 +1778,22 @@ function rankTickPasses() {
     const mn = Math.min(...vals), mx = Math.max(...vals), r = mx - mn;
     return arr.map(v => v == null || !isFinite(v) ? 0 : (r === 0 ? 0.5 : (v - mn) / r));
   };
- 
+
   const n1 = norm(tickPasses.map(p => p._c1_score));
   const n2 = norm(tickPasses.map(p => p._c2_score));
   const n3 = norm(tickPasses.map(p => p._c3_score));
   const n4 = norm(tickPasses.map(p => p._c4_score));
   const n5 = norm(tickPasses.map(p => p._c5_score));
   const n6 = norm(tickPasses.map(p => p._c6_score));
- 
+
   tickPasses.forEach((p, i) => {
     p._finalScore = 0.30*n1[i] + 0.25*n2[i] + 0.20*n3[i] + 0.15*n4[i] + 0.05*n5[i] + 0.05*n6[i];
   });
- 
+
   tickPasses.sort((a, b) => b._finalScore - a._finalScore);
   tickPasses.forEach((p, i) => { p._rank = i + 1; });
 }
- 
+
 // "All green" = every criterion is at its green threshold
 function isAllGreen(p) {
   return (p._c1_actual !== null && p._c1_actual >= 0.6) &&
@@ -1792,7 +1803,7 @@ function isAllGreen(p) {
          (p._c5_diff   !== null && p._c5_diff   <= 10) &&
          (p._c6_ratio  !== null && p._c6_ratio  >= 0.7);
 }
- 
+
 // ── LABEL ─────────────────────────────────────────────────────
 function buildAutoLabel(isParsed) {
   const skip = new Set(['EMA_Period','WMA_Period','SMMA_Period','ATR_Length','ATR_EvalPeriod',
@@ -1807,28 +1818,28 @@ function buildAutoLabel(isParsed) {
   }
   return parts.length > 0 ? parts.join(' ') : 'Pass';
 }
- 
+
 function renameTickPass(id) {
   const p = tickPasses.find(x => x._id === id);
   if (!p) return;
   const newLabel = prompt('Rename pass:', p.label);
   if (newLabel && newLabel.trim()) { p.label = newLabel.trim(); renderTickTab(); }
 }
- 
+
 // ── RENDER ────────────────────────────────────────────────────
 function renderTickTab() {
   const has = tickPasses.length > 0;
   document.getElementById('tick-empty').style.display   = has ? 'none'  : 'block';
   document.getElementById('tick-content').style.display = has ? 'block' : 'none';
   if (!has) return;
- 
+
   rankTickPasses();
- 
+
   const allGreenCount = tickPasses.filter(isAllGreen).length;
   const bestC1 = tickPasses.reduce((b, p) =>
     (p._c1_actual !== null && (b === null || p._c1_actual > b)) ? p._c1_actual : b, null);
   const top1 = tickPasses[0];
- 
+
   // Summary cards
   const c1Col = bestC1 === null ? '' : bestC1 >= 0.6 ? 'good' : bestC1 >= 0.3 ? 'warn' : 'bad';
   document.getElementById('tick-summary-cards').innerHTML = `
@@ -1837,7 +1848,7 @@ function renderTickTab() {
     <div class="card"><div class="card-title">Best Calmar Degradation</div><div class="card-value ${c1Col}">${bestC1!==null?bestC1.toFixed(2):'—'}</div></div>
     <div class="card"><div class="card-title">Top Pick</div><div class="card-value" style="font-size:13px;word-break:break-word;">${top1?escHtml(top1.label):'—'}</div></div>
   `;
- 
+
   // Colour helper: returns CSS colour string
   const col = (v, greenThresh, warnThresh, invert) => {
     if (v === null || !isFinite(v)) return 'var(--muted)';
@@ -1847,7 +1858,7 @@ function renderTickTab() {
   const f2 = v => (v !== null && isFinite(v)) ? v.toFixed(2) : '—';
   const f1 = v => (v !== null && isFinite(v)) ? v.toFixed(1) : '—';
   const fPct = v => (v !== null && isFinite(v)) ? (v*100).toFixed(0)+'%' : '—';
- 
+
   // Table
   const medals   = ['🥇','🥈','🥉'];
   const rowClsMap = ['pass-row-gold','pass-row-silver','pass-row-bronze'];
@@ -1861,41 +1872,41 @@ function renderTickTab() {
     'IS PF','OOS PF','PF RATIO',
     'QUALITY','FINAL SCORE',''
   ];
- 
+
   let html = '<thead><tr>';
   colHdrs.forEach(h => { html += `<th>${h}</th>`; });
   html += '</tr></thead><tbody>';
- 
+
   tickPasses.forEach(p => {
     const is = p.is, oos = p.oos;
     const rank = p._rank;
     const medal = rank <= 3 ? medals[rank-1] : '';
     const rCls  = rank <= 3 ? rowClsMap[rank-1] : '';
- 
+
     html += `<tr class="${rCls}">`;
- 
+
     // Rank + label
     html += `<td style="font-weight:600">${medal} ${rank}</td>`;
     html += `<td><span class="editable-label" onclick="renameTickPass(${p._id})">${escHtml(p.label)}</span>`;
     if (!is.realTicks) html += ` <span style="color:var(--fail);font-size:10px;font-weight:600;">⚠ NOT REAL TICKS</span>`;
     html += `</td>`;
- 
+
     // C1 — Calmar
     html += `<td>${f2(is._calmar)}</td>`;
     html += `<td>${f2(oos._calmar)}</td>`;
     html += `<td style="color:${col(p._c1_actual,0.6,0.3,false)};font-weight:600">${f2(p._c1_actual)}</td>`;
- 
+
     // C2 — DD
     html += `<td>${f1(is.ddPct)}%</td>`;
     html += `<td>${f1(oos.ddPct)}%</td>`;
     html += `<td style="color:${col(p._c2_actual,1.3,1.8,true)};font-weight:600">${f2(p._c2_actual)}</td>`;
- 
+
     // C3 — LR Corr
     html += `<td>${f2(is.lrCorr)}</td>`;
     html += `<td>${f2(oos.lrCorr)}</td>`;
     const lrDiffCol = p._c3_diff===null?'var(--muted)':p._c3_diff<=0.10?'var(--pass)':p._c3_diff<=0.20?'var(--warn)':'var(--fail)';
     html += `<td style="color:${lrDiffCol};font-weight:600">${f2(p._c3_diff)}</td>`;
- 
+
     // C4 — Trade freq
     html += `<td style="color:var(--muted)">${p._c4_expected!==null?p._c4_expected:'—'}</td>`;
     html += `<td>${p._c4_actual.toLocaleString('en')}</td>`;
@@ -1903,7 +1914,7 @@ function renderTickTab() {
       (p._c4_ratio>=0.6&&p._c4_ratio<=1.4)?'var(--pass)':
       (p._c4_ratio>=0.4&&p._c4_ratio<=1.8)?'var(--warn)':'var(--fail)';
     html += `<td style="color:${tfCol};font-weight:600">${f2(p._c4_ratio)}</td>`;
- 
+
     // C5 — Win rate
     const isMWRPct  = is.monthlyWinRate  !== null ? (is.monthlyWinRate*100).toFixed(0)+'%'  : '—';
     const oosMWRPct = oos.monthlyWinRate !== null ? (oos.monthlyWinRate*100).toFixed(0)+'%' : '—';
@@ -1911,29 +1922,29 @@ function renderTickTab() {
     html += `<td>${oosMWRPct}</td>`;
     const wrDiffCol = p._c5_diff===null?'var(--muted)':p._c5_diff<=10?'var(--pass)':p._c5_diff<=20?'var(--warn)':'var(--fail)';
     html += `<td style="color:${wrDiffCol};font-weight:600">${p._c5_diff!==null?p._c5_diff.toFixed(1)+'pp':'—'}</td>`;
- 
+
     // C6 — PF
     html += `<td>${f2(is.profitFactor)}</td>`;
     html += `<td>${f2(oos.profitFactor)}</td>`;
     html += `<td style="color:${col(p._c6_ratio,0.7,0.5,false)};font-weight:600">${f2(p._c6_ratio)}</td>`;
- 
+
     // Quality
     const rtCol = is.realTicks && oos.realTicks ? 'var(--pass)' : 'var(--fail)';
     const rtTxt = is.realTicks && oos.realTicks ? '✓ Both real' : '⚠ Check files';
     html += `<td style="color:${rtCol}">${rtTxt}</td>`;
- 
+
     // Final score
     html += `<td style="color:var(--accent);font-weight:600">${p._finalScore.toFixed(3)}</td>`;
- 
+
     // Delete
     html += `<td><button class="btn btn-ghost" onclick="removeTickPass(${p._id})" style="font-size:10px;padding:3px 8px;">✕</button></td>`;
- 
+
     html += '</tr>';
   });
- 
+
   html += '</tbody>';
   document.getElementById('tick-table').innerHTML = html;
- 
+
   try {
     renderTickCharts();
   } catch(err) {
@@ -1944,20 +1955,20 @@ function renderTickTab() {
       </div>`;
   }
 }
- 
+
 // ── EQUITY CHARTS — single continuous curve per pass ──────────
 function renderTickCharts() {
   tickChartInstances.forEach(ch => ch.destroy());
   tickChartInstances = [];
   const container = document.getElementById('tick-charts');
   container.innerHTML = '';
- 
+
   tickPasses.forEach(p => {
     const medals = ['🥇','🥈','🥉'];
     const medal = p._rank <= 3 ? medals[p._rank-1] : `#${p._rank}`;
     const scoreStr = p._finalScore.toFixed(3);
     const c1Str = p._c1_actual !== null ? p._c1_actual.toFixed(2) : '—';
- 
+
     // Outlier notices — IS and OOS checked independently
     const isOut  = p._outlierIS  !== null && p._outlierIS  > 0.25;
     const oosOut = p._outlierOOS !== null && p._outlierOOS > 0.25;
@@ -1967,7 +1978,7 @@ function renderTickCharts() {
     if (isOut)  outlierHtml += `<div style="${noticeStyle}">⚠ IS outlier trade dependency — largest trade accounts for ${(p._outlierIS*100).toFixed(0)}% of total IS profit. IS Calmar may be inflated.</div>`;
     if (oosOut) outlierHtml += `<div style="${noticeStyle}">⚠ OOS outlier trade dependency — largest trade accounts for ${(p._outlierOOS*100).toFixed(0)}% of total OOS profit. OOS validation result may be misleading.</div>`;
     if (isOut && oosOut) outlierHtml += `<div style="${failStyle}">⚠ Outlier dependency in both periods — treat this pass with significant caution.</div>`;
- 
+
     const wrapper = document.createElement('div');
     wrapper.className = 'card mb24';
     wrapper.innerHTML = `
@@ -1980,7 +1991,7 @@ function renderTickCharts() {
       <canvas id="chart-combo-${p._id}" height="240"></canvas>
       ${outlierHtml}`;
     container.appendChild(wrapper);
- 
+
     // Single continuous balance curve: IS then OOS stitched together.
     // OOS is offset so it continues from IS end balance (not restarting at deposit).
     // Dual y-axes: IS left scale, OOS right scale — each section fills its own range
@@ -1988,7 +1999,7 @@ function renderTickCharts() {
     const isEq  = p.is.equity;
     const oosEq = p.oos.equity;
     if (isEq.length === 0 && oosEq.length === 0) return;
- 
+
     // Sample IS and OOS to equal number of x-axis points so each period
     // takes up half the chart width regardless of how many data points each has.
     // This stops IS (6 years) from dominating the x-axis and squeezing OOS (1 year).
@@ -2000,12 +2011,12 @@ function renderTickCharts() {
     };
     const isSampled  = sample(isEq,  TARGET_POINTS);
     const oosSampled = sample(oosEq, TARGET_POINTS);
- 
+
     const isLabels  = isSampled.map(d => d.t.substring(0, 10));
     const isValues  = isSampled.map(d => d.b);
     const oosLabels = oosSampled.map(d => d.t.substring(0, 10));
     const oosValues = oosSampled.map(d => d.b);
- 
+
     // Each axis scaled tightly to its own data so both curves are fully readable.
     // IS left axis, OOS right axis — independent ranges, each with 8% padding.
     const isMin  = Math.min(...isValues);
@@ -2013,24 +2024,24 @@ function renderTickCharts() {
     const isPad  = (isMax - isMin) * 0.08 || 5000;
     const isYMin = isMin - isPad;
     const isYMax = isMax + isPad;
- 
+
     const oosMin  = oosValues.length > 0 ? Math.min(...oosValues) : 0;
     const oosMax  = oosValues.length > 0 ? Math.max(...oosValues) : 0;
     const oosPad  = (oosMax - oosMin) * 0.10 || 5000;
     const oosYMin = oosMin - oosPad;
     const oosYMax = oosMax + oosPad;
- 
+
     const isDataFull  = [...isValues,  ...Array(oosLabels.length).fill(null)];
     const oosDataFull = [...Array(isLabels.length).fill(null), ...oosValues];
- 
+
     const allLabels  = [...isLabels, ...oosLabels];
     const splitIdx   = isLabels.length;
     const splitLabel = oosLabels.length > 0 ? oosLabels[0] : '';
- 
+
     const fmt$ = v => '$' + v.toLocaleString('en', { maximumFractionDigits: 0 });
- 
+
     const ctx = document.getElementById(`chart-combo-${p._id}`).getContext('2d');
- 
+
     // Background plugin: blue left, green right of boundary
     const bgPlugin = {
       id: `bg-${p._id}`,
@@ -2062,7 +2073,7 @@ function renderTickCharts() {
         c2.restore();
       }
     };
- 
+
     const ch = new Chart(ctx, {
       type: 'line',
       plugins: [bgPlugin],
@@ -2146,8 +2157,8 @@ function renderTickCharts() {
     tickChartInstances.push(ch);
   });
 }
- 
- 
+
+
 // ── BULK UPLOAD ───────────────────────────────────────────────
 // Pairs files by stripping _IS / _OOS suffix and matching the rest
 function tickBulkDrop(e) {
@@ -2155,12 +2166,12 @@ function tickBulkDrop(e) {
   dragLeave('tick-dropzone-bulk');
   tickBulkProcess(Array.from(e.dataTransfer.files));
 }
- 
+
 function tickBulkSelected(input) {
   tickBulkProcess(Array.from(input.files));
   input.value = '';
 }
- 
+
 function tickBulkProcess(files) {
   const statusEl = document.getElementById('tick-add-status');
   const xlsx = files.filter(f => f.name.toLowerCase().endsWith('.xlsx'));
@@ -2169,7 +2180,7 @@ function tickBulkProcess(files) {
     statusEl.style.color = 'var(--warn)';
     return;
   }
- 
+
   const isFiles = {}, oosFiles = {}, unmatched = [];
   xlsx.forEach(f => {
     const name = f.name.replace(/\.xlsx$/i, '');
@@ -2179,7 +2190,7 @@ function tickBulkProcess(files) {
     else if (oosM) oosFiles[oosM[1].toLowerCase()] = f;
     else           unmatched.push(f.name);
   });
- 
+
   const pairs = [];
   Object.keys(isFiles).forEach(key => {
     if (oosFiles[key]) pairs.push({ isFile: isFiles[key], oosFile: oosFiles[key] });
@@ -2188,19 +2199,19 @@ function tickBulkProcess(files) {
   Object.keys(oosFiles).forEach(key => {
     if (!isFiles[key]) unmatched.push(oosFiles[key].name + ' (no IS match)');
   });
- 
+
   if (pairs.length === 0) {
     statusEl.textContent = '⚠ No matching pairs found. Filenames must end with _IS.xlsx and _OOS.xlsx.';
     statusEl.style.color = 'var(--warn)';
     return;
   }
- 
+
   statusEl.textContent = `Parsing ${pairs.length} pair${pairs.length > 1 ? 's' : ''}…`;
   statusEl.style.color = 'var(--muted)';
- 
+
   let completed = 0;
   const results = new Array(pairs.length);
- 
+
   pairs.forEach((pair, i) => {
     try {
       parseTickXLSX(pair.isFile, isP => {
@@ -2234,7 +2245,7 @@ function tickBulkProcess(files) {
     }
   });
 }
- 
+
 // ═══════════════════════════════════════════════════
 // HELPERS
 // ═══════════════════════════════════════════════════
@@ -2242,19 +2253,29 @@ function escHtml(s) {
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 </script>
- 
+
 <!-- ═══════════════════════════════════════════════ -->
 <!-- TAB 3: TICK DATA COMPARISON -->
 <!-- ═══════════════════════════════════════════════ -->
 <div class="panel" id="tab2">
   <div class="section-title">Tick Data Comparison</div>
   <div class="section-sub">Drop all your IS and OOS XLSX files at once — the tool pairs them automatically by filename (e.g. <em>Pass_48_IS.xlsx</em> pairs with <em>Pass_48_OOS.xlsx</em>). Or add one pass at a time using the single-file zone below. All scoring is based on IS vs OOS consistency. Visually inspect the equity curves before making your final selection.</div>
- 
+
   <!-- Upload panel -->
   <div class="card mb24">
     <div class="chart-label" style="margin-bottom:12px;">Add Passes</div>
- 
-    <!-- Bulk drop zone -->
+
+    <!-- IS Years input -->
+    <div style="margin-bottom:16px;padding:12px 16px;background:var(--bg3);border:1px solid var(--border2);border-radius:6px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
+      <div>
+        <label class="ctrl-label" style="margin-bottom:4px;">IS YEARS</label>
+        <input type="number" id="tick-is-years" placeholder="e.g. 6" step="0.5" min="0.1" style="width:80px;" oninput="tickISYearsChanged()">
+      </div>
+      <div style="font-family:'Montserrat',sans-serif;font-size:11px;font-weight:500;color:var(--muted);line-height:1.6;">
+        Enter the length of your IS backtest period.<br>
+        <span style="color:var(--warn);">⚠ MT5 writes the full date range (IS + OOS) into the XLSX file — the tool cannot detect IS length automatically.</span>
+      </div>
+    </div>
     <div class="upload-zone" id="tick-dropzone-bulk" style="margin-bottom:16px;"
       ondragover="dragOver(event,'tick-dropzone-bulk')" ondragleave="dragLeave('tick-dropzone-bulk')"
       ondrop="tickBulkDrop(event)">
@@ -2263,7 +2284,7 @@ function escHtml(s) {
       <div class="upload-label">Drop all IS + OOS files here at once</div>
       <div class="upload-hint">SELECT MULTIPLE FILES · AUTO-PAIRED BY FILENAME · _IS / _OOS</div>
     </div>
- 
+
     <!-- Single pass zone (collapsible) -->
     <details style="margin-bottom:4px;">
       <summary style="font-family:'Montserrat',sans-serif;font-size:11px;font-weight:600;color:var(--muted);letter-spacing:0.08em;cursor:pointer;text-transform:uppercase;margin-bottom:10px;">Or add one pass at a time</summary>
@@ -2293,22 +2314,22 @@ function escHtml(s) {
         </div>
       </div>
     </details>
- 
+
     <div id="tick-add-status" style="font-family:'Montserrat',sans-serif;font-size:11px;color:var(--text3);margin-top:8px;"></div>
   </div>
- 
+
   <!-- Empty state -->
   <div id="tick-empty" class="empty">
     <div class="empty-icon">📋</div>
     <div class="empty-text">No passes uploaded yet</div>
     <div class="empty-sub">Upload an IS and OOS XLSX report above, then click Add Pass</div>
   </div>
- 
+
   <!-- Results -->
   <div id="tick-content" style="display:none;">
     <!-- Summary cards -->
     <div class="grid-4 mb24" id="tick-summary-cards"></div>
- 
+
     <!-- Comparison table -->
     <div class="tbl-wrap mb24">
       <div class="tbl-header">
@@ -2317,13 +2338,12 @@ function escHtml(s) {
       </div>
       <div class="tbl-scroll"><table id="tick-table"></table></div>
     </div>
- 
+
     <!-- Equity curve charts -->
     <div id="tick-charts"></div>
   </div>
 </div>
- 
- 
+
+
 </body>
 </html>
- 
