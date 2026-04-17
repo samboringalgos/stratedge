@@ -2740,12 +2740,17 @@ function dashRenderMonteCarlo(mc) {
   document.getElementById('dash-mc-empty').style.display   = 'none';
   document.getElementById('dash-mc-content').style.display = 'block';
 
-  // Stats cards
+  // Stats cards — include 2× comparison check
+  const histMaxDD = Math.max(dashCurrentPass.is.ddPct || 0, dashCurrentPass.oos.ddPct || 0);
+  const ratio     = histMaxDD > 0 ? mc.dd_95 / histMaxDD : null;
+  const ratioCol  = ratio === null ? 'var(--muted)' : ratio <= 2 ? 'var(--pass)' : ratio <= 3 ? 'var(--warn)' : 'var(--fail)';
+  const ratioNote = ratio === null ? '—' : ratio <= 2 ? `${ratio.toFixed(2)}× ✓` : ratio <= 3 ? `${ratio.toFixed(2)}× ⚠` : `${ratio.toFixed(2)}× ✗`;
+
   const statsHtml = `
-    <div class="card"><div class="card-title">Median Max DD</div><div class="card-value" style="color:var(--warn);">${mc.dd_50.toFixed(1)}%</div></div>
-    <div class="card"><div class="card-title">95th Pct Max DD</div><div class="card-value" style="color:var(--fail);">${mc.dd_95.toFixed(1)}%</div></div>
-    <div class="card"><div class="card-title">Median Return</div><div class="card-value" style="color:${mc.ret_50>=0?'var(--pass)':'var(--fail)'};">${mc.ret_50.toFixed(1)}%</div></div>
-    <div class="card"><div class="card-title">95th Pct Loss Streak</div><div class="card-value" style="color:var(--warn);">${mc.streak_95} trades</div></div>`;
+    <div class="card"><div class="card-title">Historical Max DD</div><div class="card-value" style="color:var(--text);">${histMaxDD.toFixed(1)}%</div><div style="font-family:'Montserrat',sans-serif;font-size:10px;color:var(--muted);margin-top:2px;">higher of IS vs OOS</div></div>
+    <div class="card"><div class="card-title">95th Pct Max DD</div><div class="card-value" style="color:var(--fail);">${mc.dd_95.toFixed(1)}%</div><div style="font-family:'Montserrat',sans-serif;font-size:10px;color:var(--muted);margin-top:2px;">from ${mc.nSims} MC simulations</div></div>
+    <div class="card"><div class="card-title">95th Pct ÷ Historical</div><div class="card-value" style="color:${ratioCol};">${ratioNote}</div><div style="font-family:'Montserrat',sans-serif;font-size:10px;color:var(--muted);margin-top:2px;">target ≤ 2×</div></div>
+    <div class="card"><div class="card-title">95th Pct Loss Streak</div><div class="card-value" style="color:var(--warn);">${mc.streak_95} trades</div><div style="font-family:'Montserrat',sans-serif;font-size:10px;color:var(--muted);margin-top:2px;">consecutive losses</div></div>`;
   document.getElementById('dash-mc-stats').innerHTML = statsHtml;
 
   // Chart — 50 simulation curves
@@ -3119,6 +3124,9 @@ function escHtml(s) {
     <!-- Row 3: Monte Carlo -->
     <div class="card mb24" id="dash-mc-card">
       <div class="chart-label" style="margin-bottom:4px;">Monte Carlo Simulation <span style="font-family:'Montserrat',sans-serif;font-size:11px;color:var(--muted);font-weight:400;">IS + OOS combined trades · 1,000 simulations · trade-reshuffle method</span></div>
+      <div style="font-family:'Montserrat',sans-serif;font-size:11px;color:var(--muted);margin-bottom:12px;line-height:1.6;">
+        ⚠ <strong style="color:var(--text2);">Historical Max DD caveat:</strong> Taken as the higher of IS Max DD% and OOS Max DD% individually — since IS and OOS are separate MT5 runs with separate starting deposits, a single combined drawdown cannot be measured directly. The <strong>95th Pct ÷ Historical ratio should be ≤ 2×</strong>. Above 2× means the strategy has high variance under different trade orderings — consider sizing down.
+      </div>
       <div id="dash-mc-empty" style="font-family:'Montserrat',sans-serif;font-size:12px;color:var(--muted);padding:20px 0;">Click "Run Monte Carlo" above to simulate 1,000 alternative trade sequences.</div>
       <div id="dash-mc-content" style="display:none;">
         <div class="grid-4 mb24" id="dash-mc-stats"></div>
