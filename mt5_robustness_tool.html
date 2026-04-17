@@ -454,19 +454,6 @@
   </div>
 
   <!-- Param classification removed — Tab 1 simplified -->
-    <div class="weight-row">
-      <div class="weight-label">Plateau (neighbourhood)</div>
-      <input type="range" id="w-plateau" min="0" max="100" value="40" oninput="updateWeightDisplay()">
-      <div class="weight-val" id="wv-plateau">0.40</div>
-    </div>
-    <div class="weight-row">
-      <div class="weight-label">Consistency</div>
-      <input type="range" id="w-consist" min="0" max="100" value="30" oninput="updateWeightDisplay()">
-      <div class="weight-val" id="wv-consist">0.30</div>
-    </div>
-    <div id="weight-sum-warning" style="font-family:'Montserrat',sans-serif;font-size:11px;color:var(--warn);display:none;margin-top:6px;">⚠ Weights do not sum to 1.0 — normalised automatically.</div>
-    <button class="btn btn-ghost" onclick="rerunAnalysis()" style="margin-top:12px;font-size:12px;">↻ Rerun with these weights</button>
-  </div>
 
   <!-- Results content -->
   <div id="plateau-content" style="display:none;margin-top:0;">
