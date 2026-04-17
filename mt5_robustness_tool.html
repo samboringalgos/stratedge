@@ -404,85 +404,69 @@
 <!-- ═══════════════════════════════════════════════ -->
 <div class="panel active" id="tab0">
   <div class="section-title">IS Selection</div>
-  <div class="section-sub">Upload two XML files from MT5's Strategy Tester: <strong style="color:var(--accent)">Optimization Results</strong> (IS data, all passes) and <strong style="color:var(--accent)">Forward Results</strong> (OOS data, top passes). Tab 1 selects the top 20 IS candidates. Tab 2 validates them against the forward test year.</div>
+  <div class="section-sub">Upload your Optimization Results XML and Forward Results XML from MT5. Tab 1 filters by quality, removes duplicates, and ranks by Calmar ratio. Top 20 candidates carry forward to Tab 2 for validation.</div>
 
-  <!-- Upload + IS dates -->
-  <div style="display:flex;gap:16px;align-items:stretch;margin-bottom:24px;flex-wrap:wrap;">
-    <div style="display:flex;flex-direction:column;gap:12px;flex:1;min-width:280px;">
-      <div class="upload-zone" id="dropzone1" style="margin-bottom:0;"
-        ondragover="dragOver(event,'dropzone1')" ondragleave="dragLeave('dropzone1')" ondrop="dropFile(event,'dropzone1','xml1')">
-        <input type="file" id="xml1" accept=".xml" onchange="loadXML(this,'plateau')">
-        <div class="upload-icon">📊</div>
-        <div class="upload-label" id="upload1-label">① Drop Optimization Results XML here</div>
-        <div class="upload-hint">ALL PASSES · IS METRICS ONLY</div>
-      </div>
-      <div class="upload-zone" id="dropzone2" style="margin-bottom:0;"
-        ondragover="dragOver(event,'dropzone2')" ondragleave="dragLeave('dropzone2')" ondrop="dropFile(event,'dropzone2','xml2')">
-        <input type="file" id="xml2" accept=".xml" onchange="loadXML(this,'forward')">
-        <div class="upload-icon">🔍</div>
-        <div class="upload-label" id="upload2-label">② Drop Forward Results XML here</div>
-        <div class="upload-hint">TOP PASSES ONLY · INCLUDES OOS METRICS</div>
-      </div>
+  <!-- Upload zones -->
+  <div style="display:flex;gap:16px;align-items:stretch;margin-bottom:16px;flex-wrap:wrap;">
+    <div class="upload-zone" style="flex:1;min-width:260px;"
+      ondragover="dragOver(event,'dropzone1')" ondragleave="dragLeave('dropzone1')" ondrop="dropFile(event,'dropzone1','xml1')">
+      <input type="file" id="xml1" accept=".xml" onchange="loadXML(this,'plateau')">
+      <div class="upload-icon">📊</div>
+      <div class="upload-label" id="upload1-label">① Drop Optimization Results XML here</div>
+      <div class="upload-hint">ALL PASSES · IS METRICS ONLY</div>
     </div>
-    <div class="card" style="min-width:260px;display:flex;flex-direction:column;gap:12px;justify-content:center;">
-      <div>
-        <div class="card-title" style="margin-bottom:6px;">IS WINDOW</div>
-        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-          <div class="form-group">
-            <label class="ctrl-label">START DATE</label>
-            <input type="text" id="is-start-date" placeholder="YYYY.MM.DD" style="width:118px;" oninput="updateISYears()">
-          </div>
-          <div class="form-group">
-            <label class="ctrl-label">END DATE</label>
-            <input type="text" id="is-end-date" placeholder="YYYY.MM.DD" style="width:118px;" oninput="updateISYears()">
-          </div>
-          <div class="form-group">
-            <label class="ctrl-label">OR IS YEARS</label>
-            <input type="number" id="is-years-input" placeholder="6.0" step="0.1" min="0.1" style="width:72px;" oninput="updateISYears()">
-          </div>
-        </div>
-        <div id="is-years-display" style="font-family:'Montserrat',sans-serif;font-size:11px;color:var(--text3);margin-top:6px;">Enter IS dates or years above</div>
-        <div id="deposit-display" style="font-family:'Montserrat',sans-serif;font-size:11px;color:var(--text3);margin-top:4px;">Deposit: not yet loaded</div>
-        <div id="fwd-status-display" style="font-family:'Montserrat',sans-serif;font-size:11px;color:var(--text3);margin-top:4px;">Forward Results: not loaded</div>
-        <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border);display:flex;align-items:center;gap:10px;">
-          <label class="ctrl-label" style="margin-bottom:0;">TRADE FLOOR MULTIPLIER</label>
-          <input type="number" id="trade-floor-mult" value="30" min="1" max="100" step="1" style="width:60px;" oninput="rerunAnalysis()">
-          <span style="font-family:'Montserrat',sans-serif;font-size:10px;color:var(--muted);">× IS years = min trades<br>Lower for swing strategies</span>
-        </div>
-      </div>
+    <div class="upload-zone" style="flex:1;min-width:260px;" id="dropzone2"
+      ondragover="dragOver(event,'dropzone2')" ondragleave="dragLeave('dropzone2')" ondrop="dropFile(event,'dropzone2','xml2')">
+      <input type="file" id="xml2" accept=".xml" onchange="loadXML(this,'forward')">
+      <div class="upload-icon">🔍</div>
+      <div class="upload-label" id="upload2-label">② Drop Forward Results XML here</div>
+      <div class="upload-hint">TOP PASSES ONLY · INCLUDES OOS METRICS</div>
     </div>
   </div>
 
-  <!-- Param classification removed — Tab 1 simplified -->
+  <!-- IS Window + Trade Floor -->
+  <div class="card mb24">
+    <div class="card-title" style="margin-bottom:10px;">IS WINDOW</div>
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px;">
+      <div class="form-group">
+        <label class="ctrl-label">START DATE</label>
+        <input type="text" id="is-start-date" placeholder="YYYY.MM.DD" style="width:118px;" oninput="updateISYears()">
+      </div>
+      <div class="form-group">
+        <label class="ctrl-label">END DATE</label>
+        <input type="text" id="is-end-date" placeholder="YYYY.MM.DD" style="width:118px;" oninput="updateISYears()">
+      </div>
+      <div class="form-group">
+        <label class="ctrl-label">OR IS YEARS</label>
+        <input type="number" id="is-years-input" placeholder="6.0" step="0.1" min="0.1" style="width:72px;" oninput="updateISYears()">
+      </div>
+    </div>
+    <div id="is-years-display" style="font-family:'Montserrat',sans-serif;font-size:11px;color:var(--text3);margin-top:6px;">Enter IS dates or years above — XML title cannot be used (MT5 includes OOS period in title)</div>
+    <div id="deposit-display" style="font-family:'Montserrat',sans-serif;font-size:11px;color:var(--text3);margin-top:4px;">Deposit: not yet loaded</div>
+    <div id="fwd-status-display" style="font-family:'Montserrat',sans-serif;font-size:11px;color:var(--text3);margin-top:4px;">Forward Results: not loaded</div>
+    <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border);display:flex;align-items:center;gap:10px;">
+      <label class="ctrl-label" style="margin-bottom:0;">TRADE FLOOR MULTIPLIER</label>
+      <input type="number" id="trade-floor-mult" value="30" min="1" max="100" step="1" style="width:60px;" oninput="rerunAnalysis()">
+      <span style="font-family:'Montserrat',sans-serif;font-size:10px;color:var(--muted);">× IS years = min trades<br>Lower for swing strategies</span>
+    </div>
+  </div>
+
+  <!-- Empty state -->
+  <div id="plateau-empty" class="empty">
+    <div class="empty-icon">📈</div>
+    <div class="empty-text">No data loaded</div>
+    <div class="empty-sub">Upload your Optimization Results XML and enter the IS window dates to begin</div>
+  </div>
 
   <!-- Results content -->
   <div id="plateau-content" style="display:none;margin-top:0;">
-    <div class="grid-4" id="plateau-stats"></div>
-    <div id="dedup-notice" style="display:none;font-family:'Montserrat',sans-serif;font-size:12px;font-weight:500;color:var(--warn);background:rgba(201,168,76,0.10);border:1px solid rgba(201,168,76,0.30);border-radius:6px;padding:10px 16px;margin-bottom:20px;"></div>
+    <!-- Stats cards -->
+    <div class="grid-4 mb24" id="plateau-stats"></div>
 
-    <!-- Surface chart -->
-    <div class="chart-wrap">
-      <div class="flex mb16">
-        <div style="flex:1"><div class="chart-label">Optimisation Surface</div></div>
-        <div class="form-group">
-          <label class="ctrl-label">PARAMETER (X AXIS)</label>
-          <select id="param-select" onchange="renderPlateauChart()"></select>
-        </div>
-        <div class="form-group">
-          <label class="ctrl-label">METRIC (Y AXIS)</label>
-          <select id="metric-select" onchange="renderPlateauChart()">
-            <option value="Calmar">Calmar Ratio</option>
-            <option value="Profit Factor">Profit Factor</option>
-            <option value="Recovery Factor">Recovery Factor</option>
-            <option value="Profit">Net Profit</option>
-            <option value="Equity DD %">Equity DD %</option>
-          </select>
-        </div>
-      </div>
-      <canvas id="plateauChart" height="260"></canvas>
-    </div>
+    <!-- Dedup notice -->
+    <div id="dedup-notice" class="info-box mb24" style="display:none;"></div>
 
-    <div id="plateau-verdict"></div>
+    <!-- IS Candidate Banner -->
     <div id="plateau-recommendation"></div>
 
     <!-- Top 20 table -->
@@ -494,12 +478,6 @@
       <div class="tbl-scroll"><table id="plateau-table"></table></div>
     </div>
   </div>
-
-  <div id="plateau-empty" class="empty">
-    <div class="empty-icon">📈</div>
-    <div class="empty-text">No data loaded</div>
-    <div class="empty-sub">Upload your MT5 forward test XML and enter the IS window dates to begin</div>
-  </div>
 </div>
 
 <!-- ═══════════════════════════════════════════════ -->
@@ -508,6 +486,29 @@
 <div class="panel" id="tab1">
   <div class="section-title">Validation</div>
   <div class="section-sub">Top 20 IS candidates validated against the validation year. Take PASS and CAUTION candidates into MT5 for tick data testing. Visually inspect equity curve similarity between IS and OOS before going live.</div>
+
+  <div class="card mb24" style="background:var(--bg3);border:1px solid var(--border2);">
+    <div class="chart-label" style="margin-bottom:10px;">Pass / Fail Criteria</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;">
+      <div style="font-family:'Montserrat',sans-serif;font-size:12px;">
+        <div style="font-weight:700;color:var(--pass);margin-bottom:4px;">C1 — OOS Profit &gt; 0</div>
+        <div style="color:var(--text2);line-height:1.6;">The strategy must be profitable in the forward test year. A loss means the edge did not survive out-of-sample.</div>
+      </div>
+      <div style="font-family:'Montserrat',sans-serif;font-size:12px;">
+        <div style="font-weight:700;color:var(--pass);margin-bottom:4px;">C2 — OOS DD ≤ 1.5 × IS DD</div>
+        <div style="color:var(--text2);line-height:1.6;">The OOS drawdown must not exceed 1.5× the IS drawdown. A much larger OOS drawdown suggests the strategy behaved erratically out-of-sample.</div>
+      </div>
+      <div style="font-family:'Montserrat',sans-serif;font-size:12px;">
+        <div style="font-weight:700;color:var(--pass);margin-bottom:4px;">C3 — OOS Trades ≥ Expected Rate</div>
+        <div style="color:var(--text2);line-height:1.6;">OOS trade count must be at least 40% of the expected rate based on IS trades per year. A large drop in activity suggests the strategy stopped firing in OOS conditions.</div>
+      </div>
+    </div>
+    <div style="margin-top:12px;font-family:'Montserrat',sans-serif;font-size:11px;color:var(--muted);">
+      <span style="color:var(--warn);font-weight:600;">CAUTION</span> — all criteria met but OOS trade count is below the expected rate, suggesting reduced activity. 
+      <span style="color:var(--fail);font-weight:600;">FAIL</span> — one or more criteria not met. 
+      Passes not found in the Forward Results file are marked <em>not in fwd file</em>.
+    </div>
+  </div>
 
   <div id="validation-empty" class="empty">
     <div class="empty-icon">🔍</div>
@@ -1031,7 +1032,6 @@ function renderPlateau() {
 
   renderRecommendationBanner(rank1, safePick, usedFallback, noNeighboursAnywhere, paramCols);
   renderPlateauTable(top20, paramCols, safePick);
-  renderPlateauChart();
 }
 
 // ═══════════════════════════════════════════════════
@@ -1050,25 +1050,7 @@ function renderRecommendationBanner(rank1, safePick, usedFallback, noNeighboursA
   // Check if all params are categorical — plateau/neighbour concepts don't apply
   const allCategorical = paramCols.length > 0 && paramCols.every(p => !paramTypes[p] || paramTypes[p] === 'cat');
 
-  if (allCategorical) {
-    html += `<div class="plateau-result mixed" style="margin-bottom:12px;">
-      ℹ <strong>All parameters are Categorical.</strong> Plateau safety rule and neighbour counts are not meaningful for categorical switches — adjacent values represent different behaviours, not a continuous surface. Rank 1 is used directly.
-    </div>`;
-  } else {
-    if (noNeighboursAnywhere) {
-      html += `<div class="plateau-result spike" style="margin-bottom:12px;">
-        ⚠ <strong>Warning:</strong> No set in the top 20 has 3+ neighbours. Plateau robustness cannot be confirmed. Rank 1 used — proceed with caution.
-      </div>`;
-    }
-    if (usedFallback && rank1) {
-      const r1params = paramCols.map(p => `${escHtml(p.replace(/^Inp/,''))}=${escHtml(rank1[p])}`).join(', ');
-      html += `<div class="plateau-result mixed" style="margin-bottom:12px;">
-        ⚠ <strong>Plateau Safety Rule triggered:</strong> Rank 1 (Pass ${escHtml(rank1['Pass'])}) has ${rank1._neighbours} neighbour(s) — isolated peak.
-        Falling back to Pass ${escHtml(safePick['Pass'])} (Rank ${safePick._rank}, ${safePick._neighbours} neighbours).
-        Raw Rank 1 params: [${r1params}]
-      </div>`;
-    }
-  }
+
 
   const calmar  = rec._calmar;
   const paramStr = paramCols.map(p =>
@@ -1147,87 +1129,6 @@ function renderPlateauTable(top20, paramCols, safePick) {
 
 // ═══════════════════════════════════════════════════
 // SURFACE CHART
-// ═══════════════════════════════════════════════════
-function renderPlateauChart() {
-  if (!plateauData) return;
-  const { data } = plateauData;
-  const param  = document.getElementById('param-select').value;
-  const metric = document.getElementById('metric-select').value;
-  if (!param || !metric) return;
-
-  const validData = data.filter(r => typeof r['Profit'] === 'number' && r['Profit'] > 0 && r[param] !== undefined && r[param] !== '');
-
-  const groups = {};
-  validData.forEach(r => {
-    const key = r[param];
-    const mv  = metric === 'Calmar' ? calcCalmar(r) : r[metric];
-    if (mv === null || typeof mv !== 'number' || !isFinite(mv)) return;
-    if (!groups[key]) groups[key] = [];
-    groups[key].push(mv);
-  });
-
-  const rawKeys = Object.keys(groups);
-  const allNum  = rawKeys.every(k => !isNaN(k) && k.trim() !== '');
-  const labels  = allNum ? rawKeys.map(Number).sort((a,b)=>a-b) : rawKeys.sort();
-  const values  = labels.map(k => {
-    const arr = groups[String(k)];
-    return arr ? arr.reduce((s,v)=>s+v,0)/arr.length : 0;
-  });
-
-  const isDD   = metric === 'Equity DD %';
-  const best   = isDD ? Math.min(...values) : Math.max(...values);
-  const bgC    = values.map(v => v===best?'rgba(201,168,76,0.9)':'rgba(201,168,76,0.30)');
-  const bdC    = values.map(v => v===best?'rgba(201,168,76,1.0)':'rgba(201,168,76,0.55)');
-
-  const ctx = document.getElementById('plateauChart').getContext('2d');
-  if (plateauChart) plateauChart.destroy();
-  plateauChart = new Chart(ctx, {
-    type: 'bar',
-    data: { labels, datasets: [{ label: metric, data: values, backgroundColor: bgC, borderColor: bdC, borderWidth: 1, borderRadius: 4 }] },
-    options: {
-      responsive: true,
-      plugins: {
-        legend: { display: false },
-        tooltip: {
-          backgroundColor: '#fff', borderColor: 'rgba(0,0,0,0.12)', borderWidth: 1,
-          titleFont: { family: 'Montserrat', size: 11 }, bodyFont: { family: 'Montserrat', size: 12 },
-          titleColor: '#8a8478', bodyColor: '#0f0e0b',
-          callbacks: {
-            title: items => `${param.replace(/^Inp/,'')} = ${items[0].label}`,
-            label: item => `Avg ${metric}: ${item.raw.toFixed(3)}`
-          }
-        }
-      },
-      scales: {
-        x: { grid: {color:'rgba(0,0,0,0.06)'}, ticks:{color:'#8a8478',font:{family:'Montserrat',size:11}}, title:{display:true,text:param.replace(/^Inp/,''),color:'#8a8478',font:{family:'Montserrat',size:12}} },
-        y: { grid: {color:'rgba(0,0,0,0.06)'}, ticks:{color:'#8a8478',font:{family:'Montserrat',size:11}}, title:{display:true,text:metric,color:'#8a8478',font:{family:'Montserrat',size:12}} }
-      }
-    }
-  });
-
-  // Visual plateau verdict
-  // Suppress if the selected parameter is categorical — plateau/spike concepts don't apply
-  const paramIsCat = !paramTypes[param] || paramTypes[param] === 'cat';
-  if (paramIsCat) {
-    document.getElementById('plateau-verdict').innerHTML =
-      `<div class="plateau-result mixed" style="margin-top:0;">ℹ ${escHtml(param.replace(/^Inp/,''))} is set to CATEGORICAL — plateau analysis does not apply. Adjacent values represent different behaviours, not a continuous surface.</div>`;
-  } else if (labels.length >= 3 && values.length >= 3) {
-    const range = Math.abs(best - (isDD ? Math.max(...values) : Math.min(...values)));
-    if (range > 0) {
-      const goodCount = values.filter(v => isDD ? v <= best+range*0.20 : v >= best-range*0.20).length;
-      const ratio = goodCount / values.length;
-      const cls = ratio>=0.45?'plateau':ratio>=0.25?'mixed':'spike';
-      const msg = ratio>=0.45
-        ? `✅ PLATEAU — ${(ratio*100).toFixed(0)}% of ${escHtml(param.replace(/^Inp/,''))} values within 80% of best. Healthy surface.`
-        : ratio>=0.25
-        ? `⚠ WEAK PLATEAU — ${(ratio*100).toFixed(0)}% near best. Proceed with caution.`
-        : `❌ SPIKE — ${(ratio*100).toFixed(0)}% near best. Strong sign of overfitting.`;
-      document.getElementById('plateau-verdict').innerHTML = `<div class="plateau-result ${cls}" style="margin-top:0;">${msg}</div>`;
-    }
-  } else {
-    document.getElementById('plateau-verdict').innerHTML = '';
-  }
-}
 
 // ═══════════════════════════════════════════════════
 // TAB 2 — VALIDATION
@@ -1645,6 +1546,7 @@ function parseTickXLSX(file, callback) {
 
     if (dealsDataRow >= 0) {
       const mMap = {};
+      const tradePnLs = [];
       for (let i = dealsDataRow; i < rows.length; i++) {
         const r = rows[i];
         if (!r || r[0] == null) continue;
@@ -1656,9 +1558,11 @@ function parseTickXLSX(file, callback) {
         if (dir === 'out' && ts.length >= 7) {
           const ym = ts.substring(0, 7).replace('.', '-');
           mMap[ym] = (mMap[ym] || 0) + pnl;
+          if (typeof r[10] === 'number' && Math.abs(pnl) > 0.01) tradePnLs.push(pnl);
         }
       }
-      parsed.monthlyPnL = mMap;
+      parsed.monthlyPnL  = mMap;
+      parsed.tradePnLs   = tradePnLs; // closed trade P&Ls for Monte Carlo
       const months = Object.values(mMap);
       parsed.monthlyWinRate = months.length > 0
         ? months.filter(v => v > 0).length / months.length : null;
@@ -2773,19 +2677,10 @@ function dashRunMonteCarlo() {
   const p = dashCurrentPass;
   if (!p) return;
 
-  // Combine IS + OOS trade P&Ls
-  const getTradePnLs = parsed => {
-    const pnls = [];
-    const eq = parsed.equity;
-    for (let i = 1; i < eq.length; i++) {
-      const diff = eq[i].b - eq[i-1].b;
-      if (Math.abs(diff) > 0.01) pnls.push(diff);
-    }
-    return pnls;
-  };
-
-  const isPnLs  = getTradePnLs(p.is);
-  const oosPnLs = getTradePnLs(p.oos);
+  // Use actual closed trade P&Ls from Deals table (stored by parseTickXLSX)
+  // This is the correct input for trade-reshuffle Monte Carlo
+  const isPnLs  = (p.is.tradePnLs  && p.is.tradePnLs.length  > 0) ? p.is.tradePnLs  : [];
+  const oosPnLs = (p.oos.tradePnLs && p.oos.tradePnLs.length > 0) ? p.oos.tradePnLs : [];
   const allPnLs = [...isPnLs, ...oosPnLs];
 
   if (allPnLs.length < 5) {
