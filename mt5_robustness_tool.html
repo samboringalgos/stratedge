@@ -395,6 +395,8 @@
   <div class="tab active" onclick="switchTab(0)"><span class="tab-num">1</span>IS Selection</div>
   <div class="tab" onclick="switchTab(1)"><span class="tab-num">2</span>Validation</div>
   <div class="tab" onclick="switchTab(2)"><span class="tab-num">3</span>Tick Data</div>
+  <div class="tab" onclick="switchTab(3)"><span class="tab-num">4</span>Sensitivity</div>
+  <div class="tab" onclick="switchTab(4)"><span class="tab-num">5</span>Dashboard</div>
 </div>
 
 <!-- ═══════════════════════════════════════════════ -->
@@ -451,21 +453,7 @@
     </div>
   </div>
 
-  <!-- Param classification -->
-  <div id="param-types-section" style="display:none;" class="card mb24">
-    <div class="chart-label" style="margin-bottom:10px;">Parameter Classification</div>
-    <div class="info-box" style="margin-bottom:12px;"><strong>Required:</strong> Click each tag to toggle between <span style="color:#4a9ef0">CATEGORICAL</span> (switch/mode selector) and <span style="color:#c04af0">SMOOTH</span> (numeric — adjacent values are similar). If unsure, leave as Categorical.</div>
-    <div id="param-type-tags" style="display:flex;gap:10px;flex-wrap:wrap;"></div>
-  </div>
-
-  <!-- Score weights -->
-  <div id="weights-section" style="display:none;" class="card mb24">
-    <div class="chart-label" style="margin-bottom:12px;">Final Score Weights <span style="font-family:'Montserrat',sans-serif;font-size:11px;color:var(--text3);font-weight:400;margin-left:8px;">must sum to 1.0</span></div>
-    <div class="weight-row">
-      <div class="weight-label">Calmar (performance)</div>
-      <input type="range" id="w-calmar" min="0" max="100" value="30" oninput="updateWeightDisplay()">
-      <div class="weight-val" id="wv-calmar">0.30</div>
-    </div>
+  <!-- Param classification removed — Tab 1 simplified -->
     <div class="weight-row">
       <div class="weight-label">Plateau (neighbourhood)</div>
       <input type="range" id="w-plateau" min="0" max="100" value="40" oninput="updateWeightDisplay()">
@@ -514,7 +502,7 @@
     <div class="tbl-wrap" style="margin-top:20px;">
       <div class="tbl-header">
         <div class="tbl-title">Top 20 IS Candidates</div>
-        <div style="font-family:'Montserrat',sans-serif;font-size:11px;color:var(--text3);">Ranked by Final Score &nbsp;·&nbsp; <span id="legend-isolated" style="color:var(--warn);">⚠ = isolated peak (&lt;3 neighbours)</span> &nbsp;·&nbsp; <span style="color:var(--warn);">⚡ = cliff-edge smooth param</span></div>
+        <div style="font-family:'Montserrat',sans-serif;font-size:11px;color:var(--text3);">Ranked by Calmar Ratio</div>
       </div>
       <div class="tbl-scroll"><table id="plateau-table"></table></div>
     </div>
@@ -546,10 +534,13 @@
     <div class="tbl-wrap">
       <div class="tbl-header">
         <div class="tbl-title">Validation Results</div>
-        <div style="font-family:'Montserrat',sans-serif;font-size:11px;color:var(--text3);">
-          <span style="color:var(--pass);">■ PASS</span> &nbsp;·&nbsp;
-          <span style="color:var(--warn);">■ CAUTION</span> &nbsp;·&nbsp;
-          <span style="color:var(--fail);">■ FAIL</span>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <div style="font-family:'Montserrat',sans-serif;font-size:11px;color:var(--text3);">
+            <span style="color:var(--pass);">■ PASS</span> &nbsp;·&nbsp;
+            <span style="color:var(--warn);">■ CAUTION</span> &nbsp;·&nbsp;
+            <span style="color:var(--fail);">■ FAIL</span>
+          </div>
+          <button class="btn btn-ghost" onclick="exportPassesCSV()" style="font-size:10px;padding:4px 10px;">⬇ Export Passes CSV</button>
         </div>
       </div>
       <div class="tbl-scroll"><table id="validation-table"></table></div>
@@ -639,24 +630,8 @@ function updateISYears() {
 // ═══════════════════════════════════════════════════
 // WEIGHT DISPLAY
 // ═══════════════════════════════════════════════════
-function updateWeightDisplay() {
-  const wc = parseInt(document.getElementById('w-calmar').value);
-  const wp = parseInt(document.getElementById('w-plateau').value);
-  const wk = parseInt(document.getElementById('w-consist').value);
-  document.getElementById('wv-calmar').textContent  = (wc/100).toFixed(2);
-  document.getElementById('wv-plateau').textContent = (wp/100).toFixed(2);
-  document.getElementById('wv-consist').textContent = (wk/100).toFixed(2);
-  const sum = wc + wp + wk;
-  document.getElementById('weight-sum-warning').style.display = Math.abs(sum - 100) > 1 ? 'block' : 'none';
-}
-
 function getWeights() {
-  const wc = parseInt(document.getElementById('w-calmar').value)  / 100;
-  const wp = parseInt(document.getElementById('w-plateau').value) / 100;
-  const wk = parseInt(document.getElementById('w-consist').value) / 100;
-  const total = wc + wp + wk;
-  if (total === 0) return { calmar: 0.30, plateau: 0.40, consist: 0.30 };
-  return { calmar: wc/total, plateau: wp/total, consist: wk/total };
+  return { calmar: 1.0, plateau: 0.0, consist: 0.0 };
 }
 
 // ═══════════════════════════════════════════════════
@@ -782,8 +757,8 @@ function onXMLLoaded() {
     wrapper.appendChild(tagSpan);
     tagsEl.appendChild(wrapper);
   });
-  document.getElementById('param-types-section').style.display = paramCols.length > 0 ? 'block' : 'none';
-  document.getElementById('weights-section').style.display = 'block';
+  // param-types-section removed in Tab 1 simplification
+  // weights-section removed in Tab 1 simplification
 
   updateISYears();
   renderPlateau();
@@ -1023,31 +998,13 @@ function renderPlateau() {
   // Step 2 — Calmar
   filtered.forEach(r => { r._calmar = calcCalmar(r); });
 
-  // Step 3 — Consistency (pre-build lookup maps ONCE, then O(1) per row)
-  const consistMaps = buildConsistencyMaps(data, paramCols);
+  // Step 3 — Rank by Calmar only (Tab 1 simplified)
   filtered.forEach(r => {
-    const res = calcConsistencyScore(r, paramCols, consistMaps);
-    r._consist = res.score;
-    r._cliff   = res.cliffFlag;
-  });
-
-  // Step 4 — Plateau (pre-build filteredSet + calmarMap + paramVals ONCE)
-  const plateauMaps = buildPlateauMaps(filtered, paramCols);
-  filtered.forEach(r => {
-    const res = calcPlateauScore(r, paramCols, plateauMaps);
-    r._neighbours = res.neighbourCount;
-    r._plateau    = res.plateauScore;
-  });
-
-  // Step 5 — Final score
-  const weights = getWeights();
-  const calmarNorms  = normalise(filtered.map(r => r._calmar));
-  const plateauNorms = normalise(filtered.map(r => r._plateau));
-  const consistNorms = normalise(filtered.map(r => r._consist));
-  filtered.forEach((r, i) => {
-    r._finalScore = weights.calmar  * calmarNorms[i]
-                  + weights.plateau * plateauNorms[i]
-                  + weights.consist * consistNorms[i];
+    r._consist    = null;
+    r._cliff      = false;
+    r._neighbours = 0;
+    r._plateau    = null;
+    r._finalScore = r._calmar !== null ? r._calmar : 0;
   });
 
   // Sort, take top 20
@@ -1087,11 +1044,11 @@ function renderPlateau() {
     paramSelect.appendChild(o);
   });
 
-  // Step 6 — Plateau safety rule
+  // Rank 1 is always the IS candidate (ranked by Calmar)
   const rank1 = top20[0] || null;
-  const safePick = top20.find(r => r._neighbours >= 3) || null;
-  const usedFallback = rank1 && safePick && rank1['Pass'] !== safePick['Pass'];
-  const noNeighboursAnywhere = rank1 && !safePick;
+  const safePick = rank1;
+  const usedFallback = false;
+  const noNeighboursAnywhere = false;
 
   renderRecommendationBanner(rank1, safePick, usedFallback, noNeighboursAnywhere, paramCols);
   renderPlateauTable(top20, paramCols, safePick);
@@ -1398,6 +1355,14 @@ function renderValidation() {
   let bestOOSProfit = null, bestDDRatio = null;
 
   // Build validation results
+  // IS trade rate: trades per OOS year based on IS data
+  // Use this instead of fixed 30 — more appropriate for low-frequency strategies
+  const isTradeRate = (() => {
+    // Find the IS candidate with the most trades as a proxy for the strategy rate
+    // Actually use the per-pass IS trade rate from the row itself
+    return null; // computed per row below
+  })();
+
   const results = top20Global.map(row => {
     const fwd = getForwardMetrics(row);
     const { oosProfit, oosDD, oosTrades } = fwd;
@@ -1405,11 +1370,20 @@ function renderValidation() {
     const isDD = typeof row['Equity DD %'] === 'number' ? row['Equity DD %'] : null;
     const ddRatio = (oosDD !== null && isDD !== null && isDD > 0) ? oosDD / isDD : null;
 
+    // Expected OOS trades based on IS trade rate scaled to OOS period
+    // IS trade rate = IS trades / IS years. OOS expected = rate × 1 OOS year.
+    // We allow a wide band (40%–160%) to account for natural variation.
+    const isTrades = typeof row['Trades'] === 'number' ? row['Trades'] : null;
+    const expectedOOS = (isTrades !== null && isYears > 0) ? (isTrades / isYears) : null;
+    const oosTradeMin = expectedOOS !== null ? Math.max(3, Math.round(expectedOOS * 0.40)) : 30;
+    const oosTradeMax = expectedOOS !== null ? Math.round(expectedOOS * 1.60) : null;
+
     // Validation criteria
-    const c1 = oosProfit !== null && oosProfit > 0;                         // OOS Profit > 0
-    const c2 = ddRatio !== null && ddRatio <= 1.5;                          // OOS DD ≤ 1.5 × IS DD
-    const c3 = oosTrades !== null && oosTrades >= 30;                       // OOS Trades ≥ 30
-    const outlier = oosProfit !== null && oosTrades !== null && oosProfit > 10000 && oosTrades < 20;
+    const c1 = oosProfit !== null && oosProfit > 0;
+    const c2 = ddRatio !== null && ddRatio <= 1.5;
+    const c3 = oosTrades !== null && oosTrades >= oosTradeMin;
+    // CAUTION: OOS trades are significantly below expected rate (possible regime change)
+    const outlier = oosTrades !== null && expectedOOS !== null && oosTrades < oosTradeMin;
 
     let status;
     if (!c1 || !c2 || !c3) {
@@ -1425,7 +1399,7 @@ function renderValidation() {
     if (oosProfit !== null && (bestOOSProfit === null || oosProfit > bestOOSProfit)) bestOOSProfit = oosProfit;
     if (ddRatio !== null && (bestDDRatio === null || ddRatio < bestDDRatio)) bestDDRatio = ddRatio;
 
-    return { row, oosProfit, oosDD, oosTrades, ddRatio, fwdResult: fwd.fwdResult || null, c1, c2, c3, outlier, status };
+    return { row, oosProfit, oosDD, oosTrades, ddRatio, fwdResult: fwd.fwdResult || null, c1, c2, c3, outlier, status, expectedOOS, oosTradeMin };
   });
 
   // Sort: PASS first, CAUTION second, FAIL last
@@ -1475,7 +1449,7 @@ function renderValidation() {
     // OOS columns — colour based on pass/fail of each criterion
     html += `<td style="color:${c1?'var(--pass)':'var(--fail)'}">${fmtProfit(oosProfit)}</td>`;
     html += `<td style="color:${c2?'var(--pass)':'var(--fail)'}">${oosDD!==null?oosDD.toFixed(1)+'%':'—'}</td>`;
-    html += `<td style="color:${c3?'var(--pass)':'var(--fail)'}">${oosTrades!==null?oosTrades:'—'}</td>`;
+    html += `<td style="color:${c3?'var(--pass)':'var(--fail)'}">${oosTrades!==null?oosTrades:'—'}<span style="font-size:9px;color:var(--muted);margin-left:3px;">(min ${res.oosTradeMin})</span></td>`;
     html += `<td style="color:${ddRatio===null?'var(--text3)':ddRatio<=1.0?'var(--pass)':ddRatio<=1.5?'var(--warn)':'var(--fail)'}">${ddRatio!==null?ddRatio.toFixed(2):'—'}</td>`;
 
     const fwdScore = res.fwdResult;
@@ -1485,7 +1459,7 @@ function renderValidation() {
     const statusCol = status==='PASS'?'var(--pass)':status==='CAUTION'?'var(--warn)':'var(--fail)';
     const statusNote = notInFwd
       ? '<span style="font-size:10px;color:var(--text3);margin-left:4px;">(not in fwd file)</span>'
-      : res.outlier && status==='CAUTION' ? '<span style="font-size:10px;color:var(--text3);margin-left:4px;">(outlier)</span>' : '';
+      : res.outlier && status==='CAUTION' ? '<span style="font-size:10px;color:var(--text3);margin-left:4px;">(low trade count)</span>' : '';
     html += `<td><span style="color:${statusCol};font-weight:700">${status}</span>${statusNote}</td>`;
     html += '</tr>';
   });
@@ -1803,6 +1777,32 @@ function computeAllCriteria(p) {
   p._outlierOOS = (oos.netProfit > 0 && oos.largestTrade > 0) ? oos.largestTrade / oos.netProfit : null;
 }
 
+
+function getTickWeights() {
+  const raw = [
+    parseInt(document.getElementById('tw-c1').value) || 30,
+    parseInt(document.getElementById('tw-c2').value) || 25,
+    parseInt(document.getElementById('tw-c3').value) || 20,
+    parseInt(document.getElementById('tw-c4').value) || 15,
+    parseInt(document.getElementById('tw-c5').value) || 5,
+    parseInt(document.getElementById('tw-c6').value) || 5,
+  ];
+  const total = raw.reduce((s, v) => s + v, 0);
+  return total > 0 ? raw.map(v => v / total) : [0.30,0.25,0.20,0.15,0.05,0.05];
+}
+
+function tickWeightChanged() {
+  const ids = ['tw-c1','tw-c2','tw-c3','tw-c4','tw-c5','tw-c6'];
+  const vals = ids.map(id => parseInt(document.getElementById(id).value) || 0);
+  const total = vals.reduce((s, v) => s + v, 0);
+  ids.forEach((id, i) => {
+    document.getElementById('twv-c' + (i+1)).textContent = vals[i] + '%';
+  });
+  const sumEl = document.getElementById('tw-sum-display');
+  sumEl.textContent = `Total: ${total}%${total === 100 ? ' ✓' : ' ⚠ adjust to reach 100%'}`;
+  sumEl.style.color = total === 100 ? 'var(--pass)' : 'var(--warn)';
+  if (tickPasses.length > 0) renderTickTab();
+}
 function rankTickPasses() {
   if (tickPasses.length === 0) return;
   tickPasses.forEach(p => computeAllCriteria(p));
@@ -1822,8 +1822,9 @@ function rankTickPasses() {
   const n5 = norm(tickPasses.map(p => p._c5_score));
   const n6 = norm(tickPasses.map(p => p._c6_score));
 
+  const tw = getTickWeights();
   tickPasses.forEach((p, i) => {
-    p._finalScore = 0.30*n1[i] + 0.25*n2[i] + 0.20*n3[i] + 0.15*n4[i] + 0.05*n5[i] + 0.05*n6[i];
+    p._finalScore = tw[0]*n1[i] + tw[1]*n2[i] + tw[2]*n3[i] + tw[3]*n4[i] + tw[4]*n5[i] + tw[5]*n6[i];
   });
 
   tickPasses.sort((a, b) => b._finalScore - a._finalScore);
@@ -1865,7 +1866,8 @@ function renameTickPass(id) {
 // ── RENDER ────────────────────────────────────────────────────
 function renderTickTab() {
   const has = tickPasses.length > 0;
-  document.getElementById('tick-empty').style.display   = has ? 'none'  : 'block';
+  document.getElementById('tick-empty').style.display       = has ? 'none'  : 'block';
+  document.getElementById('tick-weights-card').style.display = has ? 'block' : 'none';
   document.getElementById('tick-content').style.display = has ? 'block' : 'none';
   if (!has) return;
 
@@ -2195,7 +2197,387 @@ function renderTickCharts() {
 }
 
 
-// ── BULK UPLOAD ───────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════
+// TAB 4 — SENSITIVITY ANALYSIS
+// ═══════════════════════════════════════════════════════════════
+let sensResults = []; // array of {paramName, centralPass, rows, verdict, chart}
+let sensChartInstances = [];
+let sensThreshold = 50; // % Calmar drop = FRAGILE
+
+function sensThresholdChanged() {
+  const v = parseInt(document.getElementById('sens-threshold').value);
+  if (!isNaN(v) && v >= 10 && v <= 90) {
+    sensThreshold = v;
+    if (sensResults.length > 0) renderSensTab();
+  }
+}
+
+function sensDrop(e) {
+  e.preventDefault();
+  dragLeave('sens-dropzone');
+  sensProcessFiles(Array.from(e.dataTransfer.files));
+}
+
+function sensFilesSelected(input) {
+  sensProcessFiles(Array.from(input.files));
+  input.value = '';
+}
+
+function sensClear() {
+  sensResults = [];
+  sensChartInstances.forEach(ch => ch.destroy());
+  sensChartInstances = [];
+  document.getElementById('sens-content').innerHTML = '';
+  document.getElementById('sens-empty').style.display = 'block';
+  document.getElementById('sens-content').style.display = 'none';
+  document.getElementById('sens-status').textContent = '';
+}
+
+function sensProcessFiles(files) {
+  const xmlFiles = files.filter(f => f.name.toLowerCase().endsWith('.xml'));
+  if (xmlFiles.length === 0) {
+    document.getElementById('sens-status').textContent = '⚠ No XML files found.';
+    return;
+  }
+  const statusEl = document.getElementById('sens-status');
+  statusEl.textContent = `Parsing ${xmlFiles.length} file${xmlFiles.length > 1 ? 's' : ''}…`;
+  statusEl.style.color = 'var(--muted)';
+
+  let completed = 0;
+  const results = new Array(xmlFiles.length);
+
+  xmlFiles.forEach((file, i) => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      try {
+        const parsed = parseSensXML(e.target.result, file.name);
+        results[i] = parsed;
+      } catch(err) {
+        results[i] = { error: err.message, fileName: file.name };
+      }
+      completed++;
+      if (completed === xmlFiles.length) {
+        // Add to existing results (don't replace — allow accumulation)
+        results.forEach(r => {
+          if (r && !r.error) {
+            // Replace if same param already loaded
+            const existing = sensResults.findIndex(x => x.paramName === r.paramName);
+            if (existing >= 0) sensResults[existing] = r;
+            else sensResults.push(r);
+          }
+        });
+        const errors = results.filter(r => r && r.error);
+        statusEl.textContent = `✓ ${sensResults.length} parameter${sensResults.length > 1 ? 's' : ''} loaded.${errors.length > 0 ? ' ' + errors.length + ' error(s): ' + errors.map(e => e.fileName).join(', ') : ''}`;
+        statusEl.style.color = errors.length > 0 ? 'var(--warn)' : 'var(--pass)';
+        renderSensTab();
+      }
+    };
+    reader.onerror = () => {
+      results[i] = { error: 'FileReader failed', fileName: file.name };
+      completed++;
+      if (completed === xmlFiles.length) renderSensTab();
+    };
+    reader.readAsText(file);
+  });
+}
+
+function parseSensXML(text, fileName) {
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(text, 'text/xml');
+  const rows = doc.querySelectorAll('Row');
+  if (!rows.length) throw new Error('No rows found');
+
+  // Get deposit
+  const depositEl = doc.querySelector('Deposit');
+  const deposit = depositEl ? parseFloat(depositEl.textContent) : 100000;
+
+  // Find header row
+  const headers = [];
+  let headerRowIdx = 0;
+  for (let i = 0; i < Math.min(rows.length, 5); i++) {
+    const cells = rows[i].querySelectorAll('Cell Data');
+    if (cells.length > 0) {
+      cells.forEach(d => headers.push(d.textContent.trim()));
+      headerRowIdx = i;
+      break;
+    }
+  }
+  if (!headers.length) throw new Error('No headers found');
+
+  // Parse data rows
+  const data = [];
+  for (let i = headerRowIdx + 1; i < rows.length; i++) {
+    const cells = rows[i].querySelectorAll('Cell Data');
+    const row = {};
+    headers.forEach((h, j) => {
+      const val = cells[j] ? cells[j].textContent.trim() : '';
+      row[h] = (val === '' || isNaN(val)) ? val : parseFloat(val);
+    });
+    data.push(row);
+  }
+
+  // Identify known metric columns
+  const metricCols = new Set([
+    'Pass','Result','Forward Result','Back Result','Profit','Expected Payoff',
+    'Profit Factor','Recovery Factor','Sharpe Ratio','Custom','Equity DD %','Trades'
+  ]);
+
+  // Find parameter columns — those not in metricCols
+  const tradesIdx = headers.indexOf('Trades');
+  const paramCols = tradesIdx >= 0
+    ? headers.slice(tradesIdx + 1).filter(h => !metricCols.has(h))
+    : headers.filter(h => !metricCols.has(h));
+
+  // Auto-detect the varying parameter — the one with more than 1 unique value
+  let varyingParam = null;
+  let maxUnique = 1;
+  paramCols.forEach(p => {
+    const unique = new Set(data.map(r => r[p])).size;
+    if (unique > maxUnique) { maxUnique = unique; varyingParam = p; }
+  });
+
+  if (!varyingParam) throw new Error('No varying parameter detected — all parameters have the same value across all rows');
+
+  // Get all unique values of the varying param, sorted numerically
+  const paramValues = [...new Set(data.map(r => r[varyingParam])
+    .filter(v => typeof v === 'number'))]
+    .sort((a, b) => a - b);
+
+  // For each param value, find the row with highest Calmar
+  // (averaging over any duplicate param values from other params varying)
+  // Actually: group by varying param value, compute avg Calmar per group
+  const groups = {};
+  paramValues.forEach(v => { groups[v] = []; });
+  data.forEach(r => {
+    const v = r[varyingParam];
+    if (typeof v !== 'number') return;
+    if (!r['Profit'] || !r['Equity DD %'] || r['Equity DD %'] <= 0) return;
+    const annReturn = (r['Profit'] / deposit * 100) / Math.max(isYears, 1);
+    const calmar = annReturn / r['Equity DD %'];
+    groups[v].push(calmar);
+  });
+
+  const calmarByValue = {};
+  paramValues.forEach(v => {
+    const vals = groups[v].filter(x => isFinite(x));
+    calmarByValue[v] = vals.length > 0 ? vals.reduce((s, x) => s + x, 0) / vals.length : null;
+  });
+
+  // Central pass = param value with highest Calmar
+  let centralValue = null, centralCalmar = -Infinity;
+  paramValues.forEach(v => {
+    if (calmarByValue[v] !== null && calmarByValue[v] > centralCalmar) {
+      centralCalmar = calmarByValue[v];
+      centralValue = v;
+    }
+  });
+
+  if (centralValue === null) throw new Error('No valid Calmar values found');
+
+  // Compute verdict per neighbour step
+  const centralIdx = paramValues.indexOf(centralValue);
+  const neighbours = [];
+  paramValues.forEach((v, idx) => {
+    if (v === centralValue) return;
+    const calmar = calmarByValue[v];
+    const drop = calmar !== null && centralCalmar > 0
+      ? ((centralCalmar - calmar) / centralCalmar) * 100
+      : null;
+    neighbours.push({ value: v, calmar, drop, stepsAway: Math.abs(idx - centralIdx) });
+  });
+
+  // Immediate neighbours (±1 step)
+  const immediateNeighbours = neighbours.filter(n => n.stepsAway === 1);
+  const fragile = immediateNeighbours.some(n => n.drop !== null && n.drop > sensThreshold);
+  const borderline = !fragile && immediateNeighbours.some(n => n.drop !== null && n.drop > sensThreshold * 0.6);
+  const verdict = fragile ? 'FRAGILE' : borderline ? 'BORDERLINE' : 'STABLE';
+
+  return {
+    paramName: varyingParam,
+    fileName,
+    deposit,
+    centralValue,
+    centralCalmar,
+    paramValues,
+    calmarByValue,
+    neighbours,
+    immediateNeighbours,
+    verdict
+  };
+}
+
+function renderSensTab() {
+  const hasResults = sensResults.length > 0;
+  document.getElementById('sens-empty').style.display   = hasResults ? 'none'  : 'block';
+  document.getElementById('sens-content').style.display = hasResults ? 'block' : 'none';
+  if (!hasResults) return;
+
+  sensChartInstances.forEach(ch => ch.destroy());
+  sensChartInstances = [];
+
+  const container = document.getElementById('sens-content');
+  container.innerHTML = '';
+
+  sensResults.forEach(r => {
+    const verdictCol = r.verdict === 'STABLE' ? 'var(--pass)' : r.verdict === 'BORDERLINE' ? 'var(--warn)' : 'var(--fail)';
+    const verdictIcon = r.verdict === 'STABLE' ? '✅' : r.verdict === 'BORDERLINE' ? '⚠' : '❌';
+
+    const card = document.createElement('div');
+    card.className = 'card mb24';
+    card.innerHTML = `
+      <div style="display:flex;align-items:center;gap:16px;margin-bottom:16px;flex-wrap:wrap;">
+        <div style="font-family:'DM Serif Display',serif;font-size:18px;color:var(--text);">${escHtml(r.paramName)}</div>
+        <div style="font-family:'Montserrat',sans-serif;font-size:12px;font-weight:600;color:${verdictCol};">${verdictIcon} ${r.verdict}</div>
+        <div style="font-family:'Montserrat',sans-serif;font-size:11px;color:var(--muted);">
+          Central value: <strong style="color:var(--accent);">${r.centralValue}</strong> &nbsp;·&nbsp;
+          Central Calmar: <strong>${r.centralCalmar.toFixed(2)}</strong> &nbsp;·&nbsp;
+          Threshold: Calmar drop &gt; ${sensThreshold}% = FRAGILE
+        </div>
+      </div>
+      <canvas id="sens-chart-${escHtml(r.paramName)}" height="200"></canvas>
+      <div style="margin-top:12px;" id="sens-table-${escHtml(r.paramName)}"></div>`;
+    container.appendChild(card);
+
+    // Chart
+    const labels  = r.paramValues.map(v => String(v));
+    const values  = r.paramValues.map(v => r.calmarByValue[v]);
+    const bgColors = r.paramValues.map(v => {
+      if (v === r.centralValue) return 'rgba(201,168,76,0.85)';
+      const n = r.neighbours.find(n => n.value === v);
+      if (!n || n.calmar === null) return 'rgba(0,0,0,0.15)';
+      if (n.drop > sensThreshold) return 'rgba(192,57,43,0.7)';
+      if (n.drop > sensThreshold * 0.6) return 'rgba(201,119,10,0.7)';
+      return 'rgba(42,122,74,0.7)';
+    });
+
+    const ctx = document.getElementById(`sens-chart-${escHtml(r.paramName)}`).getContext('2d');
+    const ch = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels,
+        datasets: [{
+          data: values,
+          backgroundColor: bgColors,
+          borderWidth: 0,
+          borderRadius: 3
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: '#fff', borderColor: 'rgba(0,0,0,0.12)', borderWidth: 1,
+            titleFont: { family: 'Montserrat', size: 10 },
+            bodyFont:  { family: 'Montserrat', size: 11 },
+            titleColor: '#8a8478', bodyColor: '#0f0e0b',
+            callbacks: {
+              label: item => {
+                const v = r.paramValues[item.dataIndex];
+                const calmar = item.raw !== null ? item.raw.toFixed(2) : '—';
+                if (v === r.centralValue) return `Calmar: ${calmar} (central)`;
+                const n = r.neighbours.find(n => n.value === v);
+                const drop = n && n.drop !== null ? ` · drop: ${n.drop.toFixed(0)}%` : '';
+                return `Calmar: ${calmar}${drop}`;
+              }
+            }
+          }
+        },
+        scales: {
+          x: { grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { color: '#8a8478', font: { family: 'Montserrat', size: 10 } } },
+          y: { grid: { color: 'rgba(0,0,0,0.06)' }, ticks: { color: '#8a8478', font: { family: 'Montserrat', size: 10 },
+            callback: v => v !== null ? v.toFixed(1) : '' } }
+        }
+      }
+    });
+    sensChartInstances.push(ch);
+
+    // Neighbour table
+    let tbl = '<table style="width:100%;border-collapse:collapse;margin-top:4px;font-family:Montserrat,sans-serif;font-size:11px;">';
+    tbl += '<thead><tr>';
+    ['VALUE','CALMAR','DROP vs CENTRAL','STEPS AWAY','VERDICT'].forEach(h => {
+      tbl += `<th style="text-align:left;padding:6px 10px;background:var(--bg3);color:var(--accent);font-size:10px;letter-spacing:0.1em;font-weight:600;">${h}</th>`;
+    });
+    tbl += '</tr></thead><tbody>';
+
+    // Central row first
+    tbl += `<tr style="background:rgba(201,168,76,0.08);">
+      <td style="padding:6px 10px;font-weight:600;color:var(--accent);">${r.centralValue}</td>
+      <td style="padding:6px 10px;font-weight:600;">${r.centralCalmar.toFixed(2)}</td>
+      <td style="padding:6px 10px;color:var(--muted);">— (central)</td>
+      <td style="padding:6px 10px;color:var(--muted);">0</td>
+      <td style="padding:6px 10px;color:var(--accent);font-weight:600;">CENTRAL</td>
+    </tr>`;
+
+    r.neighbours.forEach(n => {
+      const dropCol = n.drop === null ? 'var(--muted)' : n.drop > sensThreshold ? 'var(--fail)' : n.drop > sensThreshold * 0.6 ? 'var(--warn)' : 'var(--pass)';
+      const verdict = n.drop === null ? '—' : n.drop > sensThreshold ? '❌ FRAGILE' : n.drop > sensThreshold * 0.6 ? '⚠ BORDERLINE' : '✅ STABLE';
+      const rowBg = n.stepsAway === 1 ? 'background:var(--bg2);' : '';
+      tbl += `<tr style="${rowBg}">
+        <td style="padding:6px 10px;">${n.value}</td>
+        <td style="padding:6px 10px;">${n.calmar !== null ? n.calmar.toFixed(2) : '—'}</td>
+        <td style="padding:6px 10px;color:${dropCol};font-weight:600;">${n.drop !== null ? n.drop.toFixed(0) + '%' : '—'}</td>
+        <td style="padding:6px 10px;color:var(--muted);">${n.stepsAway === 1 ? '<strong>±1 (immediate)</strong>' : n.stepsAway}</td>
+        <td style="padding:6px 10px;color:${dropCol};font-weight:600;">${n.stepsAway === 1 ? verdict : '—'}</td>
+      </tr>`;
+    });
+
+    tbl += '</tbody></table>';
+    document.getElementById(`sens-table-${escHtml(r.paramName)}`).innerHTML = tbl;
+  });
+}
+
+
+// ── CSV EXPORT ────────────────────────────────────────────────
+// Exports PASS and CAUTION candidates from Tab 2 as CSV
+// Rows = passes, Columns = parameter values only
+function exportPassesCSV() {
+  if (!top20Global || top20Global.length === 0) return;
+  const paramCols = plateauParamCols;
+
+  // Filter to PASS and CAUTION rows (re-run the validation logic)
+  const passing = top20Global.filter(row => {
+    const fwd = getForwardMetrics(row);
+    const { oosProfit, oosDD, oosTrades } = fwd;
+    const isDD = typeof row['Equity DD %'] === 'number' ? row['Equity DD %'] : null;
+    const ddRatio = (oosDD !== null && isDD !== null && isDD > 0) ? oosDD / isDD : null;
+    const isTrades = typeof row['Trades'] === 'number' ? row['Trades'] : null;
+    const expectedOOS = (isTrades !== null && isYears > 0) ? (isTrades / isYears) : null;
+    const oosTradeMin = expectedOOS !== null ? Math.max(3, Math.round(expectedOOS * 0.40)) : 30;
+    const c1 = oosProfit !== null && oosProfit > 0;
+    const c2 = ddRatio !== null && ddRatio <= 1.5;
+    const c3 = oosTrades !== null && oosTrades >= oosTradeMin;
+    return c1 && c2; // include c2-passing even if c3 borderline (CAUTION)
+  });
+
+  if (passing.length === 0) {
+    alert('No passing candidates to export.');
+    return;
+  }
+
+  // Build CSV — header row = parameter names
+  const headers = paramCols.map(p => p.replace(/^Inp/, ''));
+  const lines = [headers.join(',')];
+
+  passing.forEach(row => {
+    const vals = paramCols.map(p => {
+      const v = row[p];
+      return (v !== null && v !== undefined && v !== '') ? String(v) : '';
+    });
+    lines.push(vals.join(','));
+  });
+
+  const csv = lines.join('\n');
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href     = url;
+  a.download = 'stratedge_passes.csv';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+
 // Pairs files by stripping _IS / _OOS suffix and matching the rest
 function tickBulkDrop(e) {
   e.preventDefault();
@@ -2280,6 +2662,386 @@ function tickBulkProcess(files) {
       statusEl.style.color = 'var(--fail)';
     }
   });
+}
+
+// ═══════════════════════════════════════════════════════════════
+// TAB 5 — DASHBOARD
+// ═══════════════════════════════════════════════════════════════
+let dashChartIS   = null;
+let dashChartOOS  = null;
+let dashChartMC   = null;
+let dashCurrentPass = null;
+
+// Called whenever Tab 5 is opened — refresh pass selector
+function dashRefresh() {
+  const sel = document.getElementById('dash-pass-select');
+  const prev = sel.value;
+  sel.innerHTML = '<option value="">— select a pass —</option>';
+  if (!tickPasses || tickPasses.length === 0) {
+    sel.innerHTML = '<option value="">— Load passes in Tab 3 first —</option>';
+    return;
+  }
+  tickPasses.forEach((p, i) => {
+    const opt = document.createElement('option');
+    opt.value = i;
+    opt.textContent = `${p._rank ? '#'+p._rank+' · ' : ''}${p.label || 'Pass ' + (i+1)}`;
+    sel.appendChild(opt);
+  });
+  // Restore selection if still valid
+  if (prev !== '' && tickPasses[parseInt(prev)]) sel.value = prev;
+  dashPassChanged();
+}
+
+function dashPassChanged() {
+  const sel = document.getElementById('dash-pass-select');
+  const idx = parseInt(sel.value);
+  if (isNaN(idx) || !tickPasses[idx]) {
+    document.getElementById('dash-empty').style.display   = 'block';
+    document.getElementById('dash-content').style.display = 'none';
+    document.getElementById('dash-mc-btn').style.display  = 'none';
+    dashCurrentPass = null;
+    return;
+  }
+  dashCurrentPass = tickPasses[idx];
+  document.getElementById('dash-empty').style.display   = 'none';
+  document.getElementById('dash-content').style.display = 'block';
+  document.getElementById('dash-mc-btn').style.display  = 'inline-block';
+
+  // Reset MC
+  document.getElementById('dash-mc-empty').style.display   = 'block';
+  document.getElementById('dash-mc-content').style.display = 'none';
+
+  dashRenderT3Scores();
+  dashRenderT4Verdicts();
+  dashRenderEquityCurves();
+  dashRenderGuardrails(null); // no MC yet
+}
+
+// ── TAB 3 SCORES ─────────────────────────────────────────────
+function dashRenderT3Scores() {
+  const p = dashCurrentPass;
+  if (!p) return;
+  const fmt = (v, digits) => v !== null && isFinite(v) ? v.toFixed(digits) : '—';
+  const col  = (v, good, warn) => v === null ? 'var(--muted)' : v >= good ? 'var(--pass)' : v >= warn ? 'var(--warn)' : 'var(--fail)';
+  const colLow = (v, good, warn) => v === null ? 'var(--muted)' : v <= good ? 'var(--pass)' : v <= warn ? 'var(--warn)' : 'var(--fail)';
+
+  const rows = [
+    { label: 'Calmar Degradation',  val: fmt(p._c1_actual,2), color: col(p._c1_actual, 0.6, 0.3),      detail: 'OOS÷IS Calmar' },
+    { label: 'DD Consistency',      val: fmt(p._c2_actual,2), color: colLow(p._c2_actual, 1.3, 1.8),   detail: 'OOS÷IS DD (lower=better)' },
+    { label: 'LR Corr Diff',        val: fmt(p._c3_diff,3),   color: colLow(p._c3_diff, 0.10, 0.20),   detail: '|IS−OOS| LR Correlation' },
+    { label: 'Trade Frequency',     val: fmt(p._c4_ratio,2),  color: (p._c4_ratio>=0.6&&p._c4_ratio<=1.4)?'var(--pass)':p._c4_ratio>=0.4?'var(--warn)':'var(--fail)', detail: 'Actual÷Expected OOS trades' },
+    { label: 'Win Rate Diff',       val: p._c5_diff !== null ? fmt(p._c5_diff,1)+'pp' : '—', color: colLow(p._c5_diff, 10, 20), detail: 'Monthly win rate difference' },
+    { label: 'Profit Factor',       val: fmt(p._c6_ratio,2),  color: col(p._c6_ratio, 0.7, 0.5),       detail: 'OOS÷IS Profit Factor' },
+  ];
+
+  const tw = getTickWeights();
+  let html = '';
+  rows.forEach((r, i) => {
+    html += `<div style="display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);">
+      <div>
+        <div style="font-family:'Montserrat',sans-serif;font-size:11px;font-weight:600;color:var(--text2);">${r.label}</div>
+        <div style="font-family:'Montserrat',sans-serif;font-size:10px;color:var(--muted);">${r.detail} · weight ${Math.round(tw[i]*100)}%</div>
+      </div>
+      <div style="font-family:'Montserrat',sans-serif;font-size:14px;font-weight:700;color:${r.color};">${r.val}</div>
+    </div>`;
+  });
+  html += `<div style="padding:8px 0;font-family:'Montserrat',sans-serif;font-size:12px;font-weight:700;color:var(--accent);">Final Score: ${p._finalScore !== undefined ? (p._finalScore*100).toFixed(1) : '—'}</div>`;
+  document.getElementById('dash-t3-scores').innerHTML = html;
+}
+
+// ── TAB 4 VERDICTS ────────────────────────────────────────────
+function dashRenderT4Verdicts() {
+  const el = document.getElementById('dash-t4-verdicts');
+  if (!sensResults || sensResults.length === 0) {
+    el.innerHTML = "<div style=\"font-family:'Montserrat',sans-serif;font-size:12px;color:var(--muted);padding:12px 0;\">No sensitivity analysis loaded in Tab 4.</div>";
+    return;
+  }
+  let html = '';
+  sensResults.forEach(r => {
+    const col = r.verdict === 'STABLE' ? 'var(--pass)' : r.verdict === 'BORDERLINE' ? 'var(--warn)' : 'var(--fail)';
+    const icon = r.verdict === 'STABLE' ? '✅' : r.verdict === 'BORDERLINE' ? '⚠' : '❌';
+    html += `<div style="display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);">
+      <div>
+        <div style="font-family:'Montserrat',sans-serif;font-size:11px;font-weight:600;color:var(--text2);">${escHtml(r.paramName)}</div>
+        <div style="font-family:'Montserrat',sans-serif;font-size:10px;color:var(--muted);">Central: ${r.centralValue} · Calmar: ${r.centralCalmar.toFixed(2)}</div>
+      </div>
+      <div style="font-family:'Montserrat',sans-serif;font-size:12px;font-weight:700;color:${col};">${icon} ${r.verdict}</div>
+    </div>`;
+  });
+  el.innerHTML = html;
+}
+
+// ── EQUITY CURVES ─────────────────────────────────────────────
+function dashRenderEquityCurves() {
+  const p = dashCurrentPass;
+  if (!p) return;
+
+  const renderCurve = (canvasId, eq, color, chart) => {
+    if (chart) chart.destroy();
+    if (!eq || eq.length === 0) return null;
+    const step = Math.max(1, Math.floor(eq.length / 300));
+    const sampled = eq.filter((_, i) => i % step === 0);
+    const labels = sampled.map(d => d.t.substring(0,10));
+    const values = sampled.map(d => d.b);
+    const mn = Math.min(...values), mx = Math.max(...values), pad = (mx-mn)*0.08||1000;
+    const ctx = document.getElementById(canvasId).getContext('2d');
+    return new Chart(ctx, {
+      type: 'line',
+      data: { labels, datasets: [{ data: values, borderColor: color, backgroundColor: 'transparent',
+        borderWidth: 1.5, pointRadius: 0, tension: 0.1 }] },
+      options: {
+        responsive: true,
+        plugins: { legend: { display: false },
+          tooltip: { backgroundColor:'#fff', borderColor:'rgba(0,0,0,0.12)', borderWidth:1,
+            titleFont:{family:'Montserrat',size:9}, bodyFont:{family:'Montserrat',size:11},
+            titleColor:'#8a8478', bodyColor:'#0f0e0b',
+            callbacks: { label: item => '$' + item.raw.toLocaleString('en',{maximumFractionDigits:0}) } } },
+        scales: {
+          x: { grid:{color:'rgba(0,0,0,0.04)'}, ticks:{color:'#8a8478',font:{family:'Montserrat',size:8},maxTicksLimit:6,maxRotation:0} },
+          y: { min:mn-pad, max:mx+pad, grid:{color:'rgba(0,0,0,0.06)'},
+            ticks:{color:'#8a8478',font:{family:'Montserrat',size:9}, callback:v=>'$'+(v/1000).toFixed(0)+'k'} }
+        }
+      }
+    });
+  };
+
+  dashChartIS  = renderCurve('dash-is-chart',  p.is.equity,  'rgba(42,95,180,0.85)',  dashChartIS);
+  dashChartOOS = renderCurve('dash-oos-chart', p.oos.equity, 'rgba(42,122,74,0.85)', dashChartOOS);
+}
+
+// ── MONTE CARLO ───────────────────────────────────────────────
+function dashRunMonteCarlo() {
+  const p = dashCurrentPass;
+  if (!p) return;
+
+  // Combine IS + OOS trade P&Ls
+  const getTradePnLs = parsed => {
+    const pnls = [];
+    const eq = parsed.equity;
+    for (let i = 1; i < eq.length; i++) {
+      const diff = eq[i].b - eq[i-1].b;
+      if (Math.abs(diff) > 0.01) pnls.push(diff);
+    }
+    return pnls;
+  };
+
+  const isPnLs  = getTradePnLs(p.is);
+  const oosPnLs = getTradePnLs(p.oos);
+  const allPnLs = [...isPnLs, ...oosPnLs];
+
+  if (allPnLs.length < 5) {
+    alert('Not enough trade data for Monte Carlo. Check that equity curve data loaded correctly.');
+    return;
+  }
+
+  const N_SIM = 1000;
+  const N_TRADES = allPnLs.length;
+  const startBalance = p.is.deposit || 100000;
+
+  // Reshuffle trades N_SIM times
+  const allMaxDDs  = [];
+  const allReturns = [];
+  const allStreaks = [];
+  const simCurves  = []; // store 50 curves for display
+
+  for (let sim = 0; sim < N_SIM; sim++) {
+    // Fisher-Yates shuffle
+    const shuffled = [...allPnLs];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+
+    let balance = startBalance, peak = startBalance, maxDD = 0;
+    let streak = 0, maxStreak = 0, curStreak = 0;
+    const curve = [startBalance];
+
+    shuffled.forEach(pnl => {
+      balance += pnl;
+      curve.push(balance);
+      if (balance > peak) peak = balance;
+      const dd = (peak - balance) / peak * 100;
+      if (dd > maxDD) maxDD = dd;
+      if (pnl < 0) { curStreak++; if (curStreak > maxStreak) maxStreak = curStreak; }
+      else curStreak = 0;
+    });
+
+    allMaxDDs.push(maxDD);
+    allReturns.push((balance - startBalance) / startBalance * 100);
+    allStreaks.push(maxStreak);
+    if (sim < 50) simCurves.push(curve);
+  }
+
+  // Percentiles
+  const pct = (arr, p) => {
+    const sorted = [...arr].sort((a,b) => a-b);
+    return sorted[Math.floor(p/100 * sorted.length)] || sorted[sorted.length-1];
+  };
+
+  const mc = {
+    dd_50: pct(allMaxDDs, 50), dd_95: pct(allMaxDDs, 95), dd_5: pct(allMaxDDs, 5),
+    ret_50: pct(allReturns, 50), ret_5: pct(allReturns, 5), ret_95: pct(allReturns, 95),
+    streak_50: pct(allStreaks, 50), streak_95: pct(allStreaks, 95),
+    simCurves, nTrades: N_TRADES, nSims: N_SIM
+  };
+
+  dashRenderMonteCarlo(mc);
+  dashRenderGuardrails(mc);
+}
+
+function dashRenderMonteCarlo(mc) {
+  document.getElementById('dash-mc-empty').style.display   = 'none';
+  document.getElementById('dash-mc-content').style.display = 'block';
+
+  // Stats cards
+  const statsHtml = `
+    <div class="card"><div class="card-title">Median Max DD</div><div class="card-value" style="color:var(--warn);">${mc.dd_50.toFixed(1)}%</div></div>
+    <div class="card"><div class="card-title">95th Pct Max DD</div><div class="card-value" style="color:var(--fail);">${mc.dd_95.toFixed(1)}%</div></div>
+    <div class="card"><div class="card-title">Median Return</div><div class="card-value" style="color:${mc.ret_50>=0?'var(--pass)':'var(--fail)'};">${mc.ret_50.toFixed(1)}%</div></div>
+    <div class="card"><div class="card-title">95th Pct Loss Streak</div><div class="card-value" style="color:var(--warn);">${mc.streak_95} trades</div></div>`;
+  document.getElementById('dash-mc-stats').innerHTML = statsHtml;
+
+  // Chart — 50 simulation curves
+  if (dashChartMC) dashChartMC.destroy();
+  const labels = Array.from({length: mc.simCurves[0].length}, (_, i) => i);
+  const startBal = dashCurrentPass.is.deposit || 100000;
+  const datasets = mc.simCurves.map((curve, i) => ({
+    data: curve.map(b => ((b - startBal) / startBal * 100)),
+    borderColor: 'rgba(201,168,76,0.15)',
+    backgroundColor: 'transparent',
+    borderWidth: 1,
+    pointRadius: 0,
+    tension: 0
+  }));
+
+  const ctx = document.getElementById('dash-mc-chart').getContext('2d');
+  dashChartMC = new Chart(ctx, {
+    type: 'line',
+    data: { labels, datasets },
+    options: {
+      responsive: true,
+      animation: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: { enabled: false }
+      },
+      scales: {
+        x: { display: false },
+        y: { grid:{color:'rgba(0,0,0,0.06)'},
+          ticks:{color:'#8a8478', font:{family:'Montserrat',size:9}, callback: v => v.toFixed(0)+'%'} }
+      }
+    }
+  });
+}
+
+// ── LIVE GUARDRAILS ───────────────────────────────────────────
+function dashRenderGuardrails(mc) {
+  const p = dashCurrentPass;
+  if (!p) return;
+
+  const isDD   = p.is.ddPct  || 0;
+  const oosDD  = p.oos.ddPct || 0;
+  const histMaxDD = Math.max(isDD, oosDD);
+
+  const isYrs  = (tickISYears  && tickISYears  > 0) ? tickISYears  : p.is.periodYears;
+  const oosYrs = (tickOOSYears && tickOOSYears > 0) ? tickOOSYears : p.oos.periodYears;
+  const totalTrades = (p.is.totalTrades || 0) + (p.oos.totalTrades || 0);
+  const totalYears  = (isYrs || 0) + (oosYrs || 0);
+  const tradeRate   = totalYears > 0 ? totalTrades / totalYears : null;
+
+  // IS monthly returns
+  const allMonths = { ...p.is.monthlyPnL, ...p.oos.monthlyPnL };
+  const monthVals = Object.values(allMonths).filter(v => typeof v === 'number');
+  const avgMonthly = monthVals.length > 0 ? monthVals.reduce((s,v) => s+v, 0) / monthVals.length : null;
+  const stdMonthly = monthVals.length > 1
+    ? Math.sqrt(monthVals.reduce((s,v) => s + Math.pow(v - avgMonthly, 2), 0) / (monthVals.length-1))
+    : null;
+
+  const mcDD95 = mc ? mc.dd_95 : null;
+  const mcStreak95 = mc ? mc.streak_95 : null;
+
+  const guardrail = (title, threshold, rationale, urgent) => `
+    <div style="padding:12px;margin-bottom:10px;background:${urgent?'rgba(192,57,43,0.06)':'var(--bg3)'};border-left:3px solid ${urgent?'var(--fail)':'var(--border2)'};border-radius:4px;">
+      <div style="font-family:'Montserrat',sans-serif;font-size:12px;font-weight:700;color:var(--text);margin-bottom:3px;">${title}</div>
+      <div style="font-family:'Montserrat',sans-serif;font-size:12px;font-weight:600;color:${urgent?'var(--fail)':'var(--accent)'};">${threshold}</div>
+      <div style="font-family:'Montserrat',sans-serif;font-size:11px;color:var(--muted);margin-top:3px;">${rationale}</div>
+    </div>`;
+
+  let html = '';
+
+  // G1 — Drawdown guardrail
+  if (mcDD95 !== null) {
+    html += guardrail(
+      '🛑 Drawdown Guardrail',
+      `Pause if live drawdown exceeds ${mcDD95.toFixed(1)}%`,
+      `95th percentile max drawdown from Monte Carlo (${mc.nSims.toLocaleString()} simulations on ${mc.nTrades} combined IS+OOS trades). Historical max DD was ${histMaxDD.toFixed(1)}%. MC accounts for worst-case trade sequencing.`,
+      true
+    );
+  } else {
+    html += guardrail(
+      '🛑 Drawdown Guardrail',
+      `Pause if live drawdown exceeds ${(histMaxDD * 1.5).toFixed(1)}%`,
+      `Based on 1.5× historical max DD of ${histMaxDD.toFixed(1)}%. Run Monte Carlo for a more precise threshold.`,
+      true
+    );
+  }
+
+  // G2 — Consecutive losses
+  if (mcStreak95 !== null) {
+    html += guardrail(
+      '⚠ Consecutive Loss Streak',
+      `Investigate if live consecutive losses exceed ${mcStreak95} trades`,
+      `95th percentile max losing streak from Monte Carlo. Exceeding this suggests something beyond normal variance.`,
+      false
+    );
+  }
+
+  // G3 — Trade frequency
+  if (tradeRate !== null) {
+    const monthlyRate = tradeRate / 12;
+    html += guardrail(
+      '📉 Trade Frequency',
+      `Investigate if fewer than ${Math.max(1, Math.round(monthlyRate * 0.4))} trades in a calendar month`,
+      `Strategy historically averaged ${tradeRate.toFixed(1)} trades/year (${monthlyRate.toFixed(1)}/month). A sustained drop below 40% of expected suggests market conditions may have changed.`,
+      false
+    );
+  }
+
+  // G4 — Monthly return
+  if (avgMonthly !== null && stdMonthly !== null) {
+    const threshold = avgMonthly - 2 * stdMonthly;
+    html += guardrail(
+      '📊 Monthly Return Drift',
+      `Investigate if a single month returns less than $${threshold.toLocaleString('en',{maximumFractionDigits:0})}`,
+      `Avg monthly return: $${avgMonthly.toLocaleString('en',{maximumFractionDigits:0})} ± $${stdMonthly.toLocaleString('en',{maximumFractionDigits:0})} (1 std dev). Threshold = avg − 2σ. A result below this is in the bottom 2.5% of historical distribution.`,
+      false
+    );
+  }
+
+  // G5 — Rolling profit factor
+  html += guardrail(
+    '📉 Rolling Profit Factor',
+    'Investigate if rolling profit factor over last 30 trades drops below 1.0',
+    'A profit factor below 1.0 over a sustained sample means the strategy is losing money on a gross basis — the edge has likely deteriorated.',
+    false
+  );
+
+  // G6 — LR Correlation
+  html += guardrail(
+    '📈 Equity Curve Shape',
+    'Investigate if live LR Correlation drops below 0.5 over 60+ trades',
+    `IS LR Correlation was ${p.is.lrCorr !== null ? p.is.lrCorr.toFixed(2) : '—'}. A significant drop in LR Correlation in live trading signals the equity curve has become erratic or flat — possible regime change.`,
+    false
+  );
+
+  document.getElementById('dash-guardrails').innerHTML = html;
+}
+
+// Hook into switchTab to refresh pass selector when Tab 5 is opened
+const _origSwitchTab = switchTab;
+function switchTab(i) {
+  _origSwitchTab(i);
+  if (i === 4) dashRefresh();
 }
 
 // ═══════════════════════════════════════════════════
@@ -2367,6 +3129,20 @@ function escHtml(s) {
     <div id="tick-add-status" style="font-family:'Montserrat',sans-serif;font-size:11px;color:var(--text3);margin-top:8px;"></div>
   </div>
 
+
+    <!-- Scoring weights -->
+    <div class="card mb24" id="tick-weights-card" style="display:none;">
+      <div class="chart-label" style="margin-bottom:12px;">Scoring Weights <span style="font-family:'Montserrat',sans-serif;font-size:11px;color:var(--text3);font-weight:400;margin-left:8px;">must sum to 100%</span></div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;">
+        <div class="weight-row"><div class="weight-label">Calmar Degradation</div><input type="range" id="tw-c1" min="0" max="100" value="30" oninput="tickWeightChanged()"><div class="weight-val" id="twv-c1">30%</div></div>
+        <div class="weight-row"><div class="weight-label">DD Consistency</div><input type="range" id="tw-c2" min="0" max="100" value="25" oninput="tickWeightChanged()"><div class="weight-val" id="twv-c2">25%</div></div>
+        <div class="weight-row"><div class="weight-label">LR Correlation Diff</div><input type="range" id="tw-c3" min="0" max="100" value="20" oninput="tickWeightChanged()"><div class="weight-val" id="twv-c3">20%</div></div>
+        <div class="weight-row"><div class="weight-label">Trade Frequency</div><input type="range" id="tw-c4" min="0" max="100" value="15" oninput="tickWeightChanged()"><div class="weight-val" id="twv-c4">15%</div></div>
+        <div class="weight-row"><div class="weight-label">Win Rate Diff</div><input type="range" id="tw-c5" min="0" max="100" value="5" oninput="tickWeightChanged()"><div class="weight-val" id="twv-c5">5%</div></div>
+        <div class="weight-row"><div class="weight-label">Profit Factor</div><input type="range" id="tw-c6" min="0" max="100" value="5" oninput="tickWeightChanged()"><div class="weight-val" id="twv-c6">5%</div></div>
+      </div>
+      <div id="tw-sum-display" style="font-family:'Montserrat',sans-serif;font-size:11px;margin-top:8px;color:var(--pass);">Total: 100% ✓</div>
+    </div>
   <!-- Empty state -->
   <div id="tick-empty" class="empty">
     <div class="empty-icon">📋</div>
@@ -2393,6 +3169,130 @@ function escHtml(s) {
   </div>
 </div>
 
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- TAB 4: SENSITIVITY ANALYSIS -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="panel" id="tab3">
+  <div class="section-title">Sensitivity Analysis</div>
+  <div class="section-sub">For each smooth parameter in your chosen pass, run a focused optimisation varying that parameter over fine steps while holding all others fixed. Upload all the XMLs at once — one per parameter. The tool identifies the varying parameter automatically, finds the central pass (highest Calmar), and checks how performance changes in the neighbourhood.</div>
+
+  <!-- Controls -->
+  <div class="card mb24">
+    <div class="chart-label" style="margin-bottom:12px;">Settings</div>
+    <div style="display:flex;gap:24px;align-items:center;flex-wrap:wrap;">
+      <div>
+        <label class="ctrl-label" style="margin-bottom:4px;">CLIFF THRESHOLD</label>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <input type="number" id="sens-threshold" value="50" min="10" max="90" step="5" style="width:70px;" oninput="sensThresholdChanged()">
+          <span style="font-family:'Montserrat',sans-serif;font-size:11px;color:var(--muted);">% Calmar drop = FRAGILE</span>
+        </div>
+      </div>
+      <div style="flex:1;min-width:200px;">
+        <label class="ctrl-label" style="margin-bottom:4px;">UPLOAD SENSITIVITY XMLS</label>
+        <div class="upload-zone" id="sens-dropzone" style="padding:16px;"
+          ondragover="dragOver(event,'sens-dropzone')" ondragleave="dragLeave('sens-dropzone')"
+          ondrop="sensDrop(event)">
+          <input type="file" id="sens-files" accept=".xml" multiple onchange="sensFilesSelected(this)">
+          <div class="upload-label" style="font-size:13px;">Drop all sensitivity XMLs here</div>
+          <div class="upload-hint">ONE XML PER SMOOTH PARAMETER · AUTO-DETECTS VARYING PARAMETER</div>
+        </div>
+      </div>
+      <div>
+        <button class="btn btn-ghost" onclick="sensClear()" style="font-size:11px;">✕ Clear All</button>
+      </div>
+    </div>
+    <div id="sens-status" style="font-family:'Montserrat',sans-serif;font-size:11px;color:var(--muted);margin-top:8px;"></div>
+  </div>
+
+  <!-- Empty state -->
+  <div id="sens-empty" class="empty">
+    <div class="empty-icon">🔬</div>
+    <div class="empty-text">No sensitivity XMLs loaded</div>
+    <div class="empty-sub">Upload one XML per smooth parameter — each should vary that parameter over fine steps</div>
+  </div>
+
+  <!-- Results -->
+  <div id="sens-content" style="display:none;"></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- TAB 5: DASHBOARD -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="panel" id="tab4">
+  <div class="section-title">Dashboard</div>
+  <div class="section-sub">Final view for your selected pass. Pulls equity curves from Tab 3, sensitivity verdicts from Tab 4, runs Monte Carlo on the combined IS+OOS trade data, and shows live guardrails calibrated to this strategy's historical results.</div>
+
+  <!-- Pass selector -->
+  <div class="card mb24">
+    <div class="chart-label" style="margin-bottom:10px;">Select Pass</div>
+    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+      <select id="dash-pass-select" onchange="dashPassChanged()" style="font-family:'Montserrat',sans-serif;font-size:12px;padding:6px 10px;border:1px solid var(--border2);border-radius:4px;background:var(--bg2);color:var(--text);min-width:280px;">
+        <option value="">— Load passes in Tab 3 first —</option>
+      </select>
+      <button class="btn btn-primary" onclick="dashRunMonteCarlo()" id="dash-mc-btn" style="display:none;">▶ Run Monte Carlo</button>
+    </div>
+  </div>
+
+  <!-- Empty state -->
+  <div id="dash-empty" class="empty">
+    <div class="empty-icon">📊</div>
+    <div class="empty-text">No pass selected</div>
+    <div class="empty-sub">Load passes in Tab 3, then select one above</div>
+  </div>
+
+  <!-- Dashboard content -->
+  <div id="dash-content" style="display:none;">
+
+    <!-- Row 1: Tab 3 score + Tab 4 verdicts -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px;">
+
+      <!-- Tab 3 score breakdown -->
+      <div class="card">
+        <div class="chart-label" style="margin-bottom:12px;">Tab 3 — Consistency Scores</div>
+        <div id="dash-t3-scores"></div>
+      </div>
+
+      <!-- Tab 4 sensitivity verdicts -->
+      <div class="card">
+        <div class="chart-label" style="margin-bottom:12px;">Tab 4 — Sensitivity Verdicts</div>
+        <div id="dash-t4-verdicts"></div>
+      </div>
+    </div>
+
+    <!-- Row 2: Equity curves (IS + OOS) -->
+    <div class="card mb24">
+      <div class="chart-label" style="margin-bottom:12px;">Equity Curves</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <div>
+          <div style="font-family:'Montserrat',sans-serif;font-size:10px;font-weight:600;color:rgba(42,95,180,0.8);letter-spacing:0.1em;margin-bottom:6px;">IS PERIOD</div>
+          <canvas id="dash-is-chart" height="180"></canvas>
+        </div>
+        <div>
+          <div style="font-family:'Montserrat',sans-serif;font-size:10px;font-weight:600;color:rgba(42,122,74,0.8);letter-spacing:0.1em;margin-bottom:6px;">OOS PERIOD</div>
+          <canvas id="dash-oos-chart" height="180"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Row 3: Monte Carlo -->
+    <div class="card mb24" id="dash-mc-card">
+      <div class="chart-label" style="margin-bottom:4px;">Monte Carlo Simulation <span style="font-family:'Montserrat',sans-serif;font-size:11px;color:var(--muted);font-weight:400;">IS + OOS combined trades · 1,000 simulations · trade-reshuffle method</span></div>
+      <div id="dash-mc-empty" style="font-family:'Montserrat',sans-serif;font-size:12px;color:var(--muted);padding:20px 0;">Click "Run Monte Carlo" above to simulate 1,000 alternative trade sequences.</div>
+      <div id="dash-mc-content" style="display:none;">
+        <div class="grid-4 mb24" id="dash-mc-stats"></div>
+        <canvas id="dash-mc-chart" height="220"></canvas>
+      </div>
+    </div>
+
+    <!-- Row 4: Live guardrails -->
+    <div class="card">
+      <div class="chart-label" style="margin-bottom:12px;">Live Guardrails <span style="font-family:'Montserrat',sans-serif;font-size:11px;color:var(--muted);font-weight:400;">informational — calibrated to this strategy's IS+OOS history</span></div>
+      <div id="dash-guardrails"></div>
+    </div>
+
+  </div>
+</div>
 
 </body>
 </html>
