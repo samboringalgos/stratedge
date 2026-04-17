@@ -561,6 +561,7 @@ let fwdData = null;        // parsed Forward_Results XML, keyed by Pass
 function switchTab(i) {
   document.querySelectorAll('.tab').forEach((t,j) => t.classList.toggle('active', i===j));
   document.querySelectorAll('.panel').forEach((p,j) => p.classList.toggle('active', i===j));
+  if (i === 4) dashRefresh();
 }
 
 // ═══════════════════════════════════════════════════
@@ -732,28 +733,8 @@ function onXMLLoaded() {
   // Init param types
   paramCols.forEach(p => { if (!paramTypes[p]) paramTypes[p] = 'cat'; });
 
-  // Render param type tags
-  const tagsEl = document.getElementById('param-type-tags');
-  tagsEl.innerHTML = '';
-  paramCols.forEach(p => {
-    const label = p.replace(/^Inp/, '');
-    const wrapper = document.createElement('div');
-    wrapper.style.display = 'flex'; wrapper.style.alignItems = 'center'; wrapper.style.gap = '4px';
-
-    const nameSpan = document.createElement('span');
-    nameSpan.style.cssText = "font-family:'Montserrat',sans-serif;font-size:12px;color:var(--text2);";
-    nameSpan.textContent = label;
-
-    const tagSpan = document.createElement('span');
-    tagSpan.className = 'param-tag ' + paramTypes[p];
-    tagSpan.id = 'ptag-' + p;
-    tagSpan.textContent = paramTypes[p] === 'cat' ? 'CATEGORICAL' : 'SMOOTH';
-    tagSpan.addEventListener('click', () => toggleParamType(p));
-
-    wrapper.appendChild(nameSpan);
-    wrapper.appendChild(tagSpan);
-    tagsEl.appendChild(wrapper);
-  });
+  // param-type-tags section removed from Tab 1 UI — skip rendering
+  // paramTypes still used internally for cliff-edge detection in Tab 4
   // param-types-section removed in Tab 1 simplification
   // weights-section removed in Tab 1 simplification
 
@@ -3015,12 +2996,6 @@ function dashRenderGuardrails(mc) {
   document.getElementById('dash-guardrails').innerHTML = html;
 }
 
-// Hook into switchTab to refresh pass selector when Tab 5 is opened
-const _origSwitchTab = switchTab;
-function switchTab(i) {
-  _origSwitchTab(i);
-  if (i === 4) dashRefresh();
-}
 
 // ═══════════════════════════════════════════════════
 // HELPERS
