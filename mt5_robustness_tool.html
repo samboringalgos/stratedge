@@ -442,6 +442,11 @@
         <div id="is-years-display" style="font-family:'Montserrat',sans-serif;font-size:11px;color:var(--text3);margin-top:6px;">Enter IS dates or years above</div>
         <div id="deposit-display" style="font-family:'Montserrat',sans-serif;font-size:11px;color:var(--text3);margin-top:4px;">Deposit: not yet loaded</div>
         <div id="fwd-status-display" style="font-family:'Montserrat',sans-serif;font-size:11px;color:var(--text3);margin-top:4px;">Forward Results: not loaded</div>
+        <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border);display:flex;align-items:center;gap:10px;">
+          <label class="ctrl-label" style="margin-bottom:0;">TRADE FLOOR MULTIPLIER</label>
+          <input type="number" id="trade-floor-mult" value="30" min="1" max="100" step="1" style="width:60px;" oninput="rerunAnalysis()">
+          <span style="font-family:'Montserrat',sans-serif;font-size:10px;color:var(--muted);">× IS years = min trades<br>Lower for swing strategies</span>
+        </div>
       </div>
     </div>
   </div>
@@ -818,7 +823,8 @@ function calcCalmar(row) {
 // ═══════════════════════════════════════════════════
 function applyQualityFilter(data) {
   const total = data.length;
-  const minTrades = Math.round(30 * isYears);
+  const mult = parseFloat(document.getElementById('trade-floor-mult').value) || 30;
+  const minTrades = Math.round(mult * isYears);
   const filtered = data.filter(r =>
     typeof r['Trades'] === 'number' && r['Trades'] >= minTrades &&
     typeof r['Profit'] === 'number' && r['Profit'] > 0 &&
@@ -1054,7 +1060,7 @@ function renderPlateau() {
   // Stats cards
   document.getElementById('plateau-stats').innerHTML = `
     <div class="card"><div class="card-title">Total Combinations</div><div class="card-value">${total.toLocaleString('en')}</div></div>
-    <div class="card"><div class="card-title">Trade Floor (30 × IS yrs)</div><div class="card-value">${minTrades}</div></div>
+    <div class="card"><div class="card-title">Trade Floor (${mult} × IS yrs)</div><div class="card-value">${minTrades}</div></div>
     <div class="card"><div class="card-title">Passed Quality Filter</div><div class="card-value ${filteredRaw.length > 0 ? 'good' : 'bad'}">${filteredRaw.length.toLocaleString('en')}</div></div>
     <div class="card"><div class="card-title">IS Window</div><div class="card-value">${isYears.toFixed(2)}yr</div></div>
   `;
