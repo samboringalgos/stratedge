@@ -1012,6 +1012,7 @@ function renderPlateau() {
   if (fwdData) renderValidation();
 
   // Stats cards
+  const mult = parseFloat(document.getElementById('trade-floor-mult').value) || 30;
   document.getElementById('plateau-stats').innerHTML = `
     <div class="card"><div class="card-title">Total Combinations</div><div class="card-value">${total.toLocaleString('en')}</div></div>
     <div class="card"><div class="card-title">Trade Floor (${mult} × IS yrs)</div><div class="card-value">${minTrades}</div></div>
@@ -1089,7 +1090,6 @@ function renderRecommendationBanner(rank1, safePick, usedFallback, noNeighboursA
   }
 
   const calmar  = rec._calmar;
-  const consist = rec._consist;
   const paramStr = paramCols.map(p =>
     `<span style="color:var(--accent)">${escHtml(p.replace(/^Inp/,''))}</span> = <strong style="color:var(--text)">${escHtml(rec[p])}</strong>`
   ).join(' &nbsp;·&nbsp; ');
@@ -1115,14 +1115,6 @@ function renderRecommendationBanner(rank1, safePick, usedFallback, noNeighboursA
           <div style="font-family:'DM Serif Display',serif;font-size:20px;color:var(--text)">${rec['Trades']}</div>
         </div>
         <div>
-          <div style="font-family:'Montserrat',sans-serif;font-size:10px;font-weight:600;color:var(--accent);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:3px;">CONSISTENCY</div>
-          <div style="font-family:'DM Serif Display',serif;font-size:20px;color:${consist!=null&&consist>=0.7?'var(--pass)':consist!=null&&consist>=0.5?'var(--warn)':'var(--fail)'}">${consist!=null?(consist*100).toFixed(0)+'%':'—'}</div>
-        </div>
-        <div>
-          <div style="font-family:'Montserrat',sans-serif;font-size:10px;font-weight:600;color:var(--accent);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:3px;">NEIGHBOURS</div>
-          <div style="font-family:'DM Serif Display',serif;font-size:20px;color:${rec._neighbours>=3?'var(--pass)':'var(--warn)'}">${rec._neighbours}</div>
-        </div>
-        <div>
           <div style="font-family:'Montserrat',sans-serif;font-size:10px;font-weight:600;color:var(--accent);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:3px;">FINAL SCORE</div>
           <div style="font-family:'DM Serif Display',serif;font-size:20px;color:var(--accent)">${rec._finalScore.toFixed(3)}</div>
         </div>
@@ -1140,21 +1132,17 @@ function renderRecommendationBanner(rank1, safePick, usedFallback, noNeighboursA
 // TOP 20 IS TABLE
 // ═══════════════════════════════════════════════════
 function renderPlateauTable(top20, paramCols, safePick) {
-  const allCategorical = paramCols.length > 0 && paramCols.every(p => !paramTypes[p] || paramTypes[p] === 'cat');
-
   let html = '<thead><tr>';
-  const hdrCols = ['RANK','PASS','CALMAR','DD%','TRADES','CONSISTENCY','NEIGHBOURS','FINAL SCORE',
+  const hdrCols = ['RANK','PASS','CALMAR','DD%','TRADES',
     ...paramCols.map(p => escHtml(p.replace(/^Inp/,'').toUpperCase()))];
   hdrCols.forEach(h => { html += `<th>${h}</th>`; });
   html += '</tr></thead><tbody>';
 
   top20.forEach(row => {
-    const isPick     = safePick && row['Pass'] === safePick['Pass'];
-    const isIsolated = !allCategorical && row._neighbours < 3;
-    const rowClass   = isPick ? 'highlighted' : (isIsolated ? 'isolated' : '');
-    html += `<tr class="${rowClass}">`;
+    const isPick = safePick && row['Pass'] === safePick['Pass'];
+    html += `<tr class="${isPick ? 'highlighted' : ''}">`;
 
-    html += `<td>${isPick?'⭐ ':''}${row._rank}${isIsolated&&!isPick?' <span class="peak-flag">⚠</span>':''}</td>`;
+    html += `<td>${isPick ? '⭐ ' : ''}${row._rank}</td>`;
     html += `<td><span style="color:${isPick?'var(--accent)':'var(--text2)'};font-weight:${isPick?700:400}">${escHtml(String(row['Pass']))}</span></td>`;
 
     const cm = row._calmar;
@@ -1165,15 +1153,6 @@ function renderPlateauTable(top20, paramCols, safePick) {
     html += `<td>${isFinite(ddVal)?ddVal.toFixed(1)+'%':'—'}</td>`;
     html += `<td>${typeof row['Trades']==='number'?row['Trades'].toLocaleString('en'):'—'}</td>`;
 
-    const cs = row._consist;
-    const csCol = cs===null?'var(--text3)':cs>=0.7?'var(--pass)':cs>=0.5?'var(--warn)':'var(--fail)';
-    html += `<td><span style="color:${csCol}">${cs!==null?(cs*100).toFixed(0)+'%':'—'}</span>${row._cliff?'<span class="peak-flag" title="Cliff-edge">⚡</span>':''}</td>`;
-
-    // Neighbours — neutral colour when all categorical (count not meaningful)
-    const neighbourCol = allCategorical ? 'var(--text3)' : row._neighbours>=3 ? 'var(--pass)' : 'var(--warn)';
-    html += `<td><span style="color:${neighbourCol}">${row._neighbours}</span></td>`;
-    html += `<td><span style="color:var(--accent)">${row._finalScore.toFixed(3)}</span></td>`;
-
     paramCols.forEach(p => {
       const pv = row[p];
       html += `<td>${pv!=null&&pv!==''?escHtml(String(pv)):'—'}</td>`;
@@ -1183,10 +1162,6 @@ function renderPlateauTable(top20, paramCols, safePick) {
 
   html += '</tbody>';
   document.getElementById('plateau-table').innerHTML = html;
-
-  // Hide isolated peak legend when all categorical
-  const legendEl = document.getElementById('legend-isolated');
-  if (legendEl) legendEl.style.display = allCategorical ? 'none' : 'inline';
 }
 
 // ═══════════════════════════════════════════════════
