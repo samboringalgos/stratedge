@@ -409,7 +409,7 @@
   <!-- Upload zones -->
   <div style="display:flex;gap:16px;align-items:stretch;margin-bottom:16px;flex-wrap:wrap;">
     <div class="upload-zone" style="flex:1;min-width:260px;"
-      ondragover="dragOver(event,'dropzone1')" ondragleave="dragLeave('dropzone1')" ondrop="dropFile(event,'dropzone1','xml1')">
+      id="dropzone1" ondragover="dragOver(event,'dropzone1')" ondragleave="dragLeave('dropzone1')" ondrop="dropFile(event,'dropzone1','xml1')">
       <input type="file" id="xml1" accept=".xml" onchange="loadXML(this,'plateau')">
       <div class="upload-icon">📊</div>
       <div class="upload-label" id="upload1-label">① Drop Optimization Results XML here</div>
@@ -739,6 +739,10 @@ function onXMLLoaded() {
   // param-types-section removed in Tab 1 simplification
   // weights-section removed in Tab 1 simplification
 
+  // Update forward results status display
+  const fwdDisp = document.getElementById('fwd-status-display');
+  if (fwdDisp) fwdDisp.textContent = fwdData ? 'Forward Results: loaded ✓' : 'Forward Results: not loaded';
+
   updateISYears();
   renderPlateau();
 }
@@ -1012,17 +1016,6 @@ function renderPlateau() {
       dedupEl.style.display = 'none';
     }
   }
-
-  // Param select
-  const paramSelect = document.getElementById('param-select');
-  const prevParam = paramSelect.value;
-  paramSelect.innerHTML = '';
-  paramCols.forEach(p => {
-    const o = document.createElement('option');
-    o.value = p; o.textContent = p.replace(/^Inp/,'');
-    if (p === prevParam) o.selected = true;
-    paramSelect.appendChild(o);
-  });
 
   // Rank 1 is always the IS candidate (ranked by Calmar)
   const rank1 = top20[0] || null;
