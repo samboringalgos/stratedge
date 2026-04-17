@@ -2131,7 +2131,7 @@ function sensProcessFiles(files) {
   });
 }
 
-function parseSensXML(text, fileName) {
+function parseSensXML(text, fileName, centralOverride) {
   // Fast regex-based parser (same approach as parseXML)
   const depMatch = text.match(/<Deposit>(.*?)<\/Deposit>/);
   const deposit  = depMatch ? parseFloat(depMatch[1]) : 100000;
@@ -2219,16 +2219,13 @@ function parseSensXML(text, fileName) {
     calmarByValue[v] = vals.length > 0 ? vals.reduce((s, x) => s + x, 0) / vals.length : null;
   });
 
-  // Central pass = param value with highest Calmar
-  let centralValue = null, centralCalmar = -Infinity;
-  paramValues.forEach(v => {
-    if (calmarByValue[v] !== null && calmarByValue[v] > centralCalmar) {
-      centralCalmar = calmarByValue[v];
-      centralValue = v;
-    }
-  });
-
-  if (centralValue === null) throw new Error('No valid Calmar values found');
+  // Central pass = user-specified value (centralOverride), or midpoint of range as default
+  // NOT highest Calmar — that conflates "best in sensitivity range" with "your chosen pass"
+  const midIdx = Math.floor(paramValues.length / 2);
+  const defaultCentral = paramValues[midIdx] !== undefined ? paramValues[midIdx] : paramValues[0];
+  const centralValue = (centralOverride !== undefined && centralOverride !== null &&
+    paramValues.includes(centralOverride)) ? centralOverride : defaultCentral;
+  const centralCalmar = calmarByValue[centralValue] !== null ? calmarByValue[centralValue] : 0;
 
   // Compute verdict per neighbour step
   const centralIdx = paramValues.indexOf(centralValue);
@@ -2262,6 +2259,7 @@ function parseSensXML(text, fileName) {
   };
 }
 
+
 function renderSensTab() {
   const hasResults = sensResults.length > 0;
   document.getElementById('sens-empty').style.display   = hasResults ? 'none'  : 'block';
@@ -2285,7 +2283,7 @@ function renderSensTab() {
         <div style="font-family:'DM Serif Display',serif;font-size:18px;color:var(--text);">${escHtml(r.paramName)}</div>
         <div style="font-family:'Montserrat',sans-serif;font-size:12px;font-weight:600;color:${verdictCol};">${verdictIcon} ${r.verdict}</div>
         <div style="font-family:'Montserrat',sans-serif;font-size:11px;color:var(--muted);">
-          Central value: <strong style="color:var(--accent);">${r.centralValue}</strong> &nbsp;·&nbsp;
+          Central value: <strong style="color:var(--accent);">${r.centralValue}</strong> (midpoint of tested range) &nbsp;·&nbsp;
           Central Calmar: <strong>${r.centralCalmar.toFixed(2)}</strong> &nbsp;·&nbsp;
           Threshold: Calmar drop &gt; ${sensThreshold}% = FRAGILE
         </div>
